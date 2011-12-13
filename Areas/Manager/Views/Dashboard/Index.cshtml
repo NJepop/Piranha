@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "Välkommen";
+}
+
+@section Head {
+    <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/Ext/jquery.equalheights.js")"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () { 
+            $(".box .inner").equalHeights();
+        });
+    </script>
+}
+
+<div class="grid_12 info">
+</div>
+<div class="grid_4 box">
+    <div class="inner">
+        <h2>Innehåll</h2>
+        <ul class="list">
+            <li>Om författaren<span class="right">1</span></li>
+            <li>Startsidor<span class="right">1</span></li>
+            <li>Vanliga inlägg<span class="right">4</span></li>
+            <li>Vanliga sidor<span class="right">2</span></li>
+        </ul>
+    </div>
+</div>
+<div class="grid_4 box">
+    <div class="inner">
+        <h2>Interaktion</h2>
+        <ul class="list">
+            <li>Nya kommentarer<span class="right">3</span></li>
+            <li>Godkända kommentarer<span class="right">14</span></li>
+            <li>Refuserade kommentarer<span class="right">2</span></li>
+        </ul>
+    </div>
+</div>
+<div class="grid_4 box">
+    <div class="inner">
+        <h2>Under arbete</h2>
+        <ul class="list">
+            <li>Vanliga artiklar<span class="right">3</span></li>
+            <li>Vanliga sidor<span class="right">1</span></li>
+        </ul>
+    </div>
+</div>
+<div class="grid_6 box">
+    <div class="inner">
+        <h2>Besöksstatistik</h2>
+    </div>
+</div>
+<div class="grid_6 box">
+    <div class="inner">
+        <h2>Nyheter</h2>
+    </div>
+</div>

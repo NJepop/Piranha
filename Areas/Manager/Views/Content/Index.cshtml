@@ -1,0 +1,67 @@
+﻿@model Piranha.Models.Manager.ContentModels.ListModel
+@{
+    ViewBag.Title = "Bilder & Dokument";
+    ViewBag.Selected = "Content" ;
+}
+@section Head {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#file").change(function () {
+                console.log("submitting");
+                console.log($("form"));
+                $("form").submit();
+                console.log("submitted");
+            });
+        });
+    </script>
+}
+@section Toolbar { 
+<div class="grid_12 toolbar">
+    <div class="inner">
+        <ul>
+            <li><a href="@Url.Action("Edit")" class="add" title="Ladda upp nytt innehåll"></a></li>
+            <li><a href="" class="refresh" title="Ladda om listan"></a></li>
+            <li></li>
+            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+        </ul>
+        @using (Html.BeginForm("Search", "Page")) {
+            <button class="search" title="Sök bland allt innehåll"></button>@Html.TextBox("search")
+        }
+        <div class="clear"></div>
+    </div>
+</div>
+}
+<div class="grid_12">
+    <table class="list">
+        <thead>
+            <tr>
+                <th class="thumb"></th>
+                <th>Filnamn</th>
+                <th>Typ</th>
+                <th>Skapad</th>
+                <th>Ändrad</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{var odd = true ;}
+            @foreach (var content in Model.Content) {
+            <tr class="@(odd ? "odd" : "even")">
+                <td class="thumb"><img src="@Url.Action("Get", "Media", new { @area = "", @id = content.Id })" alt="@content.AlternateText" /></td>
+                <td><a href="@Url.Action("Edit", new { id = content.Id })">@content.Filename</a></td>
+                <td>@content.Type</td>
+                <td class="date">@content.Created.ToString("yyyy-MM-dd")</td>
+                <td class="date">@content.Updated.ToString("yyyy-MM-dd")</td>
+                <td class="buttons one">
+                    <a href="@Url.Action("Delete", new { id = content.Id })" title="Ta bort innehåll" class="icon delete"></a></td>
+            </tr>
+            odd = !odd;
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

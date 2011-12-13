@@ -1,0 +1,132 @@
+﻿@model Piranha.Models.Manager.TemplateModels.PageEditModel
+@{
+    ViewBag.Selected = "Page" ;
+}
+@section Head {
+    <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/jquery.template.js")"></script>
+ }
+
+@section Toolbar {
+<div class="grid_12 toolbar">
+    <div class="inner">
+        <ul>
+            <li><a class="save submit" title="Spara mallen"></a></li>
+            <li><a href="@Url.Action("DeletePage", new { id = Model.Template.Id })" class="delete" title="Ta bort mallen"></a></li>
+            <li><a href="@Url.Action("Index", "Page")#templates" class="back" title="Backa"></a></li>
+            <li><a href="" class="refresh" title="Ladda om mallen"></a></li>
+            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+</div>
+}
+
+@{ Html.BeginForm("Page") ; }
+<div>
+    @Html.HiddenFor(m => m.Template.Id)
+    @Html.HiddenFor(m => m.Template.IsNew)
+    @Html.HiddenFor(m => m.Template.Created)
+    @Html.HiddenFor(m => m.Template.Updated)
+    @Html.HiddenFor(m => m.Template.CreatedBy)
+    @Html.HiddenFor(m => m.Template.UpdatedBy)
+</div>
+<div class="grid_9">
+    <div class="box expandable">
+        <div class="inner">
+            <h2>Information</h2>
+            <ul class="form">
+                <li>@Html.LabelFor(m => m.Template.Name.Singular)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Template.Name.Singular)</div>
+                    @Html.ValidationMessageFor(m => m.Template.Name.Singular)
+                </li>
+                <li>@Html.LabelFor(m => m.Template.Name.Plural)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Template.Name.Plural)</div>
+                    @Html.ValidationMessageFor(m => m.Template.Name.Plural)
+                </li>
+                <li>@Html.LabelFor(m => m.Template.Description)
+                    <div class="input">
+                        @Html.TextAreaFor(m => m.Template.Description, new { @placeholder = "Ej obligatorisk" })</div>
+                </li>
+            </ul>
+            <ul class="form optional">               
+                <li>@Html.LabelFor(m => m.Template.Preview)
+                    <div class="input">
+                        @Html.TextAreaFor(m => m.Template.Preview, new { @rows = 8} )</div>
+                </li>                
+            </ul>
+        </div>
+    </div>
+    <div class="box">
+        <div class="inner">
+            <h2>Avancerat</h2>
+            <ul class="form">
+                <li>@Html.LabelFor(m => m.Template.View)
+                    <div class="right">
+                        @Html.CheckBoxFor(m => m.Template.ShowView)</div>
+                    <div class="input short">
+                        @Html.TextBoxFor(m => m.Template.View, new { @placeholder = "Ej obligatorisk" })</div>
+                </li>
+                <li>@Html.LabelFor(m => m.Template.Controller)
+                    <div class="right">
+                        @Html.CheckBoxFor(m => m.Template.ShowController)</div>
+                    <div class="input short">
+                        @Html.TextBoxFor(m => m.Template.Controller, new { @placeholder = "Ej obligatorisk" })</div>
+                </li>
+                <li>@Html.LabelFor(m => m.Template.Redirect)
+                    <div class="right">
+                        @Html.CheckBoxFor(m => m.Template.ShowRedirect)</div>
+                    <div class="input short">
+                        @Html.TextBoxFor(m => m.Template.Redirect, new { @placeholder = "Ej obligatorisk" })</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="grid_3">
+    <div class="box">
+        <div class="inner">
+            <div id="region_data"></div>
+            <h2>Regioner</h2>
+            <ul id="pageregions" class="list buttons">
+                @foreach (var region in Model.Template.PageRegions) {
+                <li><span>@region</span><button class="btn delete right remove-region"></button></li>
+                }
+            </ul>
+            <hr />
+            <button id="pr_add" class="btn blue right">Lägg till</button>
+            <div class="input" style="width: 88px">
+                <input id="pr_name" type="text" placeholder="Ny region" /></div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="inner">
+            <h2>Globala regioner</h2>
+            <ul id="globalregions" class="list buttons">
+                @foreach (var region in Model.Template.GlobalRegions) {
+                <li><span>@region</span><button class="btn blue right remove-region">Ta bort</button></li>
+                }
+            </ul>
+            <hr />
+            <button id="gr_add" class="btn blue right">Lägg till</button>
+            <div class="input" style="width: 88px">
+                <input type="text" placeholder="Ny global region" /></div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="inner">
+            <h2>Egenskaper</h2>
+            <ul id="properties" class="list buttons">
+                @foreach (var property in Model.Template.Properties) {
+                <li><span>@property</span><button class="btn delete right remove-region"></button></li>
+                }
+            </ul>
+            <hr />
+            <button id="po_add" class="btn blue right">Lägg till</button>
+            <div class="input" style="width: 88px">
+                <input id="po_name" type="text" placeholder="Ny egenskap" /></div>
+         </div>
+    </div>
+</div>
+@{ Html.EndForm() ; }

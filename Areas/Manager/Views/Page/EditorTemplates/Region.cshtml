@@ -1,0 +1,12 @@
+﻿@model Piranha.Models.Region
+<div id="@Model.Name" class="input" style="display:none">
+    @Html.HiddenFor(m => m.IsNew)
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Name)
+    @Html.HiddenFor(m => m.PageId)
+    @Html.HiddenFor(m => m.Created)
+    @Html.HiddenFor(m => m.Updated)
+    @Html.HiddenFor(m => m.CreatedBy)
+    @Html.HiddenFor(m => m.UpdatedBy)
+    @Html.TextAreaFor(m => m.Body, new { @class ="editor", @rows = 10 })
+</div>

@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7E07DD4F-41ED-4FAF-8407-62196AAE0D0F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Piranha</RootNamespace>
+    <AssemblyName>Piranha</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EcmaScript.NET.modified">
+      <HintPath>..\..\Mark\Projects\Mark\packages\YUICompressor.NET.1.6.0.2\lib\net35\EcmaScript.NET.modified.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Yahoo.Yui.Compressor">
+      <HintPath>..\..\Mark\Projects\Mark\packages\YUICompressor.NET.1.6.0.2\lib\net35\Yahoo.Yui.Compressor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Areas\Manager\Content\Css\Style.ashx.cs">
+      <DependentUpon>Style.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Manager\Content\Js\Script.ashx.cs">
+      <DependentUpon>Script.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\Manager\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Manager\Controllers\ContentController.cs" />
+    <Compile Include="Areas\Manager\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Manager\Controllers\PageController.cs" />
+    <Compile Include="Areas\Manager\Controllers\PostController.cs" />
+    <Compile Include="Areas\Manager\Controllers\SettingsController.cs" />
+    <Compile Include="Areas\Manager\Controllers\TemplateController.cs" />
+    <Compile Include="Controllers\MediaController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\LogoutController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\ComplexName.cs" />
+    <Compile Include="Models\ArchiveModel.cs" />
+    <Compile Include="Models\Attachment.cs" />
+    <Compile Include="Models\Content.cs" />
+    <Compile Include="Models\IModel.cs" />
+    <Compile Include="Models\Manager\ContentModels\EditModel.cs" />
+    <Compile Include="Models\Manager\ContentModels\ListModel.cs" />
+    <Compile Include="Models\Manager\PageModels\EditModel.cs" />
+    <Compile Include="Models\Manager\PageModels\InsertModel.cs" />
+    <Compile Include="Models\Manager\PageModels\ListModel.cs" />
+    <Compile Include="Models\Manager\PostModels\EditModel.cs" />
+    <Compile Include="Models\Manager\PostModels\InsertModel.cs" />
+    <Compile Include="Models\Manager\PostModels\ListModel.cs" />
+    <Compile Include="Models\Manager\SettingModels\AccessEditModel.cs" />
+    <Compile Include="Models\Manager\SettingModels\GroupEditModel.cs" />
+    <Compile Include="Models\Manager\SettingModels\ListModel.cs" />
+    <Compile Include="Models\Manager\SettingModels\ParamEditModel.cs" />
+    <Compile Include="Models\Manager\SettingModels\UserEditModel.cs" />
+    <Compile Include="Models\Manager\TemplateModels\ListModel.cs" />
+    <Compile Include="Models\Manager\TemplateModels\PageEditModel.cs" />
+    <Compile Include="Models\Manager\TemplateModels\PostEditModel.cs" />
+    <Compile Include="Models\Page.cs" />
+    <Compile Include="Models\PageTemplate.cs" />
+    <Compile Include="Models\Permalink.cs" />
+    <Compile Include="Models\PiranhaRecord.cs" />
+    <Compile Include="Models\PageModel.cs" />
+    <Compile Include="Data\ActiveRecord.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\Database.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Controllers\ManagerController.cs" />
+    <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\PostModel.cs" />
+    <Compile Include="Models\PostTemplate.cs" />
+    <Compile Include="Models\Property.cs" />
+    <Compile Include="Models\Region.cs" />
+    <Compile Include="Models\Sitemap.cs" />
+    <Compile Include="Models\SysAccess.cs" />
+    <Compile Include="Models\SysGroup.cs" />
+    <Compile Include="Models\SysParam.cs" />
+    <Compile Include="Models\SysUser.cs" />
+    <Compile Include="Models\Upload.cs" />
+    <Compile Include="AccessAttribute.cs" />
+    <Compile Include="Web\ResourcePathProvider.cs" />
+    <Compile Include="Web\UploadResult.cs" />
+    <Compile Include="Web\ImageResult.cs" />
+    <Compile Include="Controllers\PiranhaController.cs" />
+    <Compile Include="Web\PiranhaImageResult.cs" />
+    <Compile Include="Web\TransferResult.cs" />
+    <Compile Include="Web\MvcPiranha.cs" />
+    <Compile Include="Web\PiranhaHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Scripts\Create.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Scripts\Drop.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Areas\Manager\Views\_ViewStart.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Account\Index.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Content\Edit.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Content\Index.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Dashboard\Index.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Dashboard\Test.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Page\Edit.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Page\EditorTemplates\Region.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Page\Index.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Page\Partial\PageAttachments.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Post\Edit.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Post\Index.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Post\Partial\PostToolbar.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Settings\Access.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Settings\Group.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Settings\Index.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Settings\Param.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Settings\User.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Shared\_Layout.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Shared\Partial\TinyMCE.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Template\PageEdit.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Template\PostEdit.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Content\Css\Style.ashx" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Script.ashx" />
+    <None Include="packages.config" />
+    <None Include="README.markdown" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Areas\Manager\Content\Css\Style.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Areas\Manager\Content\Js\jquery.manager.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

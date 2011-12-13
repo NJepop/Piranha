@@ -1,0 +1,172 @@
+﻿@model Piranha.Models.Manager.PageModels.EditModel
+@{
+    ViewBag.Selected = "Page" ;   
+}
+@section Head {
+    @Html.Partial("~/Areas/Manager/Views/Shared/Partial/TinyMCE.cshtml")
+    <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/jquery.page.js")"></script>
+}
+
+@section Toolbar {
+<div class="grid_12 toolbar">
+    <div class="inner">
+        <ul>
+            <li><a class="save submit" title="Spara sidan"></a></li>
+            <li><a href="@Url.Action("Delete", new { id = Model.Page.Id })" class="delete" title="Ta bort sidan"></a></li>
+            <li><a href="@Url.Action("Index", "Page")" class="back" title="Backa"></a></li>
+            <li><a href="" class="refresh" title="Ladda om sidan"></a></li>
+            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+</div>
+}
+
+@{ Html.BeginForm("Edit", "Page") ; }
+<div>
+    @Html.HiddenFor(m => m.Page.IsNew)
+    @Html.HiddenFor(m => m.Page.Id)
+    @Html.HiddenFor(m => m.Page.Permalink)
+    @Html.HiddenFor(m => m.Page.TemplateId)
+    @Html.HiddenFor(m => m.Page.TemplateName)
+    @Html.HiddenFor(m => m.Page.ParentId)
+    @Html.HiddenFor(m => m.Page.Seqno)
+    @Html.HiddenFor(m => m.Page.Permalink)
+    @Html.HiddenFor(m => m.Page.Created)
+    @Html.HiddenFor(m => m.Page.Updated)
+    @Html.HiddenFor(m => m.Page.Published)
+    @Html.HiddenFor(m => m.Page.CreatedBy)
+    @Html.HiddenFor(m => m.Page.UpdatedBy)
+    @Html.HiddenFor(m => m.Permalink.IsNew)
+    @Html.HiddenFor(m => m.Permalink.Id)
+    @Html.HiddenFor(m => m.Permalink.ParentId)
+    @Html.HiddenFor(m => m.Permalink.Type)
+    @Html.HiddenFor(m => m.Permalink.Name)
+    @Html.HiddenFor(m => m.Permalink.Created)
+    @Html.HiddenFor(m => m.Permalink.CreatedBy)
+</div>
+<div class="grid_9">
+    <div class="box expandable">
+        <div class="inner">
+            <h2>Information</h2>
+            <ul class="form">
+                <li>@Html.LabelFor(m => m.Page.Title)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Page.Title)</div>
+                </li>
+                <li>@Html.LabelFor(m => m.Page.Permalink)
+                	@if (!Model.Page.IsNew) {
+                    <p>http://@Request.Url.DnsSafeHost@Url.GetPermalink(Model.Page.Permalink).ToLower()</p>
+                    } else {
+                    <p><i>Din permalänk skapas automatiskt när du sparar sidan första gången</i></p>
+                    }
+                </li>
+                @if (Model.Template.ShowController) {
+                <li>@Html.LabelFor(m => m.Page.PageController)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Page.PageController, new { @placeholder = !String.IsNullOrEmpty(Model.Template.Controller) ? Model.Template.Controller : "Ej obligatorisk" })</div>
+                </li>
+                }
+                @if (Model.Template.ShowView) {
+                <li>@Html.LabelFor(m => m.Page.PageView)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Page.PageView, new { @placeholder = !String.IsNullOrEmpty(Model.Template.View) ? Model.Template.View : "Ej obligatorisk" })</div>
+                </li>
+                }
+                @if (Model.Template.ShowRedirect) {
+                <li>@Html.LabelFor(m => m.Page.PageRedirect)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Page.PageRedirect, new { @placeholder = !String.IsNullOrEmpty(Model.Template.Redirect) ? Model.Template.Redirect : "Ej obligatorisk" })</div>
+                </li>
+                }
+                <li>@Html.LabelFor(m => m.Page.Keywords)
+                    <div class="input"> 
+                        @Html.TextBoxFor(m => m.Page.Keywords, new { @placeholder = "Ej obligatorisk" })</div>
+                </li>
+            </ul>
+            <ul class="form optional">
+                <li>@Html.LabelFor(m => m.Page.NavigationTitle)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Page.NavigationTitle, new { @placeholder = "Ej obligatorisk" })</div>
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Page.GroupId)
+                    <div class="input">
+                        @Html.DropDownListFor(m => m.Page.GroupId, Model.Groups)</div>
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Page.IsHidden)
+                    <p>@Html.CheckBoxFor(m => m.Page.IsHidden)</p>
+                </li>
+                <li>@Html.LabelFor(m => m.Page.Description)
+                    <div class="input">
+                        @Html.TextAreaFor(m => m.Page.Description, new { @rows = 3, @placeholder = "Ej obligatorisk" })</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    @if (Model.PageRegions.Count > 0) {
+    <div class="box">
+        <div class="inner">
+            <h2>Innehåll</h2>
+            <div id="regionbuttons" class="section">
+                <div class="left">
+                    @for (int n = 0; n < Model.PageRegions.Count; n++) {
+                    <button id="@Html.Raw("btn_" + Model.PageRegions[n].Name)" class="btn @(n > 0 ? "blue" : "orange") pageregion">@Model.PageRegions[n].Name</button>
+                    }
+                </div>
+                <div class="right">
+                    <button id="btn_attachments" class="btn blue hidden">Bifogade filer</button>
+                    @foreach (var region in Model.GlobalRegions) {
+                    <button id="@Html.Raw("btn_" + region.Name)" class="btn blue globalregion">@region.Name</button>
+                    }
+                </div>
+            </div>
+            <div id="pageregions">
+                @Html.EditorFor(m => m.PageRegions)
+            </div>
+            <div id="globalregions">
+                @Html.EditorFor(m => m.GlobalRegions)
+            </div>
+            <div id="attachments" style="display:none">
+                @Html.Partial("Partial/PageAttachments")
+            </div>
+        </div>
+    </div>
+    }
+    
+    @if (Model.Properties.Count > 0) {
+    <div class="box">
+        <div class="inner">
+            <h2>Egenskaper</h2>
+            <ul class="form">
+            @for (int n = 0; n < Model.Properties.Count; n++) {
+                <li>@Html.LabelFor(m => m.Properties[n], Model.Properties[n].Name)
+                    @Html.HiddenFor(m => m.Properties[n].Id)
+                    @Html.HiddenFor(m => m.Properties[n].PageId)
+                    @Html.HiddenFor(m => m.Properties[n].Name)
+                    @Html.HiddenFor(m => m.Properties[n].Created)
+                    @Html.HiddenFor(m => m.Properties[n].CreatedBy)
+                    @Html.HiddenFor(m => m.Properties[n].IsNew)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Properties[n].Value)</div>
+                </li>
+            }
+            </ul>
+        </div>
+    </div>
+    }
+</div>
+<div class="grid_3">
+    <div class="box pagetemplate">
+        <div class="inner">
+            <h2>@Model.Template.Name.Singular</h2>
+            <div class="edit" style="width:120px;height:120px;margin:0 auto 10px">
+                @Model.Template.Preview
+            </div>
+            <p><small>@Model.Template.Description</small></p>
+        </div>
+    </div>
+</div>
+@{ Html.EndForm() ; }

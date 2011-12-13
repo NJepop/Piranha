@@ -1,0 +1,144 @@
+﻿@model Piranha.Models.Manager.PostModels.ListModel
+@{
+    ViewBag.Title = "Artiklar";
+    ViewBag.Selected = "Post" ;
+}
+@section Head {
+    <script type="text/javascript">
+        //
+        // Sets all hidden fields before submit
+        function preSubmit(parentid, seqno) {
+            $("#ParentId").val(parentid);
+            $("#Seqno").val(seqno);
+
+            floatBox.show('boxTemplates');
+
+            return false;
+        }
+
+        //
+        // Set the selected template id
+        $(document).ready(function () {
+            //
+            // Change toolbar action according to selected tab.
+            //
+            $(".tabs a").click(function () {
+                switch ($(this).attr("href")) {
+                    case "#posts":
+                        $(".toolbar .add").removeAttr("href");
+                        $(".toolbar .add").attr("onclick", "floatBox.show('boxTemplates', 200, 240)") ;
+                        $("#tt-add p").text("Lägg till ny artikel");
+                        break;
+                    case "#templates":
+                        $(".toolbar .add").removeAttr("onclick");
+                        $(".toolbar .add").attr("href", "@Url.Action("Post", "Template")");
+                        $("#tt-add p").text("Lägg till ny mall");
+                        break;
+                }
+            });
+
+            $(".templates").click(function () {
+                $("#TemplateId").val($(this).attr("data-templateid"));
+                $("form").submit();
+            });
+        });
+    </script>
+}
+@section Toolbar { 
+    @Html.Partial("Partial/PostToolbar") 
+}
+<div class="grid_12">
+    <ul class="tabs">
+        <li><a class="selected" href="#posts">Artiklar</a></li>
+        <li><a href="#templates">Typer</a></li>
+    </ul>
+    <a name="posts">
+@using (Html.BeginForm("Insert", "Post")) {
+    @Html.Hidden("TemplateId", "906761ea-6c04-4f4b-9365-f2c350ff4372")
+    @Html.Hidden("ParentId")
+    @Html.Hidden("Seqno")
+    <table class="list tabbed">
+        <thead>
+            <tr>
+                <th>Titel</th>
+                <th>Typ</th>
+                <th>Skapad</th>
+                <th>Ändrad</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{var odd = true ;}
+            @foreach (var post in Model.Posts) {
+            <tr class="@(odd ? "odd" : "even")">
+                <td><a href="@Url.Action("Edit", new { id = post.Id })">@post.Title</a></td>
+                <td>@post.TemplateName.Singular</td>
+                <td class="date">@post.Created.ToString("yyyy-MM-dd")</td>
+                <td class="date">@post.Updated.ToString("yyyy-MM-dd")</td>
+                <td class="buttons one">
+                    <a href="@Url.Action("Delete", new { id = post.Id })" title="Ta bort artikel" class="icon delete"></a></td>
+            </tr>
+            odd = !odd;
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5"></td>
+            </tr>
+        </tfoot>
+    </table>
+}
+    </a>
+    <a name="templates" class="hidden">
+    <table class="list tabbed">
+        <thead>
+            <tr>
+                <th>Titel</th>
+                <th>Typ</th>
+                <th>Skapad</th>
+                <th>Ändrad</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{var oddt = true ;}
+            @foreach (var pt in Model.Templates) {
+            <tr @(oddt ? "class=odd" : "class=even")>
+                <td><a href="@Url.Action("Post/" + pt.Id.ToString(), "Template")">@pt.Name.Singular</a></td>
+                <td>Sidmall</td>
+                <td class="date">@pt.Created.ToString("yyyy-MM-dd")</td>
+                <td class="date">@pt.Updated.ToString("yyyy-MM-dd")</td>
+                <td class="buttons one">
+                    <a class="icon delete" href="@Url.Action("DeletePage", "Template", new { id = pt.Id })"></a></td>
+            </tr>
+            oddt = !oddt;
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5"></td>
+            </tr>
+        </tfoot>
+    </table>
+    </a>
+</div>
+
+@section Foot {
+<div id="boxTemplates" class="floatbox">
+    <div class="bg"></div>
+    <div class="box">
+        <div class="inner">
+            <h2>Välj artikeltyp</h2>
+        @foreach (var template in Model.Templates) {
+            <div class="templates left" data-templateid="@template.Id">
+                <h3>@template.Name.Singular</h3>
+                <div class="preview" style="width:120px;height:120px;margin:0 auto;">
+                    Här ska det finnas en preview
+                </div>
+                <p>@template.Description</p>
+            </div>
+        } 
+        </div>
+    </div>
+</div>
+}

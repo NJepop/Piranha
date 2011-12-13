@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Logga in";
+    Layout = "" ;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>@ViewBag.Title</title>
+	<link rel="shortcut icon" href="@Url.Content("~/Areas/Manager/Content/Img/favicon.ico")">
+    <link rel="apple-touch-icon" href="@Url.Content("~/Areas/Manager/Content/Img/apple-touch-icon.png")"/>
+    <link href="@Url.Content("~/Areas/Manager/Content/Css/Style.css")" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/Ext/jquery-1.6.4.min.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".message").click(function () { $(this).fadeOut("medium"); });
+
+            if ($("#sysMsg").text() != "") {
+                floatBox.show("boxMessage");
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container_12">
+        <div class="grid_4 box login">
+            <div class="inner">
+                <h2>Logga in</h2>
+                @{ Html.BeginForm("Login", "Account") ; }
+                @Html.Hidden("returnaction", "index")
+                @Html.Hidden("returncontroller", "page")
+                <ul class="form">
+                    <li><label>Användarnamn:</label>
+                        <div class="input"><input name="login" type="text" /></div></li>
+                    <li><label>Lösenord:</label>
+                        <div class="input"><input name="password" type="password" /></div></li>
+                    <li><button class="btn blue right">Logga in</button></li>
+                </ul>
+                @{ Html.EndForm() ; }
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

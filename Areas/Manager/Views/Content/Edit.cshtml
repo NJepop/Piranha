@@ -1,0 +1,92 @@
+﻿@model Piranha.Models.Manager.ContentModels.EditModel
+@{
+    ViewBag.Selected = "Content" ;
+}
+@section Head {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#upload_file").change(function () {
+                //$("#Content_Filename").val($(this).val());
+                $("#Content_Filename").val("Filen.jpg");
+            });
+        });
+    </script>
+}
+@section Toolbar {
+<div class="grid_12 toolbar">
+    <div class="inner">
+        <ul>
+            <li><a class="save submit" title="Spara bild eller dokument"></a></li>
+            <li><a href="@Url.Action("Delete", new { id = Model.Content.Id })" class="delete" title="Ta bort bilden eller dokumentet"></a></li>
+            <li><a href="@Url.Action("Index")" class="back" title="Backa"></a></li>
+            <li><a href="" class="refresh" title="Ladda om innehållet"></a></li>
+            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+</div>
+}
+@{ Html.BeginForm("Edit", "Content", FormMethod.Post, new { enctype = "multipart/form-data" }) ; }
+@Html.HiddenFor(m => m.Content.Id)
+@Html.HiddenFor(m => m.Content.IsNew)
+@Html.HiddenFor(m => m.Content.Created)
+@Html.HiddenFor(m => m.Content.CreatedBy)
+@Html.HiddenFor(m => m.Content.Filename)
+@Html.HiddenFor(m => m.Content.Type)
+<div class="grid_9">
+    <div class="box">
+        <div class="inner">
+            <h2>Information</h2>
+            <ul class="form">
+                <li>
+                    <label>Ladda upp</label>
+                    <div class="hidden">
+                        <input type="file" id="UploadedFile" name="UploadedFile" data-id="upload_name" />
+                    </div>
+                    <div class="upload">
+                        <button class="btn blue file" data-id="UploadedFile" >Bläddra</button>
+                        <div class="input">
+                            <input id="upload_name" type="text" />
+                        </div>
+                    </div>
+                </li>
+                @if (!Model.Content.IsNew) {
+                <li>
+                    @Html.LabelFor(m => m.Content.Filename)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Content.Filename, new { disabled = "disabled" })</div>
+                    @Html.ValidationMessageFor(m => m.Content.Filename)
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Content.Type)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Content.Type, new { disabled = "disabled" })</div>
+                </li>
+                }
+                <li>
+                    @Html.LabelFor(m => m.Content.AlternateText)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Content.AlternateText, new { @placeholder = "Ej obligatoriskt" })</div>
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Content.Description)
+                    <div class="input">
+                        @Html.TextAreaFor(m => m.Content.Description, new { @rows = 3, @placeholder = "Ej obligatoriskt" })</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="grid_3">
+    <div class="box">
+        <div class="inner">
+            <h2>Filinformation</h2>
+            @if (!Model.Content.IsNew) {
+                <img style="max-width:190px" alt="@Model.Content.AlternateText" src="@Url.Action("Get", "Media", new { @area = "", @id = Model.Content.Id })" />
+            } else {
+                <p><em>Eftersom ditt innehåll är helt nytt finns det inga detaljer om filen än.</em></p>
+            }
+        </div>
+    </div>
+</div>
+@{ Html.EndForm() ; }

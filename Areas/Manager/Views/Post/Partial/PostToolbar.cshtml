@@ -1,0 +1,17 @@
+﻿<div class="grid_12 toolbar">
+    <div class="inner">
+        <ul>
+            <li id="tt-add"><a onclick="floatBox.show('boxTemplates', 200, 240)" class="add"></a>
+                <div class="tooltip"><p>Lägg till ny artikel</p></div></li>
+            <li id="tt-refresh"><a href="" class="refresh"></a>
+                <div class="tooltip"><p>Ladda om listan</p></div></li>
+            <li></li>
+            <li id="tt-info"><a href="" class="info"></a>
+                <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
+        </ul>
+        @using (Html.BeginForm("Search", "Post")) {
+            <button class="search" title="Sök bland alla artiklar"></button>@Html.TextBox("search")
+        }
+        <div class="clear"></div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+﻿@model Piranha.Models.Manager.SettingModels.AccessEditModel
+@{
+    ViewBag.Selected = "Settings" ;
+}
+@section Toolbar {
+<div class="grid_12 toolbar">
+    <div class="inner">
+        <ul>
+            <li><a class="save submit" title="Spara behörigheten"></a></li>
+            <li><a href="@Url.Action("DeleteAccess", new { id = Model.Access.Id })" class="delete" title="Ta bort behörigheten"></a></li>
+            <li><a href="@Url.Action("Index")#access" class="back" title="Backa"></a></li>
+            <li><a href="" class="refresh" title="Ladda om behörigheten"></a></li>
+            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+</div>
+}
+@{ Html.BeginForm() ; }
+@Html.HiddenFor(m => m.Access.Id)
+@Html.HiddenFor(m => m.Access.IsNew)
+@Html.HiddenFor(m => m.Access.Created)
+@Html.HiddenFor(m => m.Access.CreatedBy)
+<div class="grid_9">
+    <div class="box">
+        <div class="inner">
+            <h2>Information</h2>
+            <ul class="form">
+                <li>
+                    @Html.LabelFor(m => m.Access.Function)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Access.Function)</div>
+                    @Html.ValidationMessageFor(m => m.Access.Function)
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Access.GroupId)
+                    <div class="input">
+                        @Html.DropDownListFor(m => m.Access.GroupId, Model.Groups)</div>
+                    @Html.ValidationMessageFor(m => m.Access.GroupId)
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Access.Description)
+                    <div class="input">
+                        @Html.TextAreaFor(m => m.Access.Description, new { @rows = 3, @placeholder = "Ej obligatoriskt" })</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="grid_3">
+    <div class="box">
+        <div class="inner">
+            <h2>Medlemmar</h2>
+            @if (!Model.Access.IsNew) {
+            <ul>
+                <li>Visa medlemmar här</li>
+            </ul>
+            } else {
+                <p><em>Eftersom din behörighet är helt ny så kan man inte se vilka som har tillgång till den än.</em></p>
+            }
+        </div>
+    </div>
+</div>
+@{ Html.EndForm() ; }

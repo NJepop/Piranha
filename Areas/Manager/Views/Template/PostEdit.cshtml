@@ -1,0 +1,70 @@
+﻿@model Piranha.Models.Manager.TemplateModels.PostEditModel
+@{
+    ViewBag.Selected = "Post" ;
+}
+@section Head {
+    <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/jquery.template.js")"></script>    
+}
+@section Toolbar {
+<div class="grid_12 toolbar">
+    <div class="inner">
+        <ul>
+            <li><a class="save submit" title="Spara mallen"></a></li>
+            <li><a href="@Url.Action("Delete", new { id = Model.Template.Id })" class="delete" title="Ta bort mallen"></a></li>
+            <li><a href="" class="refresh" title="Ladda om mallen"></a></li>
+            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+</div>
+}
+@{ Html.BeginForm("Page") ; }
+<div>
+    @Html.HiddenFor(m => m.Template.Id)
+    @Html.HiddenFor(m => m.Template.IsNew)
+    @Html.HiddenFor(m => m.Template.Created)
+    @Html.HiddenFor(m => m.Template.Updated)
+    @Html.HiddenFor(m => m.Template.CreatedBy)
+    @Html.HiddenFor(m => m.Template.UpdatedBy)
+</div>
+<div class="grid_9">
+    <div class="box">
+        <div class="inner">
+            <h2>Information</h2>
+            <ul class="form">
+                <li>
+                    @Html.LabelFor(m => m.Template.Name.Singular)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Template.Name.Singular)</div>
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Template.Name.Plural)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Template.Name.Plural)</div>
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Template.ArchiveName)
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Template.ArchiveName)</div>
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Template.Description)
+                    <div class="input">
+                        @Html.TextAreaFor(m => m.Template.Description, new { @rows = 3, @placeholder = "Ej obligatorisk" })</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="grid_3">
+    <div class="box">
+        <div class="inner">
+            <h2>Avancerat</h2>
+            <div class="input">
+                @Html.TextBoxFor(m => m.Template.View, new { @placeholder = "Vy (Ej obligatorisk)"})</div>
+            <div class="input">
+                @Html.TextBoxFor(m => m.Template.Controller, new { @placeholder = "Kontroller (Ej obligatorisk)" })</div>
+        </div>
+    </div>
+</div>
+@{ Html.EndForm() ; }

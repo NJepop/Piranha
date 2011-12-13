@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>@ViewBag.Title</title>
+	<link rel="shortcut icon" href="@Url.Content("~/Areas/Manager/Content/Img/favicon.ico")">
+    <link rel="apple-touch-icon" href="@Url.Content("~/Areas/Manager/Content/Img/apple-touch-icon.png")"/>
+    <link href="@Url.Content("~/Areas/Manager/Content/Css/Style.ashx")" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/Script.ashx")"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".message").click(function () { $(this).fadeOut("medium"); });
+
+            if ($("#sysMsg").text() != "") {
+                floatBox.show("boxMessage");
+            }
+        });
+    </script>
+    @RenderSection("Head", false)
+</head>
+<body>
+    <div class="top">
+        <div class="container_12">
+            <div class="grid_12 header">
+                <a class="home" href="@Url.Action("Index", "Dashboard")">
+                    <!--img src="@Url.Content("~/Areas/Manager/Content/Img/bybricklogo_small.gif")" alt="byBrick"--></a>
+                <ul class="menu">
+                    <li@(ViewBag.Selected == "Page" ? " class=selected" : "")><a href="@Url.Action("Index", "Page")">Sidor</a></li>
+                    <li@(ViewBag.Selected == "Post" ? " class=selected" : "")><a href="@Url.Action("Index", "Post")">Artiklar</a></li>
+                    <li@(ViewBag.Selected == "Content" ? " class=selected" : "")><a href="@Url.Action("Index", "Content")">Bilder & Dokument</a></li>
+                    <li@(ViewBag.Selected == "Settings" ? " class=selected" : "")><a href="@Url.Action("Index", "Settings")">Inställningar</a></li>
+                    <li><a href="@Url.Action("Logout", "Account")">Logga ut</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="title">
+        <div class="container_12">
+            <div class="grid_12"><h1>@ViewBag.Title</h1></div>
+        </div>
+    </div>
+    <div class="body">
+        <div class="container_12">
+            @RenderSection("Toolbar", false)
+            <div class="content left">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    @RenderSection("Foot", false)
+    <div id="boxMessage" class="floatbox">
+        <div class="bg"></div>
+        <div class="box">
+            <div class="inner" style="width: 400px;min-height:100px;text-align:center">
+                <h2>Information</h2>
+                <p id="sysMsg">@ViewBag.Message</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
