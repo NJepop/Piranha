@@ -209,11 +209,72 @@ CREATE TABLE attachment (
 	FOREIGN KEY (attachment_updated_by) REFERENCES sysuser (sysuser_id)
 );
 
+-- Default groups
+INSERT INTO sysgroup (sysgroup_id, sysgroup_parent_id, sysgroup_name, sysgroup_description, sysgroup_created,
+	sysgroup_updated, sysgroup_created_by, sysgroup_updated_by)
+VALUES ('7c536b66-d292-4369-8f37-948b32229b83', NULL, 'Systemadministratör', 'Den här gruppen har högst behörighet.',
+	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysgroup (sysgroup_id, sysgroup_parent_id, sysgroup_name, sysgroup_description, sysgroup_created,
+	sysgroup_updated, sysgroup_created_by, sysgroup_updated_by)
+VALUES ('8940b41a-e3a9-44f3-b564-bfd281416141', '7c536b66-d292-4369-8f37-948b32229b83', 'Administratör', 
+	'Administratörer av webbplatsens innehåll.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+
+-- Default access
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('4fbdedb7-10ec-4a10-8f82-7d4c5cf61f2c', '8940b41a-e3a9-44f3-b564-bfd281416141', 'ADMIN', 
+	'Användare med denna behörighet har tillgång till att logga in i Admin.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('00074fd5-6c81-4181-8a09-ba6ef94f8364', '7c536b66-d292-4369-8f37-948b32229b83', 
+	'ADMIN_PAGE_TEMPLATE', 'Behörighet för att lägga till och ändra sidmallar.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('ff296d65-d24d-446a-8f02-d93a7ab57086', '7c536b66-d292-4369-8f37-948b32229b83', 
+	'ADMIN_POST_TEMPLATE', 'Behörighet för att lägga till och ändra artikelmallar.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('0c19578a-d6c0-45f8-9ffd-bcffa5d84772', '7c536b66-d292-4369-8f37-948b32229b83', 
+	'ADMIN_PARAM', 'Behörighet för att ändra och lägga till systemparametrar.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('0f367b04-ef7b-4007-88bd-7d78cbdea64a', '7c536b66-d292-4369-8f37-948b32229b83', 
+	'ADMIN_ACCESS', 'Behörighet för att ändra och lägga till behörighetsregler.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('08d17dbf-cd1d-40a9-b558-0866210ac4ec', '8940b41a-e3a9-44f3-b564-bfd281416141', 
+	'ADMIN_GROUP', 'Behörighet för att ändra och lägga till användargrupper.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('36fbc1ad-4e17-4767-9fdc-af92802e5ebb', '8940b41a-e3a9-44f3-b564-bfd281416141', 
+	'ADMIN_PAGE', 'Behörighet för att ändra och lägga till sidor.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('c8b44826-d3e6-4add-b241-8ce95429a17e', '8940b41a-e3a9-44f3-b564-bfd281416141', 
+	'ADMIN_POST', 'Behörighet för att ändra och lägga till artiklar.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('8a4ca0f3-261b-4689-8c1f-98065b65f9ee', '8940b41a-e3a9-44f3-b564-bfd281416141', 
+	'ADMIN_USER', 'Behörighet för att ändra och lägga till användare.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+
 -- Default users
-INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_created, sysuser_updated)
-VALUES ('ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'sys', GETDATE(), GETDATE());
-INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_firstname, sysuser_surname, sysuser_created, sysuser_updated)
-VALUES ('4037dc45-90d2-4adc-84aa-593be867c29d', 'admin', 'byBrick', 'Administrator', GETDATE(), GETDATE());
+INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_group_id, sysuser_created, sysuser_updated)
+VALUES ('ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'sys', '7c536b66-d292-4369-8f37-948b32229b83',
+	GETDATE(), GETDATE());
+INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_password, sysuser_firstname, sysuser_surname, 
+	sysuser_group_id, sysuser_created, sysuser_updated)
+VALUES ('4037dc45-90d2-4adc-84aa-593be867c29d', 'admin', 'bybrick', 'byBrick', 'Administrator', 
+	'7c536b66-d292-4369-8f37-948b32229b83', GETDATE(), GETDATE());
 
 -- Default templates
 INSERT INTO pagetemplate (pagetemplate_id, pagetemplate_name, pagetemplate_description, pagetemplate_page_regions, 
