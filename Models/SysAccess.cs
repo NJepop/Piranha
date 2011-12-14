@@ -25,7 +25,7 @@ namespace Piranha.Models
 		[Display(Name="Grupp")]
 		public Guid GroupId { get ; set ; }
 
-		[Column(Name="Name", ReadOnly=true)]
+		[Column(Name="sysgroup_name", ReadOnly=true)]
 		public string GroupName { get ; set ; }
 
 		[Column(Name="sysaccess_function")]

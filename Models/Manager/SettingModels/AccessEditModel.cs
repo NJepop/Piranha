@@ -34,7 +34,6 @@ namespace Piranha.Models.Manager.SettingModels
 	
 			List<SysGroup> groups = SysGroup.GetStructure().Flatten() ;
 			groups.Insert(0, new SysGroup() { Name = "" }) ;
-
 			Groups = new SelectList(groups, "Id", "Name") ;
 		}
 

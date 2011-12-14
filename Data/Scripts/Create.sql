@@ -228,12 +228,19 @@ INSERT INTO posttemplate (posttemplate_id, posttemplate_name, posttemplate_descr
 	posttemplate_created, posttemplate_updated, posttemplate_created_by, posttemplate_updated_by)
 VALUES ('5017dbe4-5685-4941-921b-ca922edc7a12', 'Nyhet,Nyheter', 'Nyhetsinlägg.', 'nyheter',
 	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+
 -- Default page
-INSERT INTO page (page_id, page_template_id, page_seqno, page_title, page_permalink, page_keywords, page_description,
+INSERT INTO page (page_id, page_template_id, page_seqno, page_title, page_keywords, page_description,
 	page_created, page_updated, page_published, page_created_by, page_updated_by)
-VALUES ('7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', '906761ea-6c04-4f4b-9365-f2c350ff4372', 1, 'Välkommen', 'valkommen',
+VALUES ('7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', '906761ea-6c04-4f4b-9365-f2c350ff4372', 1, 'Start', 
 	'Piranha, byBrick', 'Välkommen till Piranha', GETDATE(), GETDATE(), GETDATE(),
 	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+-- Permalink
+INSERT INTO permalink (permalink_id, permalink_parent_id, permalink_type, permalink_name, permalink_created,
+	permalink_updated, permalink_created_by, permalink_updated_by)
+VALUES ('1e64c1d4-e24f-4c7c-8f61-f3a75ad2e2fe', '7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', 'PAGE', 'start',
+	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+-- Region
 INSERT INTO region (region_id, region_page_id, region_name, region_body, region_created, region_updated,
 	region_created_by, region_updated_by)
 VALUES ('87ec4dbd-c3ba-4a6b-af49-78421528c363', '7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', 'Innehåll',

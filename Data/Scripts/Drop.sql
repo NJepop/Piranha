@@ -1,7 +1,11 @@
-﻿DROP TABLE region;
+﻿DROP TABLE upload;
+DROP TABLE attachment;
+DROP TABLE content;
+DROP TABLE region;
 DROP TABLE property;
 DROP TABLE page;
 DROP TABLE post;
+DROP TABLE permalink;
 DROP TABLE posttemplate;
 DROP TABLE pagetemplate;
 DROP TABLE sysparam;
