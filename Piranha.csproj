@@ -116,6 +116,7 @@
     <Compile Include="Models\SysUser.cs" />
     <Compile Include="Models\Upload.cs" />
     <Compile Include="AccessAttribute.cs" />
+    <Compile Include="Web\PiranhaPage.cs" />
     <Compile Include="Web\ResourcePathProvider.cs" />
     <Compile Include="Web\UploadResult.cs" />
     <Compile Include="Web\ImageResult.cs" />

@@ -237,7 +237,7 @@ namespace Piranha.Models
 		/// <param name="permalink">The permalink</param>
 		/// <returns>The page</returns>
 		public static Page GetByPermalink(string permalink) {
-			return Page.GetSingle("page_permalink = @0", permalink) ;
+			return Page.GetSingle("permalink_name = @0", permalink) ;
 		}
 
 		/// <summary>

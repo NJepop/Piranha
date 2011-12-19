@@ -29,7 +29,11 @@ namespace Piranha.Controllers
 				if (user != null) {
 					FormsAuthentication.SetAuthCookie(user.Id.ToString(), m.RememberMe) ;
 					HttpContext.Session[PiranhaApp.USER] = user ;
+				} else {
+					return RedirectToAction("Index", "Home") ;
 				}
+			} else {
+				return RedirectToAction("Index", "Home") ;
 			}
 			// Redirect after logon
 			if (!String.IsNullOrEmpty(m.ReturnPermalink))

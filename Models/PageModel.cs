@@ -60,7 +60,19 @@ namespace Piranha.Models
 		public static PageModel Get(Page p) {
 			PageModel m = new PageModel() {
 				Page = p
-			};
+			} ;
+			m.Init() ;
+			return m ;
+		}
+
+		/// <summary>
+		/// Gets the page model for the startpage.
+		/// </summary>
+		/// <returns></returns>
+		public static PageModel GetByStartpage() {
+			PageModel m = new PageModel() {
+				Page = Page.GetStartpage()
+			} ;
 			m.Init() ;
 			return m ;
 		}
@@ -73,7 +85,7 @@ namespace Piranha.Models
 		public static PageModel GetByPermalink(string permalink) {
 			PageModel m = new PageModel() {
 				Page = Page.GetByPermalink(permalink)
-			};
+			} ;
 			m.Init() ;
 			return m ;
 		}

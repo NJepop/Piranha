@@ -163,7 +163,7 @@ CREATE TABLE post (
 	post_body NTEXT NULL,
 	post_created DATETIME NOT NULL,
 	post_updated DATETIME NOT NULL,
-	post_published DATETIME NOT NULL,
+	post_published DATETIME NULL,
 	post_created_by UNIQUEIDENTIFIER NOT NULL,
 	post_updated_by UNIQUEIDENTIFIER NOT NULL,
 	FOREIGN KEY (post_template_id) REFERENCES posttemplate (posttemplate_id),
