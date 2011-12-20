@@ -118,6 +118,7 @@
     <Compile Include="AccessAttribute.cs" />
     <Compile Include="Web\PiranhaPage.cs" />
     <Compile Include="Web\ResourcePathProvider.cs" />
+    <Compile Include="Web\SinglePage.cs" />
     <Compile Include="Web\UploadResult.cs" />
     <Compile Include="Web\ImageResult.cs" />
     <Compile Include="Controllers\PiranhaController.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Web\MvcPiranha.cs" />
     <Compile Include="Web\PiranhaHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\WebPiranha.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data\Scripts\Create.sql" />

@@ -68,6 +68,17 @@ namespace Piranha.Models
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 
+		#region Static accessors
+		/// <summary>
+		/// Gets the param with the given name.
+		/// </summary>
+		/// <param name="name">The param name</param>
+		/// <returns>The param</returns>
+		public static SysParam GetByName(string name) {
+			return GetSingle("sysparam_name = @0", name) ;
+		}
+		#endregion
+
 		/// <summary>
 		/// Saves the current record.
 		/// </summary>

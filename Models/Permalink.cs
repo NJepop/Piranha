@@ -45,6 +45,17 @@ namespace Piranha.Models
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 
+		#region Static accessors
+		/// <summary>
+		/// Gets the permalink with the given name.
+		/// </summary>
+		/// <param name="name">The permalink name</param>
+		/// <returns>The permalink</returns>
+		public static Permalink GetByName(string name) {
+			return GetSingle("permalink_name = @0", name) ;
+		}
+		#endregion
+
 		/// <summary>
 		/// Converts the given string to a web safe permalink.
 		/// </summary>
