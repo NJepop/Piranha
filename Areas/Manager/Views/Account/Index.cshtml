@@ -18,6 +18,8 @@
             if ($("#sysMsg").text() != "") {
                 floatBox.show("boxMessage");
             }
+
+            $("#login").focus();
         });
     </script>
 </head>
@@ -31,7 +33,7 @@
                 @Html.Hidden("returncontroller", "page")
                 <ul class="form">
                     <li><label>Användarnamn:</label>
-                        <div class="input"><input name="login" type="text" /></div></li>
+                        <div class="input"><input id="login" name="login" type="text" /></div></li>
                     <li><label>Lösenord:</label>
                         <div class="input"><input name="password" type="password" /></div></li>
                     <li><button class="btn blue right">Logga in</button></li>

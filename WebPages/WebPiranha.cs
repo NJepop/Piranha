@@ -9,7 +9,7 @@ using System.Web.Routing;
 
 using Piranha.Models;
 
-namespace Piranha.Web
+namespace Piranha.WebPages
 {
 	public static class WebPiranha
 	{
@@ -18,12 +18,24 @@ namespace Piranha.Web
 		/// </summary>
 		public static void Init() {
 			// Register virtual path provider for the manager area
-			HostingEnvironment.RegisterVirtualPathProvider(new ResourcePathProvider()) ;
+			HostingEnvironment.RegisterVirtualPathProvider(new Piranha.Web.ResourcePathProvider()) ;
 
 			AreaRegistration.RegisterAllAreas() ;
 			RegisterGlobalFilters(GlobalFilters.Filters) ;
 			RegisterRoutes(RouteTable.Routes) ;
 			RegisterBinders() ;
+		}
+
+		/// <summary>
+		/// Initializes the manager app.
+		/// </summary>
+		/// <param name="context"></param>
+		public static void InitManager(AreaRegistrationContext context) {
+			context.MapRoute(
+				"Manager",
+				"Manager.aspx/{controller}/{action}/{id}",
+				new { controller = "Page", action = "Index", id = UrlParameter.Optional }
+			) ;
 		}
 
 		/// <summary>

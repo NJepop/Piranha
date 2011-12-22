@@ -21,7 +21,10 @@ namespace Piranha.Web
 		/// <param name="permalink">The permalink</param>
 		/// <returns>An action url</returns>
 		public static string GetPermalink(this UrlHelper helper, string permalink) {
-			return helper.Action("Permalink", "Home", new { area = "", permalink = permalink}).ToLower() ;
+			try {
+				return helper.Action("Permalink", "Home", new { area = "", permalink = permalink}).ToLower() ;
+			} catch {}
+			return helper.Content("~/hem/" + permalink.ToLower()) ;
 		}
 
 		/// <summary>

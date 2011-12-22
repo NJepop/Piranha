@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -20,19 +21,14 @@ namespace Piranha.Models
 		public Page Page { get ; set ; }
 
 		/// <summary>
-		/// Gets the available page regions.
+		/// Gets the available html regions for the page.
 		/// </summary>
-		public Dictionary<string, Region> PageRegions { get ; set ; }
-
-		/// <summary>
-		/// Gets the available global regions.
-		/// </summary>
-		public Dictionary<string, Region> GlobalRegions { get ; set ; }
+		public dynamic Regions { get ; private set ; }
 
 		/// <summary>
 		/// Gets the available Properties.
 		/// </summary>
-		public Dictionary<string, Property> Properties { get ; set ; }
+		public dynamic Properties { get ; private set ; }
 
 		/// <summary>
 		/// Gets the available attachments.
@@ -44,10 +40,8 @@ namespace Piranha.Models
 		/// Default constructor. Creates a new empty page model.
 		/// </summary>
 		public PageModel() {
-			// Initialize the regions
-			PageRegions   = new Dictionary<string, Region>() ;
-			GlobalRegions = new Dictionary<string, Region>() ;
-			Properties    = new Dictionary<string, Property>() ;
+			Regions       = new ExpandoObject() ;
+			Properties    = new ExpandoObject() ;
 			Attachments   = new List<Content>() ;
 		}
 
@@ -68,11 +62,20 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets the page model for the startpage.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The model</returns>
 		public static PageModel GetByStartpage() {
-			PageModel m = new PageModel() {
-				Page = Page.GetStartpage()
-			} ;
+			return GetByStartpage<PageModel>() ;
+		}
+
+		/// <summary>
+		/// Gets tne page model for the startpage.
+		/// </summary>
+		/// <typeparam name="T">The model type</typeparam>
+		/// <returns>The model</returns>
+		public static T GetByStartpage<T>() where T : PageModel {
+			T m = Activator.CreateInstance<T>() ;
+
+			m.Page = Page.GetStartpage() ;
 			m.Init() ;
 			return m ;
 		}
@@ -83,9 +86,19 @@ namespace Piranha.Models
 		/// <param name="permalink">The permalink</param>
 		/// <returns>The model</returns>
 		public static PageModel GetByPermalink(string permalink) {
-			PageModel m = new PageModel() {
-				Page = Page.GetByPermalink(permalink)
-			} ;
+			return GetByPermalink<PageModel>(permalink) ;
+		}
+
+		/// <summary>
+		/// Gets the page model for the specified permalink.
+		/// </summary>
+		/// <typeparam name="T">The model type</typeparam>
+		/// <param name="permalink">The permalink</param>
+		/// <returns>The model</returns>
+		public static T GetByPermalink<T>(string permalink) where T : PageModel {
+			T m = Activator.CreateInstance<T>() ;
+
+			m.Page = Page.GetByPermalink(permalink) ;
 			m.Init() ;
 			return m ;
 		}
@@ -132,24 +145,17 @@ namespace Piranha.Models
 		/// Gets the associated regions for the current page
 		/// </summary>
 		protected void Init() {
-			PageTemplate pt = PageTemplate.GetSingle(this.Page.TemplateId) ;
+			PageTemplate pt = PageTemplate.GetSingle(Page.TemplateId) ;
 
 			// Page regions
 			foreach (string str in pt.PageRegions) {
-				Region pr = Region.GetSingle("region_page_id = @0 AND region_name = @1",
-					this.Page.Id, str) ;
-				this.PageRegions.Add(str, pr != null ? pr : new Region()) ;
-			}
-			// Global regions
-			foreach (string str in pt.GlobalRegions) {
-				Region gr = Region.GetSingle("region_page_id IS NULL AND region_name = @0", str) ;
-				this.GlobalRegions.Add(str, gr != null ? gr : new Region()) ;
+				Region pr = Region.GetSingle("region_page_id = @0 AND region_name = @1", Page.Id, str) ;
+				((IDictionary<string, object>)Regions).Add(str, pr != null ? pr.Body : new HtmlString("")) ;
 			}
 			// Properties
 			foreach (string str in pt.Properties) {
-				Property pr = Property.GetSingle("property_page_id = @0 AND property_name = @1", 
-					this.Page.Id, str) ;
-				this.Properties.Add(str, pr != null ? pr : new Property()) ;
+				Property pr = Property.GetSingle("property_page_id = @0 AND property_name = @1", Page.Id, str) ;
+				((IDictionary<string, object>)Properties).Add(str, pr != null ? pr.Value : "") ;
 			}
 		}
 	}

@@ -8,12 +8,12 @@ using System.Web.WebPages.Html;
 
 using Piranha.Models;
 
-namespace Piranha.Web
+namespace Piranha.WebPages
 {
 	/// <summary>
 	/// Base class for Razor syntax web pages.
 	/// </summary>
-	public abstract class PiranhaPage<T> : WebPage
+	public abstract class BasePage<T> : WebPage
 	{
 		#region Inner classes
 		/// <summary>
@@ -205,7 +205,7 @@ namespace Piranha.Web
 		/// <summary>
 		/// Default constructor. Creates a new page.
 		/// </summary>
-		public PiranhaPage() : base() {
+		public BasePage() : base() {
 			Piranha = new PiranhaHelper(this, Html) ;
 		}
 	}
