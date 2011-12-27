@@ -117,6 +117,8 @@
     <Compile Include="Models\Upload.cs" />
     <Compile Include="AccessAttribute.cs" />
     <Compile Include="WebPages\BasePage.cs" />
+    <Compile Include="WebPages\DefaultModelBinder.cs" />
+    <Compile Include="WebPages\PiranhaHelper.cs" />
     <Compile Include="Web\ResourcePathProvider.cs" />
     <Compile Include="WebPages\SinglePage.cs" />
     <Compile Include="Web\UploadResult.cs" />

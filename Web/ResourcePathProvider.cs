@@ -26,7 +26,7 @@ namespace Piranha.Web
 		private bool IsResourceFile(string virtualpath) {
 			ManifestResourceInfo info = Assembly.GetExecutingAssembly().GetManifestResourceInfo(
 				VirtualPathUtility.ToAppRelative(virtualpath).Replace("/", ".").Replace("~", "Piranha").Replace("res.ashx.", "")) ;
-			return info != null ;
+			return !File.Exists(HttpContext.Current.Server.MapPath(virtualpath)) && info != null ;
 		}
 
 		/// <summary>
