@@ -16,7 +16,7 @@ namespace Piranha.WebPages
 	/// Page class for a single page where the model is of the generic type T.
 	/// </summary>
 	/// <typeparam name="T">The model type</typeparam>
-	public abstract class SinglePage<T> : BasePage<T> where T : PageModel {
+	public abstract class SinglePage<T> : ContentPage<T> where T : PageModel {
 		/// <summary>
 		/// Initializes the web page
 		/// </summary>
@@ -46,6 +46,8 @@ namespace Piranha.WebPages
 		/// <param name="pm">The page model</param>
 		protected virtual void InitModel(T pm) {
 			Model = pm ;
+
+			Page.Current = Model.Page ;
 		}
 		#endregion
 	}

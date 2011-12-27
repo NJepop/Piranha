@@ -117,8 +117,11 @@
     <Compile Include="Models\Upload.cs" />
     <Compile Include="AccessAttribute.cs" />
     <Compile Include="WebPages\BasePage.cs" />
-    <Compile Include="WebPages\DefaultModelBinder.cs" />
+    <Compile Include="WebPages\ContentPage.cs" />
+    <Compile Include="WebPages\LayoutPage.cs" />
+    <Compile Include="WebPages\ModelBinder.cs" />
     <Compile Include="WebPages\PiranhaHelper.cs" />
+    <Compile Include="Web\ResourceHandler.cs" />
     <Compile Include="Web\ResourcePathProvider.cs" />
     <Compile Include="WebPages\SinglePage.cs" />
     <Compile Include="Web\UploadResult.cs" />
@@ -162,6 +165,7 @@
     <EmbeddedResource Include="Areas\Manager\Views\Template\PostEdit.cshtml" />
     <EmbeddedResource Include="Areas\Manager\Content\Css\Style.ashx" />
     <EmbeddedResource Include="Areas\Manager\Content\Js\Script.ashx" />
+    <EmbeddedResource Include="Areas\Manager\Views\Web.config" />
     <None Include="packages.config" />
     <None Include="README.markdown" />
   </ItemGroup>
@@ -170,6 +174,96 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Areas\Manager\Content\Js\jquery.manager.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\langs\en.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\license.txt" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullpage\css\fullpage.css" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullpage\editor_plugin.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullpage\editor_plugin_src.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullpage\fullpage.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullpage\js\fullpage.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullpage\langs\en_dlg.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullscreen\editor_plugin.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullscreen\editor_plugin_src.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\fullscreen\fullscreen.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\editor_plugin.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\editor_plugin_src.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\skins\clearlooks2\img\alert.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\skins\clearlooks2\img\button.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\skins\clearlooks2\img\buttons.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\skins\clearlooks2\img\confirm.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\skins\clearlooks2\img\corners.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\skins\clearlooks2\img\horizontal.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\skins\clearlooks2\img\vertical.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\skins\clearlooks2\window.css" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\inlinepopups\template.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\paste\editor_plugin.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\paste\editor_plugin_src.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\paste\js\pastetext.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\paste\js\pasteword.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\paste\langs\en_dlg.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\paste\pastetext.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\paste\pasteword.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\spellchecker\css\content.css" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\spellchecker\editor_plugin.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\spellchecker\editor_plugin_src.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\spellchecker\img\wline.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\style\css\props.css" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\style\editor_plugin.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\style\editor_plugin_src.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\style\js\props.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\style\langs\en_dlg.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\plugins\style\props.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\about.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\anchor.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\charmap.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\color_picker.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\editor_template.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\editor_template_src.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\image.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\colorpicker.jpg" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\flash.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\icons.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\iframe.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\pagebreak.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\quicktime.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\realmedia.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\shockwave.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\trans.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\video.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\img\windowsmedia.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\js\about.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\js\anchor.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\js\charmap.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\js\color_picker.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\js\image.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\js\link.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\js\source_editor.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\langs\en.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\langs\en_dlg.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\link.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\shortcuts.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\content.css" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\dialog.css" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\img\buttons.png" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\img\items.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\img\menu_arrow.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\img\menu_check.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\img\progress.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\img\tabs.gif" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\skins\default\ui.css" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\themes\advanced\source_editor.htm" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\tiny_mce.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\tiny_mce_popup.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\utils\editable_selects.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\utils\form_utils.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\utils\mctabs.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\tiny_mce\utils\validate.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\jquery-ui-1.8.16.custom.min.js" />
+    <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\jquery.equalheights.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
