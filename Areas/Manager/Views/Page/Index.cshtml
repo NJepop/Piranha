@@ -113,7 +113,10 @@
                 <td class="buttons three">
                     <button class="icon arrow-down marg" title="Lägg till sida efter" onclick="return preSubmit('@page.ParentId', @page.Seqno + 1)" type="submit"></button>
                     <button class="icon arrow-right marg" title="Lägg till sida under" onclick="return preSubmit('@page.Id', 1)" type="submit"></button>
-                    <a href="@Url.Action("Delete", new { id = page.Id })" title="Ta bort sida" class="icon delete"></a></td>
+                    @if (page.Pages.Count == 0) {
+                    <a href="@Url.Action("Delete", new { id = page.Id })" title="Ta bort sida" class="icon delete"></a>
+                    }
+                </td>
             </tr>
             odd = !odd;
             }

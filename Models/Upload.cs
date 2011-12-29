@@ -74,6 +74,16 @@ namespace Piranha.Models
 				return ur[0] ;
 			return null ;
 		}
+
+		/// <summary>
+		/// Checks if there exists an upload for the given parent id.
+		/// </summary>
+		/// <param name="id">The parent id</param>
+		/// <returns>If there exists an upload</returns>
+		public static bool ExistsForParentId(Guid id) {
+			return GetSingleByParentId(id) != null ;
+			
+		}
 		#endregion
 
 		/// <summary>
