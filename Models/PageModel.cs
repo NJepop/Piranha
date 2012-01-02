@@ -134,6 +134,12 @@ namespace Piranha.Models
 			if (controller.ToLower() != "home") {
 				T m = Activator.CreateInstance<T>() ;
 				m.Page = Page.GetSingle("page_controller = @0 OR (page_controller is NULL AND pagetemplate_controller = @0)", route) ;
+
+				if (m.Page.GroupId != Guid.Empty) {
+					if (!HttpContext.Current.User.Identity.IsAuthenticated || !HttpContext.Current.User.IsMember(m.Page.GroupId))
+						throw new UnauthorizedAccessException("The current user doesn't have access to the requested page.") ;
+				}
+
 				m.Init() ;
 				return m ;
 			}

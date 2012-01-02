@@ -59,5 +59,15 @@ namespace Piranha.Controllers
 			}
 			base.OnActionExecuting(filterContext) ;
 		}
+
+		/// <summary>
+		/// Redirects the user to the current login page.
+		/// </summary>
+		protected ActionResult RedirectToLoginPage() {
+			SysParam p = SysParam.GetByName("LOGIN_PAGE") ;
+			if (p != null)
+				return RedirectToRoute(p.Value) ;
+			return RedirectToRoute("") ;
+		}
 	}
 }

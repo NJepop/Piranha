@@ -307,10 +307,11 @@ VALUES ('160C9971-3D04-40AA-A2A3-B25F11D11D29', 'SITE_DESCRIPTION', 'En liten we
 	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 
 -- Default templates
-INSERT INTO pagetemplate (pagetemplate_id, pagetemplate_name, pagetemplate_description, pagetemplate_page_regions, 
-	pagetemplate_created, pagetemplate_updated, pagetemplate_created_by, pagetemplate_updated_by)
+INSERT INTO pagetemplate (pagetemplate_id, pagetemplate_name, pagetemplate_description, pagetemplate_page_regions,
+	pagetemplate_preview, pagetemplate_created, pagetemplate_updated, pagetemplate_created_by, pagetemplate_updated_by)
 VALUES ('906761ea-6c04-4f4b-9365-f2c350ff4372', 'Vanlig sida,Vanliga sidor', 'Standardsida med en HTML-yta.',
-	'Innehåll', GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+	'Innehåll', '<table class="template"><tr><td id="Innehåll"></td></tr</table>', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 INSERT INTO posttemplate (posttemplate_id, posttemplate_name, posttemplate_description, posttemplate_created, 
 	posttemplate_updated, posttemplate_created_by, posttemplate_updated_by)
 VALUES ('03257c2a-3c91-4867-b20e-5fb9d3d97ab4', 'Vanligt inlägg,Vanliga inlägg', 'Standardinlägg.',
