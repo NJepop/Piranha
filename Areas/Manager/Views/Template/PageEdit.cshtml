@@ -100,20 +100,6 @@
                 <input id="pr_name" type="text" placeholder="Ny region" /></div>
         </div>
     </div>
-    <div class="box hidden">
-        <div class="inner">
-            <h2>Globala regioner</h2>
-            <ul id="globalregions" class="list buttons">
-                @foreach (var region in Model.Template.GlobalRegions) {
-                <li><span>@region</span><button class="btn blue right remove-region">Ta bort</button></li>
-                }
-            </ul>
-            <hr />
-            <button id="gr_add" class="btn blue right">Lägg till</button>
-            <div class="input" style="width: 88px">
-                <input type="text" placeholder="Ny global region" /></div>
-        </div>
-    </div>
     <div class="box">
         <div class="inner">
             <h2>Egenskaper</h2>

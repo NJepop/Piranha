@@ -14,7 +14,7 @@ namespace Piranha.Models
 	{
 		#region Inner classes
 		public enum PermalinkType {
-			PAGE, POST
+			PAGE, POST, CATEGORY
 		}
 		#endregion
 

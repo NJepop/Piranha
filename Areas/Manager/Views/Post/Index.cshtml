@@ -34,8 +34,25 @@
                         $(".toolbar .add").attr("href", "@Url.Action("Post", "Template")");
                         $("#tt-add p").text("Lägg till ny mall");
                         break;
+                    case "#categories":
+                        $(".toolbar .add").removeAttr("onclick");
+                        $(".toolbar .add").attr("href", "@Url.Action("Category")");
+                        $("#tt-add p").text("Lägg till ny kategori");
+                        break;
                 }
             });
+
+            //
+            // Check what tab should be initially selected
+            //
+            if (window.location.hash) {
+                var hash = window.location.hash ;
+
+                $.each($(".tabs a"), function(i, e) {
+                    if ($(e).attr("href") == hash)
+                        $(e).click();
+                });
+            }
 
             $(".templates").click(function () {
                 $("#TemplateId").val($(this).attr("data-templateid"));
@@ -51,6 +68,7 @@
     <ul class="tabs">
         <li><a class="selected" href="#posts">Artiklar</a></li>
         <li><a href="#templates">Typer</a></li>
+        <li><a href="#categories">Kategorier</a></li>
     </ul>
     <a name="posts">
 @using (Html.BeginForm("Insert", "Post")) {
@@ -62,9 +80,9 @@
             <tr>
                 <th>Titel</th>
                 <th>Typ</th>
-                <th>Skapad</th>
-                <th>Ändrad</th>
-                <th></th>
+                <th class="date">Ändrad</th>
+                <th class="date">Skapad</th>
+                <th class="one"></th>
             </tr>
         </thead>
         <tbody>
@@ -73,9 +91,9 @@
             <tr class="@(odd ? "odd" : "even")">
                 <td><a href="@Url.Action("Edit", new { id = post.Id })">@post.Title</a></td>
                 <td>@post.TemplateName.Singular</td>
-                <td class="date">@post.Created.ToString("yyyy-MM-dd")</td>
-                <td class="date">@post.Updated.ToString("yyyy-MM-dd")</td>
-                <td class="buttons one">
+                <td>@post.Updated.ToString("yyyy-MM-dd")</td>
+                <td>@post.Created.ToString("yyyy-MM-dd")</td>
+                <td class="buttons">
                     <a href="@Url.Action("Delete", new { id = post.Id })" title="Ta bort artikel" class="icon delete"></a></td>
             </tr>
             odd = !odd;
@@ -93,11 +111,10 @@
     <table class="list tabbed">
         <thead>
             <tr>
-                <th>Titel</th>
-                <th>Typ</th>
-                <th>Skapad</th>
-                <th>Ändrad</th>
-                <th></th>
+                <th>Namn</th>
+                <th class="date">Ändrad</th>
+                <th class="date">Skapad</th>
+                <th class="one"></th>
             </tr>
         </thead>
         <tbody>
@@ -105,13 +122,42 @@
             @foreach (var pt in Model.Templates) {
             <tr @(oddt ? "class=odd" : "class=even")>
                 <td><a href="@Url.Action("Post/" + pt.Id.ToString(), "Template")">@pt.Name.Singular</a></td>
-                <td>Sidmall</td>
-                <td class="date">@pt.Created.ToString("yyyy-MM-dd")</td>
-                <td class="date">@pt.Updated.ToString("yyyy-MM-dd")</td>
-                <td class="buttons one">
-                    <a class="icon delete" href="@Url.Action("DeletePage", "Template", new { id = pt.Id })"></a></td>
+                <td>@pt.Updated.ToString("yyyy-MM-dd")</td>
+                <td>@pt.Created.ToString("yyyy-MM-dd")</td>
+                <td class="buttons">
+                    <a class="icon delete" href="@Url.Action("DeletePost", "Template", new { id = pt.Id })"></a></td>
             </tr>
             oddt = !oddt;
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5"></td>
+            </tr>
+        </tfoot>
+    </table>
+    </a>
+    <a name="categories" class="hidden">
+    <table class="list tabbed">
+        <thead>
+            <tr>
+                <th>Namn</th>
+                <th class="date">Ändrad</th>
+                <th class="date">Skapad</th>
+                <th class="one"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{var oddc = true ;}
+            @foreach (var pc in Model.Categories) {
+            <tr @(oddc? "class=odd" : "class=even")>
+                <td><a href="@Url.Action("Category", new { id = pc.Id})">@pc.Name</a></td>
+                <td>@pc.Updated.ToString("yyyy-MM-dd")</td>
+                <td>@pc.Created.ToString("yyyy-MM-dd")</td>
+                <td class="buttons">
+                    <a class="icon delete" href="@Url.Action("DeleteCategory", new { id = pc.Id })"></a></td>
+            </tr>
+            oddc = !oddc;
             }
         </tbody>
         <tfoot>

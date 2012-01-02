@@ -102,7 +102,6 @@ namespace Piranha.Data
 		private static string _tablename ;
 		private static string _primarykey ;
 		private static string _joins ;
-		private static string _fields ;
 		private static Dictionary<string, PropertyInfo> _columns ;
 		private static Dictionary<string, ColumnAttribute> _attributes ;
 

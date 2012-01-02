@@ -7,6 +7,8 @@ using System.Text;
 using System.Web;
 using System.Web.WebPages;
 
+using Piranha.Models;
+
 namespace Piranha.WebPages
 {
 	/// <summary>
@@ -16,7 +18,7 @@ namespace Piranha.WebPages
 	{
 		#region Properties
 		/// <summary>
-		/// Gets the helper for the piranha methods
+		/// Gets the helper for the piranha methods.
 		/// </summary>
 		public PiranhaHelper Piranha { get ; private set ; }
 		#endregion

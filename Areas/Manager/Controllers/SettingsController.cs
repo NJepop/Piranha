@@ -34,7 +34,7 @@ namespace byBrick.Areas.Manager.Controllers
 		/// </summary>
 		/// <param name="id">The user id</param>
 		[Access(Function="ADMIN_USER")]
-		public ActionResult User(string id) {
+		public new ActionResult User(string id) {
 			if (!String.IsNullOrEmpty(id)) {
 				ViewBag.Title = TITLE_USEREDIT ;
 				return View("User", UserEditModel.GetById(new Guid(id))) ;
@@ -75,7 +75,7 @@ namespace byBrick.Areas.Manager.Controllers
 		/// <param name="em">The model</param>
 		[HttpPost()]
 		[Access(Function="ADMIN_USER")]
-		public ActionResult User(UserEditModel um) {
+		public new ActionResult User(UserEditModel um) {
 			if (um.User.IsNew)
 				ViewBag.Title = TITLE_USERINSERT ;
 			else ViewBag.Title = TITLE_USEREDIT ;

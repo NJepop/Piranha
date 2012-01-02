@@ -20,7 +20,6 @@ namespace Piranha.Models
 		/// Gets/sets the id.
 		/// </summary>
 		[Column(Name="pagetemplate_id")]
-		[Required()]
 		public override Guid Id { get ; set ; }
 
 		/// <summary>
@@ -48,12 +47,6 @@ namespace Piranha.Models
 		/// </summary>
 		[Column(Name="pagetemplate_page_regions", OnLoad="OnListLoad", OnSave="OnListSave")]
 		public List<string> PageRegions { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the associated global regions.
-		/// </summary>
-		[Column(Name="pagetemplate_global_regions", OnLoad="OnListLoad", OnSave="OnListSave")]
-		public List<string> GlobalRegions { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the associated properties.
@@ -136,7 +129,6 @@ namespace Piranha.Models
 		/// </summary>
 		public PageTemplate() : base() {
 			PageRegions = new List<string>() ;
-			GlobalRegions = new List<string>() ;
 			Properties = new List<string>() ;
 			Name = new ComplexName() ;
 		}

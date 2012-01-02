@@ -165,18 +165,6 @@ $(document).ready(function () {
     });
 
     //
-    // Event handler for global regions.
-    $(".globalregion").click(function () {
-        var id = $(this).attr("id").substring(4);
-
-        hideEditors();
-        $("#globalregions #" + id).show();
-        $(this).removeClass("blue").addClass("orange");
-
-        return false;
-    });
-
-    //
     // Event hander for attachments.
     $("#btn_attachments").click(function () {
         hideEditors();
@@ -208,13 +196,6 @@ $(document).ready(function () {
             $("#region_data").append(
                 '<input id="Template_PageRegions_' + index +
                 '_" name="Template.PageRegions[' + index +
-                ']" type="hidden" value="' + $(val).children("span:first").text() + '" />');
-        });
-        // Build global regions
-        $.each($("#globalregions").children(), function (index, val) {
-            $("#region_data").append(
-                '<input id="Template_GlobalRegions_' + index +
-                '_" name="Template.GlobalRegions[' + index +
                 ']" type="hidden" value="' + $(val).children("span:first").text() + '" />');
         });
         // Build Properties

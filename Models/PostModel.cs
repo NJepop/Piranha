@@ -14,6 +14,11 @@ namespace Piranha.Models
 		/// Gets/sets the post.
 		/// </summary>
 		public Post Post { get ; set ; }
+	
+		/// <summary>
+		/// Gets/sets the post categories.
+		/// </summary>
+		public List<Category> Categories { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the archive.
@@ -35,8 +40,7 @@ namespace Piranha.Models
 			PostModel m = new PostModel() {
 				Post = Post.GetSingle(id)
 			} ;
-			m.Archive = Post.Get("post_template_id = @0", m.Post.TemplateId,
-				new Params() { OrderBy = "post_created DESC" }) ;
+			m.GetRelated() ;
 			return m ;
 		}
 
@@ -46,12 +50,33 @@ namespace Piranha.Models
 		/// <param name="permalink">The permalink</param>
 		/// <returns>The model</returns>
 		public static PostModel GetByPermalink(string permalink) {
-			PostModel m = new PostModel() {
-				Post = Post.GetByPermalink(permalink)
-			};
-			m.Archive = Post.Get("post_template_id = @0", m.Post.TemplateId,
-				new Params() { OrderBy = "post_created DESC" }) ;
+			return GetByPermalink<PostModel>(permalink) ;
+		}
+
+		/// <summary>
+		/// Gets the post model for the given permalink.
+		/// </summary>
+		/// <param name="permalink">The permalink</param>
+		/// <typeparam name="T">The model type</typeparam>
+		/// <returns>The model</returns>
+		public static T GetByPermalink<T>(string permalink) where T : PostModel {
+			T m = Activator.CreateInstance<T>() ;
+
+			m.Post = Post.GetByPermalink(permalink) ;
+			m.GetRelated() ;
 			return m ;
+		}
+
+		/// <summary>
+		/// Gets the related information for the post.
+		/// </summary>
+		private void GetRelated() {
+			// Get categories
+			Categories = Relation.GetCategoriesByPostId(Post.Id) ;
+
+			// Get archive
+			Archive = Post.Get("post_template_id = @0", Post.TemplateId,
+				new Params() { OrderBy = "post_created DESC" }) ;
 		}
 	}
 }

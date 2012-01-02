@@ -64,9 +64,14 @@ namespace byBrick.Areas.Manager.Controllers
 		/// <param name="m">The model</param>
 		[HttpPost(), ValidateInput(false)]
 		public ActionResult Post(PostEditModel m) {
-			ViewBag.Title = "Ändra artikeltyp" ;
-			if (m.SaveAll())
-				ViewBag.Message = "Artikeltypen har sparats" ;
+			ViewBag.Title = "Lägg till ny artikeltyp" ;
+
+			if (ModelState.IsValid) {
+				if (m.SaveAll()) {
+					ViewBag.Title = "Ändra artikeltyp" ;
+					ViewBag.Message = "Artikeltypen har sparats" ;
+				} else ViewBag.Message = "Det gick inte att spara artikeltypen" ;
+			}
 			return View("PostEdit", m) ;
 		}
 
@@ -81,6 +86,19 @@ namespace byBrick.Areas.Manager.Controllers
 				ViewBag.Message = "Din sidmall har raderats." ;
 			else ViewBag.Message = "Ett internt fel har uppstått och din sidmall kunde inte raderas." ;
 			return RedirectToAction("Index", "Page") ;
+		}
+
+		/// <summary>
+		/// Deletes the specified post template.
+		/// </summary>
+		/// <param name="id">The template id</param>
+		public ActionResult DeletePost(string id) {
+			PostEditModel pm = PostEditModel.GetById(new Guid(id)) ;
+
+			if (pm.DeleteAll())
+				ViewBag.Message = "Din artikeltyp har raderats." ;
+			else ViewBag.Message = "Ett internt fel har uppstått och din artikeltyp kunde inte raderas." ;
+			return RedirectToAction("Index", "Post") ;
 		}
     }
 }

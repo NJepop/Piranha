@@ -29,8 +29,6 @@ namespace Piranha.Models.Manager.PageModels
 
 				model.PageRegions.Each<Region>((i,m) => m.Body = 
 					new HtmlString(bindingContext.ValueProvider.GetUnvalidatedValue("PageRegions[" + i +"].Body").AttemptedValue)) ;
-				model.GlobalRegions.Each<Region>((i,m) => m.Body = 
-					new HtmlString(bindingContext.ValueProvider.GetUnvalidatedValue("GlobalRegions[" + i + "].Body").AttemptedValue)) ;
 
 				return model ;
 			}
@@ -52,11 +50,6 @@ namespace Piranha.Models.Manager.PageModels
 		/// Gets/sets the page regions.
 		/// </summary>
 		public virtual List<Region> PageRegions { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the global regions.
-		/// </summary>
-		public virtual List<Region> GlobalRegions { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the Properties.
@@ -83,7 +76,6 @@ namespace Piranha.Models.Manager.PageModels
 		/// Default constructor, creates a new model.
 		/// </summary>
 		public EditModel() {
-			GlobalRegions = new List<Region>() ;
 			PageRegions = new List<Region>() ;
 			Properties = new List<Property>() ;
 			Attachments = new List<Piranha.Models.Content>() ;
@@ -141,8 +133,6 @@ namespace Piranha.Models.Manager.PageModels
 					Permalink.Save(tx) ;
 					foreach (Region r in PageRegions)
 						r.Save(tx) ;
-					foreach (Region r in GlobalRegions)
-						r.Save(tx) ;
 					foreach (Property p in Properties)
 						p.Save(tx) ;
 					tx.Commit() ;
@@ -184,7 +174,6 @@ namespace Piranha.Models.Manager.PageModels
 		private void GetRelated() {
 			// Clear related
 			PageRegions.Clear() ;
-			GlobalRegions.Clear() ;
 			Properties.Clear() ;
 			Attachments.Clear() ;
 
@@ -201,14 +190,6 @@ namespace Piranha.Models.Manager.PageModels
 					if (reg != null)
 						PageRegions.Add(reg) ;
 					else PageRegions.Add(new Region() { Name = name, PageId = Page.Id }) ;
-				} 
-
-				// Get global regions
-				foreach (string name in Template.GlobalRegions) {
-					Region reg = Region.GetSingle("region_name = @0 AND region_page_id IS NULL", name) ;
-					if (reg != null)
-						GlobalRegions.Add(reg) ;
-					else GlobalRegions.Add(new Region() { Name = name }) ;
 				} 
 
 				// Get Properties

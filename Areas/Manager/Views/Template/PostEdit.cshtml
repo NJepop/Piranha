@@ -11,6 +11,7 @@
         <ul>
             <li><a class="save submit" title="Spara mallen"></a></li>
             <li><a href="@Url.Action("Delete", new { id = Model.Template.Id })" class="delete" title="Ta bort mallen"></a></li>
+            <li><a href="@Url.Action("Index", "Post")#templates" class="back" title="Backa"></a></li>
             <li><a href="" class="refresh" title="Ladda om mallen"></a></li>
             <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
         </ul>
@@ -36,16 +37,13 @@
                     @Html.LabelFor(m => m.Template.Name.Singular)
                     <div class="input">
                         @Html.TextBoxFor(m => m.Template.Name.Singular)</div>
+                    @Html.ValidationMessageFor(m => m.Template.Name.Singular)
                 </li>
                 <li>
                     @Html.LabelFor(m => m.Template.Name.Plural)
                     <div class="input">
                         @Html.TextBoxFor(m => m.Template.Name.Plural)</div>
-                </li>
-                <li>
-                    @Html.LabelFor(m => m.Template.ArchiveName)
-                    <div class="input">
-                        @Html.TextBoxFor(m => m.Template.ArchiveName)</div>
+                    @Html.ValidationMessageFor(m => m.Template.Name.Singular)
                 </li>
                 <li>
                     @Html.LabelFor(m => m.Template.Description)

@@ -33,12 +33,6 @@ namespace Piranha.Models
 		public string Description { get ; set ; }
 
 		/// <summary>
-		/// Gets/sets the archive name.
-		/// </summary>
-		[Column(Name="posttemplate_archive_name")]
-		public string ArchiveName { get ; set ; }
-
-		/// <summary>
 		/// Gets/sets the optional view name for the template.
 		/// </summary>
 		[Column(Name="posttemplate_view")]

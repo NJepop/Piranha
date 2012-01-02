@@ -108,9 +108,9 @@
                     <th>Inloggningsnamn</th>
                     <th>Namn</th>
                     <th>Grupp</th>
-                    <th>Skapad</th>
-                    <th>Ändrad</th>
-                    <th></th>
+                    <th class="date">Ändrad</th>
+                    <th class="date">Skapad</th>
+                    <th class="one"></th>
                 </tr>
             </thead>
             <tbody>
@@ -126,9 +126,9 @@
                     </td>        
                     <td>@user.Firstname @user.Surname</td>
                     <td>@user.GroupName</td>
-                    <td class="date">@user.Created.ToString("yyyy-MM-dd")</td>
-                    <td class="date">@user.Updated.ToString("yyyy-MM-dd")</td>
-                    <td class="buttons one">
+                    <td>@user.Updated.ToString("yyyy-MM-dd")</td>
+                    <td>@user.Created.ToString("yyyy-MM-dd")</td>
+                    <td class="buttons">
                         <a class="icon delete" href="@Url.Action("DeleteUser", new { id = user.Id })"></a></td>
                 </tr>
                 odd = !odd;
@@ -148,8 +148,8 @@
             <thead>
                 <tr>
                     <th>Gruppnamn</th>
-                    <th>Ändrad</th>
-                    <th>Skapad</th>
+                    <th class="date">Ändrad</th>
+                    <th class="date">Skapad</th>
                     <th class="one"></th>
                 </tr>
             </thead>
@@ -158,9 +158,9 @@
                 @foreach (var group in Model.Groups) {
                 <tr @(oddgroup ? "class=odd" : "class=even")>
                     <td@(group.Level > 1 ? " class=level" + group.Level : "")><a href="@Url.Action("Group/" + group.Id.ToString())">@group.Name</a></td>
-                    <td class="date">@group.Updated.ToString("yyyy-MM-dd")</td>
-                    <td class="date">@group.Created.ToString("yyyy-MM-dd")</td>
-                    <td class="buttons one">
+                    <td>@group.Updated.ToString("yyyy-MM-dd")</td>
+                    <td>@group.Created.ToString("yyyy-MM-dd")</td>
+                    <td class="buttons">
                         <a class="icon delete" href="@Url.Action("DeleteGroup", new { id = group.Id })"></a></td>
                 </tr>
                 oddgroup = !oddgroup;
@@ -181,8 +181,8 @@
                 <tr>
                     <th>Funktion</th>
                     <th>Behörighet</th>
-                    <th>Skapad</th>
-                    <th>Ändrad</th>
+                    <th class="date">Ändrad</th>
+                    <th class="date">Skapad</th>
                     <th class="one"></th>
                 </tr>
             </thead>
@@ -192,9 +192,9 @@
                 <tr @(oddaccess ? "class=odd" : "class=even")>
                     <td><a href="@Url.Action("Access/" + access.Id.ToString())">@access.Function</a></td>
                     <td>@access.GroupName</td>
-                    <td class="date">@access.Created.ToString("yyyy-MM-dd")</td>
-                    <td class="date">@access.Updated.ToString("yyyy-MM-dd")</td>
-                    <td class="buttons one">
+                    <td>@access.Updated.ToString("yyyy-MM-dd")</td>
+                    <td>@access.Created.ToString("yyyy-MM-dd")</td>
+                    <td class="buttons">
                         <a class="icon delete" href="@Url.Action("DeleteAccess", new { id = access.Id })"></a></td>
                 </tr>
                 oddaccess = !oddaccess;
@@ -214,8 +214,8 @@
             <thead>
                 <tr>
                     <th>Namn</th>
-                    <th>Ändrad</th>
-                    <th>Skapad</th>
+                    <th class="date">Ändrad</th>
+                    <th class="date">Skapad</th>
                     <th class="one"></th>
                 </tr>
             </thead>
@@ -224,9 +224,9 @@
                 @foreach (var param in Model.Params) {
                 <tr @(oddparam ? "class=odd" : "class=even")>
                     <td><a href="@Url.Action("Param/" + param.Id.ToString())">@param.Name</a></td>
-                    <td class="date">@param.Updated.ToString("yyyy-MM-dd")</td>
-                    <td class="date">@param.Created.ToString("yyyy-MM-dd")</td>
-                    <td class="buttons one">
+                    <td>@param.Updated.ToString("yyyy-MM-dd")</td>
+                    <td>@param.Created.ToString("yyyy-MM-dd")</td>
+                    <td class="buttons">
                         <a class="icon delete" href="@Url.Action("DeleteParam", new { id = param.Id })"></a></td>
                 </tr>
                 oddparam = !oddparam;

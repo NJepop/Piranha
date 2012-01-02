@@ -69,6 +69,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LogoutController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Models\Category.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ComplexName.cs" />
     <Compile Include="Models\ArchiveModel.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Models\PostTemplate.cs" />
     <Compile Include="Models\Property.cs" />
     <Compile Include="Models\Region.cs" />
+    <Compile Include="Models\Relation.cs" />
     <Compile Include="Models\Sitemap.cs" />
     <Compile Include="Models\SysAccess.cs" />
     <Compile Include="Models\SysGroup.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="AccessAttribute.cs" />
     <Compile Include="WebPages\BasePage.cs" />
     <Compile Include="WebPages\ContentPage.cs" />
+    <Compile Include="WebPages\SinglePost.cs" />
     <Compile Include="WebPages\LayoutPage.cs" />
     <Compile Include="WebPages\ModelBinder.cs" />
     <Compile Include="WebPages\PiranhaHelper.cs" />
@@ -264,6 +267,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\jquery-ui-1.8.16.custom.min.js" />
     <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\jquery.equalheights.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Manager\CategoryModels\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -57,7 +57,6 @@ CREATE TABLE pagetemplate (
 	pagetemplate_description NVARCHAR(255) NULL,
 	pagetemplate_preview NTEXT NULL,
 	pagetemplate_page_regions NVARCHAR(255) NULL,
-	pagetemplate_global_regions NVARCHAR(255) NULL,
 	pagetemplate_properties NVARCHAR(255) NULL,
 	pagetemplate_view NVARCHAR(128) NULL,
 	pagetemplate_view_show BIT NOT NULL default(0),
@@ -78,7 +77,6 @@ CREATE TABLE posttemplate (
 	posttemplate_name NVARCHAR(64) NOT NULL,
 	posttemplate_description NVARCHAR(255) NULL,
 	posttemplate_preview NTEXT NULL,
-	posttemplate_archive_name NVARCHAR(64) NULL,
 	posttemplate_view NVARCHAR(128) NULL,
 	posttemplate_controller NVARCHAR(128) NULL,
 	posttemplate_manager_view NVARCHAR(128) NULL,
@@ -89,6 +87,26 @@ CREATE TABLE posttemplate (
 	posttemplate_updated_by UNIQUEIDENTIFIER NOT NULL,
 	FOREIGN KEY (posttemplate_created_by) REFERENCES sysuser (sysuser_id),
 	FOREIGN KEY (posttemplate_updated_by) REFERENCES sysuser (sysuser_id)
+);
+
+CREATE TABLE category (
+	category_id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	category_parent_id UNIQUEIDENTIFIER NULL,
+	category_name NVARCHAR(64) NOT NULL,
+	category_description NVARCHAR(255) NULL,
+	category_created DATETIME NOT NULL,
+	category_updated DATETIME NOT NULL,
+	category_created_by UNIQUEIDENTIFIER NOT NULL,
+	category_updated_by UNIQUEIDENTIFIER NOT NULL,
+	FOREIGN KEY (category_created_by) REFERENCES sysuser (sysuser_id),
+	FOREIGN KEY (category_updated_by) REFERENCES sysuser (sysuser_id)
+);
+
+CREATE TABLE relation (
+	relation_id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	relation_type NVARCHAR(16) NOT NULL,
+	relation_data_id UNIQUEIDENTIFIER NOT NULL,
+	relation_related_id UNIQUEIDENTIFIER NOT NULL
 );
 
 CREATE TABLE permalink (
@@ -209,6 +227,15 @@ CREATE TABLE attachment (
 	FOREIGN KEY (attachment_updated_by) REFERENCES sysuser (sysuser_id)
 );
 
+-- Default users
+INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_group_id, sysuser_created, sysuser_updated)
+VALUES ('ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'sys', '7c536b66-d292-4369-8f37-948b32229b83',
+	GETDATE(), GETDATE());
+INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_password, sysuser_firstname, sysuser_surname, 
+	sysuser_group_id, sysuser_created, sysuser_updated)
+VALUES ('4037dc45-90d2-4adc-84aa-593be867c29d', 'admin', 'bybrick', 'byBrick', 'Administrator', 
+	'7c536b66-d292-4369-8f37-948b32229b83', GETDATE(), GETDATE());
+
 -- Default groups
 INSERT INTO sysgroup (sysgroup_id, sysgroup_parent_id, sysgroup_name, sysgroup_description, sysgroup_created,
 	sysgroup_updated, sysgroup_created_by, sysgroup_updated_by)
@@ -267,15 +294,6 @@ VALUES ('8a4ca0f3-261b-4689-8c1f-98065b65f9ee', '8940b41a-e3a9-44f3-b564-bfd2814
 	'ADMIN_USER', 'Behörighet för att ändra och lägga till användare.', GETDATE(), GETDATE(), 
 	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 
--- Default users
-INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_group_id, sysuser_created, sysuser_updated)
-VALUES ('ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'sys', '7c536b66-d292-4369-8f37-948b32229b83',
-	GETDATE(), GETDATE());
-INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_password, sysuser_firstname, sysuser_surname, 
-	sysuser_group_id, sysuser_created, sysuser_updated)
-VALUES ('4037dc45-90d2-4adc-84aa-593be867c29d', 'admin', 'bybrick', 'byBrick', 'Administrator', 
-	'7c536b66-d292-4369-8f37-948b32229b83', GETDATE(), GETDATE());
-
 -- Default templates
 INSERT INTO pagetemplate (pagetemplate_id, pagetemplate_name, pagetemplate_description, pagetemplate_page_regions, 
 	pagetemplate_created, pagetemplate_updated, pagetemplate_created_by, pagetemplate_updated_by)
@@ -285,10 +303,10 @@ INSERT INTO posttemplate (posttemplate_id, posttemplate_name, posttemplate_descr
 	posttemplate_updated, posttemplate_created_by, posttemplate_updated_by)
 VALUES ('03257c2a-3c91-4867-b20e-5fb9d3d97ab4', 'Vanligt inlägg,Vanliga inlägg', 'Standardinlägg.',
 	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
-INSERT INTO posttemplate (posttemplate_id, posttemplate_name, posttemplate_description, posttemplate_archive_name,
+INSERT INTO posttemplate (posttemplate_id, posttemplate_name, posttemplate_description,
 	posttemplate_created, posttemplate_updated, posttemplate_created_by, posttemplate_updated_by)
-VALUES ('5017dbe4-5685-4941-921b-ca922edc7a12', 'Nyhet,Nyheter', 'Nyhetsinlägg.', 'nyheter',
-	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+VALUES ('5017dbe4-5685-4941-921b-ca922edc7a12', 'Nyhet,Nyheter', 'Nyhetsinlägg.', GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 
 -- Default page
 INSERT INTO page (page_id, page_template_id, page_seqno, page_title, page_keywords, page_description,

@@ -32,15 +32,17 @@ namespace Piranha.WebPages
 		/// <summary>
 		/// Return the site structure as an ul/li list with the current page selected.
 		/// </summary>
-		/// <param name="CurrentPage">The current page</param>
 		/// <param name="StartLevel">The start level of the menu</param>
 		/// <param name="StopLevel">The stop level of the menu</param>
 		/// <returns>A html string</returns>
-		public HtmlString Menu(Page CurrentPage, int StartLevel = 1, int StopLevel = Int32.MaxValue, 
+		public HtmlString Menu(int StartLevel = 1, int StopLevel = Int32.MaxValue, 
 			string RootNode = "") 
 		{
 			StringBuilder str = new StringBuilder() ;
 			List<Sitemap> sm = null ;
+
+			Page CurrentPage = (Page)Parent.Page.Current ;
+
 			if (CurrentPage != null || StartLevel == 1) {
 				if (CurrentPage == null)
 					CurrentPage = new Page() ;

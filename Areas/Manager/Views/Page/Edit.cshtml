@@ -96,7 +96,7 @@
                 </li>
                 <li>
                     @Html.LabelFor(m => m.Page.IsHidden)
-                    <p>@Html.CheckBoxFor(m => m.Page.IsHidden)</p>
+                    <p>@Html.CheckBoxFor(m => m.Page.IsHidden) (Sidan kommer fortfarande vara åtkomlig med inte synas i menyn)</p>
                 </li>
                 <li>@Html.LabelFor(m => m.Page.Description)
                     <div class="input">
@@ -118,16 +118,10 @@
                 </div>
                 <div class="right">
                     <button id="btn_attachments" class="btn blue hidden">Bifogade filer</button>
-                    @foreach (var region in Model.GlobalRegions) {
-                    <button id="@Html.Raw("btn_" + region.Name)" class="btn blue globalregion">@region.Name</button>
-                    }
                 </div>
             </div>
             <div id="pageregions">
                 @Html.EditorFor(m => m.PageRegions)
-            </div>
-            <div id="globalregions">
-                @Html.EditorFor(m => m.GlobalRegions)
             </div>
             <div id="attachments" style="display:none">
                 @Html.Partial("Partial/PageAttachments")
@@ -136,6 +130,17 @@
     </div>
     }
     
+</div>
+<div class="grid_3">
+    <div class="box pagetemplate">
+        <div class="inner">
+            <h2>@Model.Template.Name.Singular</h2>
+            <div class="edit" style="width:120px;height:120px;margin:0 auto 10px">
+                @Model.Template.Preview
+            </div>
+            <p><small>@Model.Template.Description</small></p>
+        </div>
+    </div>
     @if (Model.Properties.Count > 0) {
     <div class="box">
         <div class="inner">
@@ -157,16 +162,5 @@
         </div>
     </div>
     }
-</div>
-<div class="grid_3">
-    <div class="box pagetemplate">
-        <div class="inner">
-            <h2>@Model.Template.Name.Singular</h2>
-            <div class="edit" style="width:120px;height:120px;margin:0 auto 10px">
-                @Model.Template.Preview
-            </div>
-            <p><small>@Model.Template.Description</small></p>
-        </div>
-    </div>
 </div>
 @{ Html.EndForm() ; }

@@ -17,6 +17,11 @@ namespace Piranha.Models.Manager.PostModels
 		public List<Post> Posts { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets the categories.
+		/// </summary>
+		public List<Category> Categories { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the page templates.
 		/// </summary>
 		public List<PostTemplate> Templates { get ; set ; }
@@ -27,6 +32,7 @@ namespace Piranha.Models.Manager.PostModels
 		/// </summary>
 		public ListModel() {
 			Posts = new List<Post>() ;
+			Categories = Category.GetStructure().Flatten() ;
 			Templates = PostTemplate.Get() ;
 		}
 
