@@ -292,6 +292,16 @@ VALUES ('c8b44826-d3e6-4add-b241-8ce95429a17e', '8940b41a-e3a9-44f3-b564-bfd2814
 	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description, sysaccess_locked,
 	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('79ED0E9E-188C-4C5B-81BA-DB15BB9F8AD5', '8940b41a-e3a9-44f3-b564-bfd281416141', 
+	'ADMIN_CATEGORY', 'Behörighet för att ändra och lägga till kategorier.', 1, GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description, sysaccess_locked,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
+VALUES ('E08AE820-D438-4A38-B6E1-AC3ACA3CF933', '8940b41a-e3a9-44f3-b564-bfd281416141', 
+	'ADMIN_CONTENT', 'Behörighet för att ändra och lägga till bilder & dokument.', 1, GETDATE(), GETDATE(), 
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO sysaccess (sysaccess_id, sysaccess_group_id, sysaccess_function, sysaccess_description, sysaccess_locked,
+	sysaccess_created, sysaccess_updated, sysaccess_created_by, sysaccess_updated_by)
 VALUES ('8a4ca0f3-261b-4689-8c1f-98065b65f9ee', '8940b41a-e3a9-44f3-b564-bfd281416141', 
 	'ADMIN_USER', 'Behörighet för att ändra och lägga till användare.', 1, GETDATE(), GETDATE(), 
 	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
@@ -310,7 +320,7 @@ VALUES ('160C9971-3D04-40AA-A2A3-B25F11D11D29', 'SITE_DESCRIPTION', 'En liten we
 INSERT INTO pagetemplate (pagetemplate_id, pagetemplate_name, pagetemplate_description, pagetemplate_page_regions,
 	pagetemplate_preview, pagetemplate_created, pagetemplate_updated, pagetemplate_created_by, pagetemplate_updated_by)
 VALUES ('906761ea-6c04-4f4b-9365-f2c350ff4372', 'Vanlig sida,Vanliga sidor', 'Standardsida med en HTML-yta.',
-	'Innehåll', '<table class="template"><tr><td id="Innehåll"></td></tr</table>', GETDATE(), GETDATE(), 
+	'Innehåll', '<table class="template"><tr><td id="Innehåll"></td></tr></table>', GETDATE(), GETDATE(), 
 	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 INSERT INTO posttemplate (posttemplate_id, posttemplate_name, posttemplate_description, posttemplate_created, 
 	posttemplate_updated, posttemplate_created_by, posttemplate_updated_by)

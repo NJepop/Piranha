@@ -35,8 +35,10 @@ namespace byBrick.Areas.Manager.Controllers
 		[HttpPost(), ValidateInput(false)]
 		public ActionResult Page(PageEditModel m) {
 			//if (ModelState.IsValid) {
-				if (m.SaveAll())
+				if (m.SaveAll()) {
+					ModelState.Clear() ;
 					ViewBag.Message = "Mallen har sparats" ;
+				}
 			//}
 			return View("PageEdit", m) ;
 		}
@@ -68,6 +70,7 @@ namespace byBrick.Areas.Manager.Controllers
 
 			if (ModelState.IsValid) {
 				if (m.SaveAll()) {
+					ModelState.Clear() ;
 					ViewBag.Title = "Ändra artikeltyp" ;
 					ViewBag.Message = "Artikeltypen har sparats" ;
 				} else ViewBag.Message = "Det gick inte att spara artikeltypen" ;

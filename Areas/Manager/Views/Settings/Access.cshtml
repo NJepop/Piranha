@@ -21,6 +21,7 @@
 @{ Html.BeginForm() ; }
 @Html.HiddenFor(m => m.Access.Id)
 @Html.HiddenFor(m => m.Access.IsNew)
+@Html.HiddenFor(m => m.Access.IsLocked)
 @Html.HiddenFor(m => m.Access.Created)
 @Html.HiddenFor(m => m.Access.CreatedBy)
 <div class="grid_9">

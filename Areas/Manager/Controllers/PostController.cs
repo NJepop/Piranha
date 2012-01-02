@@ -37,7 +37,10 @@ namespace byBrick.Areas.Manager.Controllers
 		/// </summary>
 		/// <param name="id">The post id</param>
 		public ActionResult Edit(string id) {
-			return View(EditModel.GetById(new Guid(id))) ;
+			EditModel m = EditModel.GetById(new Guid(id)) ;
+			ViewBag.Title = "Ändra " + m.Template.Name.Singular.ToLower() ;
+
+			return View(m) ;
 		}
 
 		/// <summary>
@@ -46,15 +49,17 @@ namespace byBrick.Areas.Manager.Controllers
 		/// <param name="m">The model</param>
 		[HttpPost(), ValidateInput(false)]
 		public ActionResult Edit(EditModel m) {
-			if (m.SaveAll()) {
-				m.Refresh() ;
-				ViewBag.Title = "Ändra " + m.Post.TemplateName.Singular.ToLower() ;
-				ViewBag.Message = "Din artikel har sparats." ;
-			} else {
-				m.Refresh() ;
-				ViewBag.Title = "Lägg till " + m.Post.TemplateName.Singular.ToLower() ;
-				ViewBag.Message = "Artikeln kunde inte sparas." ;
+			if (ModelState.IsValid) {
+				if (m.SaveAll()) {
+					ModelState.Clear() ;
+					ViewBag.Message = "Din artikel har sparats." ;
+				} else ViewBag.Message = "Artikeln kunde inte sparas." ;
 			}
+			m.Refresh() ;
+
+			if (m.Post.IsNew)
+				ViewBag.Title = "Lägg till " + m.Template.Name.Singular.ToLower() ;
+			else ViewBag.Title = "Ändra " + m.Template.Name.Singular.ToLower() ;
 
 			return View("Edit", m) ;
 		}

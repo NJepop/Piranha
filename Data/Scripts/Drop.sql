@@ -1,8 +1,10 @@
-﻿DROP TABLE upload;
+﻿DROP TABLE relation;
+DROP TABLE upload;
 DROP TABLE attachment;
 DROP TABLE content;
 DROP TABLE region;
 DROP TABLE property;
+DROP TABLE category;
 DROP TABLE page;
 DROP TABLE post;
 DROP TABLE permalink;

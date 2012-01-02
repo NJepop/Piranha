@@ -28,7 +28,6 @@
     @Html.HiddenFor(m => m.Page.Id)
     @Html.HiddenFor(m => m.Page.Permalink)
     @Html.HiddenFor(m => m.Page.TemplateId)
-    @Html.HiddenFor(m => m.Page.TemplateName)
     @Html.HiddenFor(m => m.Page.ParentId)
     @Html.HiddenFor(m => m.Page.Seqno)
     @Html.HiddenFor(m => m.Page.Permalink)
@@ -53,6 +52,7 @@
                 <li>@Html.LabelFor(m => m.Page.Title)
                     <div class="input">
                         @Html.TextBoxFor(m => m.Page.Title)</div>
+                    @Html.ValidationMessageFor(m => m.Page.Title)
                 </li>
                 <li>@Html.LabelFor(m => m.Page.Permalink)
                 	@if (!Model.Page.IsNew) {
@@ -65,29 +65,34 @@
                 <li>@Html.LabelFor(m => m.Page.PageController)
                     <div class="input">
                         @Html.TextBoxFor(m => m.Page.PageController, new { @placeholder = !String.IsNullOrEmpty(Model.Template.Controller) ? Model.Template.Controller : "Ej obligatorisk" })</div>
+                    @Html.ValidationMessageFor(m => m.Page.PageController)
                 </li>
                 }
                 @if (Model.Template.ShowView) {
                 <li>@Html.LabelFor(m => m.Page.PageView)
                     <div class="input">
                         @Html.TextBoxFor(m => m.Page.PageView, new { @placeholder = !String.IsNullOrEmpty(Model.Template.View) ? Model.Template.View : "Ej obligatorisk" })</div>
+                    @Html.ValidationMessageFor(m => m.Page.PageView)
                 </li>
                 }
                 @if (Model.Template.ShowRedirect) {
                 <li>@Html.LabelFor(m => m.Page.PageRedirect)
                     <div class="input">
                         @Html.TextBoxFor(m => m.Page.PageRedirect, new { @placeholder = !String.IsNullOrEmpty(Model.Template.Redirect) ? Model.Template.Redirect : "Ej obligatorisk" })</div>
+                    @Html.ValidationMessageFor(m => m.Page.PageRedirect)
                 </li>
                 }
                 <li>@Html.LabelFor(m => m.Page.Keywords)
                     <div class="input"> 
                         @Html.TextBoxFor(m => m.Page.Keywords, new { @placeholder = "Ej obligatorisk" })</div>
+                    @Html.ValidationMessageFor(m => m.Page.Keywords)
                 </li>
             </ul>
             <ul class="form optional">
                 <li>@Html.LabelFor(m => m.Page.NavigationTitle)
                     <div class="input">
                         @Html.TextBoxFor(m => m.Page.NavigationTitle, new { @placeholder = "Ej obligatorisk" })</div>
+                    @Html.ValidationMessageFor(m => m.Page.NavigationTitle)
                 </li>
                 <li>
                     @Html.LabelFor(m => m.Page.GroupId)
@@ -101,6 +106,7 @@
                 <li>@Html.LabelFor(m => m.Page.Description)
                     <div class="input">
                         @Html.TextAreaFor(m => m.Page.Description, new { @rows = 3, @placeholder = "Ej obligatorisk" })</div>
+                    @Html.ValidationMessageFor(m => m.Page.Description)
                 </li>
             </ul>
         </div>

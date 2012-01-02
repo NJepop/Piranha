@@ -21,14 +21,12 @@ namespace Piranha.Models
 		/// Gets/sets the id.
 		/// </summary>
 		[Column(Name="page_id")]
-		[Required()]
 		public override Guid Id { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the template id.
 		/// </summary>
 		[Column(Name="page_template_id")]
-		[Required()]
 		public Guid TemplateId { get ; set ; }
 
 		/// <summary>
@@ -54,14 +52,15 @@ namespace Piranha.Models
 		/// Gets/sets the title.
 		/// </summary>
 		[Column(Name="page_title")]
-		[Required(), StringLength(128), Display(Name="Titel")]
+		[Required(ErrorMessage="Du måste ange en title."), Display(Name="Titel")]
+		[StringLength(128, ErrorMessage="Titeln får max innehålla 128 tecken.")]
 		public string Title { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the optional navigation title.
 		/// </summary>
 		[Column(Name="page_navigation_title")]
-		[StringLength(128), Display(Name="Navigeringstitel")]
+		[StringLength(128, ErrorMessage="Titeln får max innehålla 128 tecken."), Display(Name="Navigeringstitel")]
 		public string NavigationTitle { get ; set ; }
 
 		/// <summary>
@@ -69,7 +68,7 @@ namespace Piranha.Models
 		/// </summary>
 		//[Column(Name="page_permalink")]
 		[Column(Name="permalink_name", ReadOnly=true, Table="permalink")]
-		[Required(), StringLength(128), Display(Name="Permalänk")]
+		[Display(Name="Permalänk")]
 		public string Permalink { get ; set ; }
 
 		/// <summary>
@@ -83,35 +82,35 @@ namespace Piranha.Models
 		/// Gets/sets the meta keywords.
 		/// </summary>
 		[Column(Name="page_keywords")]
-		[StringLength(255), Display(Name="Nyckelord")]
+		[StringLength(255, ErrorMessage="Nyckelorden får max innehålla 255 tecken."), Display(Name="Nyckelord")]
 		public string Keywords { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the meta description.
 		/// </summary>
 		[Column(Name="page_description")]
-		[StringLength(255), Display(Name="Beskrivning")]
+		[StringLength(255, ErrorMessage="Beskrivningen får max innehålla 255 tecken."), Display(Name="Beskrivning")]
 		public string Description { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the custom controller.
 		/// </summary>
 		[Column(Name="page_controller")]
-		[StringLength(128), Display(Name="Kontroller")]
+		[StringLength(128, ErrorMessage="Kontrollerns namn får max innehålla 128 tecken."), Display(Name="Kontroller")]
 		public string PageController { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the custom view.
 		/// </summary>
 		[Column(Name="page_view")]
-		[StringLength(128), Display(Name="Vy")]
+		[StringLength(128, ErrorMessage="Vyns namn får max innehålla 128 tecken."), Display(Name="Vy")]
 		public string PageView { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the custom redirect.
 		/// </summary>
 		[Column(Name="page_redirect")]
-		[StringLength(128), Display(Name="Omdirigering")]
+		[StringLength(128, ErrorMessage="Omdirigeringen får max innehålla 128 tecken."), Display(Name="Omdirigering")]
 		public string PageRedirect { get ; set ; }
 
 		/// <summary>
@@ -154,14 +153,12 @@ namespace Piranha.Models
 		/// Gets/sets the created date.
 		/// </summary>
 		[Column(Name="page_created")]
-		[Required()]
 		public override DateTime Created { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the updated date.
 		/// </summary>
 		[Column(Name="page_updated")]
-		[Required()]
 		public override DateTime Updated { get ; set ; }
 
 		/// <summary>
@@ -174,14 +171,12 @@ namespace Piranha.Models
 		/// Gets/sets the user id that created the record.
 		/// </summary>
 		[Column(Name="page_created_by")]
-		[Required()]
 		public override Guid CreatedBy { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the user id that created the record.
 		/// </summary>
 		[Column(Name="page_updated_by")]
-		[Required()]
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 

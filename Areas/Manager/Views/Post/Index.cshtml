@@ -16,6 +16,8 @@
             return false;
         }
 
+        var deletemsg = "Är du säker på att du vill ta bort artikeln?" ;
+
         //
         // Set the selected template id
         $(document).ready(function () {
@@ -28,16 +30,19 @@
                         $(".toolbar .add").removeAttr("href");
                         $(".toolbar .add").attr("onclick", "floatBox.show('boxTemplates', 200, 240)") ;
                         $("#tt-add p").text("Lägg till ny artikel");
+                        deletemsg = "Är du säker på att du vill ta bort artikeln?" ;
                         break;
                     case "#templates":
                         $(".toolbar .add").removeAttr("onclick");
                         $(".toolbar .add").attr("href", "@Url.Action("Post", "Template")");
-                        $("#tt-add p").text("Lägg till ny mall");
+                        $("#tt-add p").text("Lägg till ny typ");
+                        deletemsg = "Är du säker på att du vill ta bort typen?" ;
                         break;
                     case "#categories":
                         $(".toolbar .add").removeAttr("onclick");
                         $(".toolbar .add").attr("href", "@Url.Action("Category")");
                         $("#tt-add p").text("Lägg till ny kategori");
+                        deletemsg = "Är du säker på att du vill ta bort kategorin?" ;
                         break;
                 }
             });
@@ -58,6 +63,10 @@
                 $("#TemplateId").val($(this).attr("data-templateid"));
                 $("form").submit();
             });
+
+            $(".delete").click(function() {
+                return confirm(deletemsg) ;
+            });
         });
     </script>
 }
@@ -67,8 +76,12 @@
 <div class="grid_12">
     <ul class="tabs">
         <li><a class="selected" href="#posts">Artiklar</a></li>
+        @if (User.HasAccess("ADMIN_POST_TEMPLATE")) {
         <li><a href="#templates">Typer</a></li>
+        }
+        @if (User.HasAccess("ADMIN_CATEGORY")) {
         <li><a href="#categories">Kategorier</a></li>
+        }
     </ul>
     <a name="posts">
 @using (Html.BeginForm("Insert", "Post")) {
@@ -107,6 +120,7 @@
     </table>
 }
     </a>
+    @if (User.HasAccess("ADMIN_POST_TEMPLATE")) {
     <a name="templates" class="hidden">
     <table class="list tabbed">
         <thead>
@@ -137,6 +151,8 @@
         </tfoot>
     </table>
     </a>
+    }
+    @if (User.HasAccess("ADMIN_CATEGORY")) {
     <a name="categories" class="hidden">
     <table class="list tabbed">
         <thead>
@@ -167,6 +183,7 @@
         </tfoot>
     </table>
     </a>
+    }
 </div>
 
 @section Foot {

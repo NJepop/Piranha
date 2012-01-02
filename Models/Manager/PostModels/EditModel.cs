@@ -27,8 +27,8 @@ namespace Piranha.Models.Manager.PostModels
 			public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 				EditModel model = (EditModel)base.BindModel(controllerContext, bindingContext) ;
 
-				model.Post.Excerpt = 
-					new HtmlString(bindingContext.ValueProvider.GetUnvalidatedValue("Post.Excerpt").AttemptedValue) ;
+				bindingContext.ModelState.Remove("Post.Body") ;
+
 				model.Post.Body = 
 					new HtmlString(bindingContext.ValueProvider.GetUnvalidatedValue("Post.Body").AttemptedValue) ;
 
@@ -134,9 +134,13 @@ namespace Piranha.Models.Manager.PostModels
 		/// Refreshes the current model.
 		/// </summary>
 		public void Refresh() {
-			Post = Piranha.Models.Post.GetSingle(Post.Id) ;
-			Template = PostTemplate.GetSingle(Post.TemplateId) ;
-			Permalink = Permalink.GetSingle("permalink_parent_id = @0", Post.Id) ;
+			if (Post != null) {
+				if (!Post.IsNew) {
+					Post = Piranha.Models.Post.GetSingle(Post.Id) ;
+					Permalink = Permalink.GetSingle("permalink_parent_id = @0", Post.Id) ;
+				}
+				Template = PostTemplate.GetSingle(Post.TemplateId) ;
+			}
 		}
 	}
 }

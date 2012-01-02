@@ -82,9 +82,10 @@ namespace byBrick.Areas.Manager.Controllers
 
 			if (ModelState.IsValid) {
 				try {
-					if (um.SaveAll())
+					if (um.SaveAll()) {
+						ModelState.Clear() ;
 						ViewBag.Message = "Användaren har sparats" ;
-					else ViewBag.Message = "Det gick inte att spara användaren" ;
+					} else ViewBag.Message = "Det gick inte att spara användaren" ;
 				} catch (Exception e) {
 					ViewBag.Message = e.ToString() ;
 				}
@@ -158,9 +159,10 @@ namespace byBrick.Areas.Manager.Controllers
 			ViewBag.Title = "Ändra grupp" ;
 			if (ModelState.IsValid) {
 				try {
-					if (gm.SaveAll())
+					if (gm.SaveAll()) {
+						ModelState.Clear() ;
 						ViewBag.Message = "Gruppen har sparats" ;
-					else ViewBag.Message = "Det gick inte att spara gruppen" ;
+					} else ViewBag.Message = "Det gick inte att spara gruppen" ;
 				} catch (Exception e) {
 					ViewBag.Message = e.ToString() ;
 				}
@@ -236,9 +238,10 @@ namespace byBrick.Areas.Manager.Controllers
 			ViewBag.Title = "Ändra behörighet" ;
 			if (ModelState.IsValid) {
 				try {
-					if (am.SaveAll())
+					if (am.SaveAll()) {
+						ModelState.Clear() ;
 						ViewBag.Message = "Behörigheten har sparats" ;
-					else ViewBag.Message = "Det gick inte att spara behörigheten" ;
+					} else ViewBag.Message = "Det gick inte att spara behörigheten" ;
 				} catch (Exception e) {
 					ViewBag.Message = e.ToString() ;
 				}
@@ -316,9 +319,10 @@ namespace byBrick.Areas.Manager.Controllers
 			ViewBag.Title = "Ändra parameter" ;
 			if (ModelState.IsValid) {
 				try {
-					if (pm.SaveAll())
+					if (pm.SaveAll()) {
+						ModelState.Clear() ;
 						ViewBag.Message = "Parametern har sparats" ;
-					else ViewBag.Message = "Det gick inte att spara parametern" ;
+					} else ViewBag.Message = "Det gick inte att spara parametern" ;
 				} catch (Exception e) {
 					ViewBag.Message = e.ToString() ;
 				}

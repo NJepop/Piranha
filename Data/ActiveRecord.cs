@@ -451,6 +451,8 @@ namespace Piranha.Data
 					} else {
 						if (Columns[key].PropertyType == typeof(HtmlString) && Columns[key].GetValue(this, null) != null)
 							args.Add(((HtmlString)Columns[key].GetValue(this, null)).ToHtmlString()) ;
+						else if (typeof(Enum).IsAssignableFrom(Columns[key].PropertyType))
+							args.Add(Columns[key].GetValue(this, null).ToString()) ;
 						else args.Add(Columns[key].GetValue(this, null)) ;
 					}
 				}
@@ -489,6 +491,8 @@ namespace Piranha.Data
 					} else {
 						if (Columns[key].PropertyType == typeof(HtmlString) && Columns[key].GetValue(this, null) != null)
 							args.Add(((HtmlString)Columns[key].GetValue(this, null)).ToHtmlString()) ;
+						else if (typeof(Enum).IsAssignableFrom(Columns[key].PropertyType))
+							args.Add(Columns[key].GetValue(this, null).ToString()) ;
 						else args.Add(Columns[key].GetValue(this, null)) ;
 					}
 				}

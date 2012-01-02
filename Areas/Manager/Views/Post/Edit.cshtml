@@ -28,8 +28,6 @@
     @Html.HiddenFor(m => m.Post.Id)
     @Html.HiddenFor(m => m.Post.Permalink)
     @Html.HiddenFor(m => m.Post.TemplateId)
-    @Html.HiddenFor(m => m.Post.TemplateName.Singular)
-    @Html.HiddenFor(m => m.Post.TemplateName.Plural)
     @Html.HiddenFor(m => m.Post.Created)
     @Html.HiddenFor(m => m.Post.Updated)
     @Html.HiddenFor(m => m.Post.Published)
@@ -51,6 +49,7 @@
                 <li>@Html.LabelFor(m => m.Post.Title)
                     <div class="input">
                         @Html.TextBoxFor(m => m.Post.Title)</div>
+                    @Html.ValidationMessageFor(m => m.Post.Title)
                 </li>
                 <li>@Html.LabelFor(m => m.Post.Permalink)
                 	@if (!Model.Post.IsNew) {
@@ -63,6 +62,7 @@
                     @Html.LabelFor(m => m.Post.Excerpt)
                     <div class="input">
                         @Html.TextAreaFor(m => m.Post.Excerpt, new { @placehoder = "Ej obligatoriskt", @rows = 3 })</div>
+                    @Html.ValidationMessageFor(m => m.Post.Excerpt)
                 </li>
             </ul>
         </div>

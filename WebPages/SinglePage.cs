@@ -22,7 +22,7 @@ namespace Piranha.WebPages
 		/// </summary>
 		protected override void InitializePage() {
 			string permalink = UrlData.Count > 0 ? UrlData[UrlData.Count - 1] : "" ;
-
+			
 			// Load the current page model
 			if (!String.IsNullOrEmpty(permalink))
 				InitModel(PageModel.GetByPermalink<T>(permalink)) ;

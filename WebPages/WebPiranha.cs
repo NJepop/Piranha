@@ -49,6 +49,7 @@ namespace Piranha.WebPages
 			// If this is a call to "hem" then URL rewrite
 			if (path.StartsWith("/hem/")) {
 				Permalink perm = Permalink.GetByName(path.Substring(5)) ;
+
 				if (perm != null) {
 					if (perm.Type == Permalink.PermalinkType.PAGE) {
 						Page page = Page.GetSingle(perm.ParentId) ;

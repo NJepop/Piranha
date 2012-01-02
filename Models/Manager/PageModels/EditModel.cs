@@ -27,8 +27,10 @@ namespace Piranha.Models.Manager.PageModels
 			public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext) {
 				EditModel model = (EditModel)base.BindModel(controllerContext, bindingContext) ;
 
-				model.PageRegions.Each<Region>((i,m) => m.Body = 
-					new HtmlString(bindingContext.ValueProvider.GetUnvalidatedValue("PageRegions[" + i +"].Body").AttemptedValue)) ;
+				model.PageRegions.Each<Region>((i,m) => {
+					bindingContext.ModelState.Remove("PageRegions[" + i +"].Body") ;
+					m.Body = new HtmlString(bindingContext.ValueProvider.GetUnvalidatedValue("PageRegions[" + i +"].Body").AttemptedValue) ; 
+				}) ;
 
 				return model ;
 			}
@@ -164,9 +166,13 @@ namespace Piranha.Models.Manager.PageModels
 		/// Refreshes the model from the database.
 		/// </summary>
 		public virtual void Refresh() {
-			if (Page != null && Page.Id != Guid.Empty) {
-				Page = Page.GetSingle(Page.Id) ;
-				GetRelated() ;
+			if (Page != null) {
+				if (!Page.IsNew) { // Page.Id != Guid.Empty) {
+					Page = Page.GetSingle(Page.Id) ;
+					GetRelated() ;
+				} else {
+					Template = PageTemplate.GetSingle("pagetemplate_id = @0", Page.TemplateId) ;
+				}
 			}
 		}
 

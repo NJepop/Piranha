@@ -29,15 +29,14 @@ namespace Piranha.Models
 		/// Gets/sets the template id.
 		/// </summary>
 		[Column(Name="post_template_id")]
-		[Required()]
 		public Guid TemplateId { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the title.
 		/// </summary>
 		[Column(Name="post_title")]
-		[Required()]
-		[Display(Name="Titel")]
+		[Required(ErrorMessage="Du måste ange en titel."), Display(Name="Titel")]
+		[StringLength(128, ErrorMessage="Titeln får max innehålla 128 tecken.")]
 		public string Title { get ; set ; }
 
 		/// <summary>
@@ -52,8 +51,8 @@ namespace Piranha.Models
 		/// Gets/sets the excerpt.
 		/// </summary>
 		[Column(Name="post_excerpt")]
-		[Display(Name="Sammanfattning")]
-		public HtmlString Excerpt { get ; set ; }
+		[Display(Name="Sammanfattning"), StringLength(255, ErrorMessage="Sammanfattningen får max innehålla 255 tecken.")]
+		public string Excerpt { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the body.

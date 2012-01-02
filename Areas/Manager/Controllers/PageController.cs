@@ -36,12 +36,15 @@ namespace byBrick.Areas.Manager.Controllers
 		/// <param name="pm">The page model</param>
 		[HttpPost(), ValidateInput(false)]
 		public ActionResult Edit(EditModel pm) {
-			try {
-				if (pm.SaveAll())
-					ViewBag.Message = "Din sida har sparats" ;
-				else ViewBag.Message = "Det gick inte att spara sidan" ;
-			} catch (Exception e) {
-				ViewBag.Message = e.ToString() ;
+			if (ModelState.IsValid) {
+				try {
+					if (pm.SaveAll()) {
+						ModelState.Clear() ;
+						ViewBag.Message = "Din sida har sparats" ;
+					} else ViewBag.Message = "Det gick inte att spara sidan" ;
+				} catch (Exception e) {
+					ViewBag.Message = e.ToString() ;
+				}
 			}
 			pm.Refresh();
 

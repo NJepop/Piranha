@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
+using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.WebPages;
@@ -21,6 +22,11 @@ namespace Piranha.WebPages
 		/// Gets the helper for the piranha methods.
 		/// </summary>
 		public PiranhaHelper Piranha { get ; private set ; }
+
+		/// <summary>
+		/// Gets the current permalink.
+		/// </summary>
+		protected string Permalink { get ; private set ; }
 		#endregion
 
 		/// <summary>
