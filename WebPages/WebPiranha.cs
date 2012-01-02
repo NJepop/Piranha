@@ -53,12 +53,19 @@ namespace Piranha.WebPages
 					if (perm.Type == Permalink.PermalinkType.PAGE) {
 						Page page = Page.GetSingle(perm.ParentId) ;
 						if (!String.IsNullOrEmpty(page.Controller)) {
-							context.RewritePath("~/" + page.Controller + "/" + perm.Name) ;
+							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name) ;
 						} else {
 							context.RewritePath("~/page/" + perm.Name) ;
 						}
 					} else {
 						context.RewritePath("~/post/" + perm.Name) ;
+					}
+				} else {
+					string str = path.Substring(5).ToLower() ;
+					if (str == "perm") {
+						//
+						// TODO: Generate RSS feed for all posts
+						//
 					}
 				}
 			} else if (path == "/") {

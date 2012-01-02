@@ -28,13 +28,13 @@ namespace Piranha.WebPages
 				InitModel(PostModel.GetByPermalink<T>(permalink)) ;
 
 			// Check for basic permissions
-			if (Model.Page.GroupId != Guid.Empty)
-				if (!User.IsMember(Model.Page.GroupId)) {
-					SysParam param = SysParam.GetByName("LOGIN_PAGE") ;
-					if (param != null)
-						Server.TransferRequest(param.Value) ;
-					else Server.TransferRequest("~/") ;
-				}
+			//if (Model.Page.GroupId != Guid.Empty)
+			//	if (!User.IsMember(Model.Page.GroupId)) {
+			//		SysParam param = SysParam.GetByName("LOGIN_PAGE") ;
+			//		if (param != null)
+			//			Server.TransferRequest(param.Value) ;
+			//		else Server.TransferRequest("~/") ;
+			//	}
 			base.InitializePage() ;
 		}
 
@@ -46,7 +46,7 @@ namespace Piranha.WebPages
 		protected virtual void InitModel(T pm) {
 			Model = pm ;
 
-			Page.Current = Model.Page ;
+			Page.Current = null ;
 		}
 		#endregion
 	}

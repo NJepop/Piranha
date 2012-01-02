@@ -7,7 +7,9 @@
     <div class="inner">
         <ul>
             <li><a class="save submit" title="Spara parametern"></a></li>
+            @if (!Model.Param.IsLocked) {
             <li><a href="@Url.Action("DeleteParam", new { id = Model.Param.Id })" class="delete" title="Ta bort parametern"></a></li>
+            }
             <li><a href="@Url.Action("Index")#params" class="back" title="Backa"></a></li>
             <li><a href="" class="refresh" title="Ladda om parametern"></a></li>
             <li><a href="" class="info" title="Visa information & hjälptext"></a></li>

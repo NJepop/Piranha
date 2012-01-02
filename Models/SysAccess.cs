@@ -38,6 +38,9 @@ namespace Piranha.Models
 		[StringLength(255), Display(Name="Beskrivning")]
 		public string Description { get ; set ; }
 
+		[Column(Name="sysaccess_locked")]
+		public bool IsLocked { get ; set ; }
+
 		[Column(Name="sysaccess_created")]
 		public override DateTime Created { get ; set ; }
 

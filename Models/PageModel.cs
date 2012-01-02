@@ -117,7 +117,7 @@ namespace Piranha.Models
 		}
 
 		/// <summary>
-		/// Gets the page model for the current route.
+		/// Gets the page model for the current route. This method is only for MVC use.
 		/// </summary>
 		/// <typeparam name="T">The page model type</typeparam>
 		/// <param name="route">Optional route. Overrides RouteData if provided</param>

@@ -7,7 +7,9 @@
     <div class="inner">
         <ul>
             <li><a class="save submit" title="Spara behörigheten"></a></li>
+            @if (!Model.Access.IsLocked) {
             <li><a href="@Url.Action("DeleteAccess", new { id = Model.Access.Id })" class="delete" title="Ta bort behörigheten"></a></li>
+            }
             <li><a href="@Url.Action("Index")#access" class="back" title="Backa"></a></li>
             <li><a href="" class="refresh" title="Ladda om behörigheten"></a></li>
             <li><a href="" class="info" title="Visa information & hjälptext"></a></li>

@@ -44,6 +44,13 @@ namespace Piranha.Models
 		public string Description { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets weather the param is locked or not. This field can not be set through
+		/// the admin interface.
+		/// </summary>
+		[Column(Name="sysparam_locked")]
+		public bool IsLocked { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the created date.
 		/// </summary>
 		[Column(Name="sysparam_created")]

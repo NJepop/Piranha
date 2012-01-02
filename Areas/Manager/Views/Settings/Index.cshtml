@@ -195,7 +195,10 @@
                     <td>@access.Updated.ToString("yyyy-MM-dd")</td>
                     <td>@access.Created.ToString("yyyy-MM-dd")</td>
                     <td class="buttons">
-                        <a class="icon delete" href="@Url.Action("DeleteAccess", new { id = access.Id })"></a></td>
+                        @if (!access.IsLocked) {
+                        <a class="icon delete" href="@Url.Action("DeleteAccess", new { id = access.Id })"></a>
+                        }
+                    </td>
                 </tr>
                 oddaccess = !oddaccess;
                 }
@@ -227,7 +230,10 @@
                     <td>@param.Updated.ToString("yyyy-MM-dd")</td>
                     <td>@param.Created.ToString("yyyy-MM-dd")</td>
                     <td class="buttons">
-                        <a class="icon delete" href="@Url.Action("DeleteParam", new { id = param.Id })"></a></td>
+                        @if (!param.IsLocked) {
+                        <a class="icon delete" href="@Url.Action("DeleteParam", new { id = param.Id })"></a>
+                        }
+                    </td>
                 </tr>
                 oddparam = !oddparam;
                 }
