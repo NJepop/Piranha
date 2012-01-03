@@ -10,7 +10,7 @@
                 <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
         </ul>
         @using (Html.BeginForm("Search", "Post")) {
-            <button class="search" title="Sök bland alla artiklar"></button>@Html.TextBox("search")
+            <button class="search" title="Sök bland alla artiklar"></button>@Html.TextBox("search", "", new { @class = "filter" })
         }
         <div class="clear"></div>
     </div>

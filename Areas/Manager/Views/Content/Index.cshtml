@@ -47,7 +47,7 @@
             @{var odd = true ;}
             @foreach (var content in Model.Content) {
             <tr class="@(odd ? "odd" : "even")">
-                <td class="thumb"><img src="@Url.Action("Get", "Media", new { @area = "", @id = content.Id })" alt="@content.AlternateText" /></td>
+                <td class="thumb"><img src="@Url.Content("~/thumb/" + content.Id + "/50")" alt="@content.AlternateText" /></td>
                 <td><a href="@Url.Action("Edit", new { id = content.Id })">@content.Filename</a></td>
                 <td>@content.Type</td>
                 <td class="date">@content.Created.ToString("yyyy-MM-dd")</td>

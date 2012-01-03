@@ -1,6 +1,6 @@
 ﻿/**
- * Common JQuery code for the manager area.
- */
+* Common JQuery code for the manager area.
+*/
 
 // Keep track of the currently active tooltip
 var active_tooltip = "";

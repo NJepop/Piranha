@@ -61,6 +61,12 @@
             $(".delete").click(function() {
                 return confirm(deletemsg) ;
             });
+
+            var options = {
+                listClass:  'list-js',
+                valueNames: ['name', 'created', 'updated']
+            };
+            var templateList = new List('template-list', options);
         });
     </script>
 }
@@ -113,9 +119,8 @@
             </tr>
         </thead>
         <tbody>
-            @{var odd = true ;}
             @foreach (var page in Model.Pages) {
-            <tr class="@(odd ? "odd" : "even")@(!page.IsPublished ? " draft" : "")">
+            <tr@(!page.IsPublished ? " class=draft" : "")>
                 <td@(page.Level > 1 ? " class=level" + page.Level : "")><a href="@Url.Action("Edit", new { id = page.Id })">@page.Title</a></td>
                 <td>@page.TemplateName.Singular</td>
                 <td class="date">@page.Created.ToString("yyyy-MM-dd")</td>
@@ -128,7 +133,6 @@
                     }
                 </td>
             </tr>
-            odd = !odd;
             }
         </tbody>
         <tfoot>
@@ -141,28 +145,26 @@
     </a>
     @if (User.HasAccess("ADMIN_PAGE_TEMPLATE")) {
     <a name="templates" class="hidden">
-    <table class="list tabbed">
+    <table id="template-list" class="list tabbed">
         <thead>
             <tr>
-                <th>Titel</th>
+                <th><span class="sort" data-sort="name">Titel</span></th>
                 <th>Typ</th>
-                <th>Skapad</th>
-                <th>Ändrad</th>
+                <th><span class="sort" data-sort="created">Skapad</span></th>
+                <th><span class="sort" data-sort="updated">Ändrad</span></th>
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-            @{var oddt = true ;}
+        <tbody class="list-js">
             @foreach (var pt in Model.Templates) {
-            <tr @(oddt ? "class=odd" : "class=even")>
-                <td><a href="@Url.Action("Page/" + pt.Id.ToString(), "Template")">@pt.Name.Singular</a></td>
+            <tr>
+                <td class="name"><a href="@Url.Action("Page/" + pt.Id.ToString(), "Template")">@pt.Name.Singular</a></td>
                 <td>Sidmall</td>
-                <td class="date">@pt.Created.ToString("yyyy-MM-dd")</td>
-                <td class="date">@pt.Updated.ToString("yyyy-MM-dd")</td>
+                <td class="created date">@pt.Created.ToString("yyyy-MM-dd")</td>
+                <td class="updated date">@pt.Updated.ToString("yyyy-MM-dd")</td>
                 <td class="buttons one">
                     <a class="icon delete" href="@Url.Action("DeletePage", "Template", new { id = pt.Id })"></a></td>
             </tr>
-            oddt = !oddt;
             }
         </tbody>
         <tfoot>

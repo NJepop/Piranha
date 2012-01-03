@@ -71,7 +71,7 @@
                 <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
         </ul>
         @using (Html.BeginForm("SearchUser", "Settings")) {
-            <button class="search"></button>@Html.TextBox("filter")
+            <button class="search"></button>@Html.TextBox("filter", "", new { @class = "filter" })
         }
         <div class="clear"></div>
     </div>
@@ -114,9 +114,8 @@
                 </tr>
             </thead>
             <tbody>
-                @{var odd = true ;}
                 @foreach (var user in Model.Users) {
-                <tr @(odd ? "class=odd" : "class=even")>
+                <tr>
                     <td>
                         @if (User.IsMember(user.GroupId)) {
                         <a href="@Url.Action("User/" + user.Id.ToString())">@user.Login</a>
@@ -134,7 +133,6 @@
                         }
                     </td>
                 </tr>
-                odd = !odd;
                 }
             </tbody>
             <tfoot>
@@ -157,9 +155,8 @@
                 </tr>
             </thead>
             <tbody>
-                @{var oddgroup = true ;}
                 @foreach (var group in Model.Groups) {
-                <tr @(oddgroup ? "class=odd" : "class=even")>
+                <tr>
                     <td@(group.Level > 1 ? " class=level" + group.Level : "")>
                         @if (User.IsMember(group.Id)) {
                         <a href="@Url.Action("Group/" + group.Id.ToString())">@group.Name</a>
@@ -175,7 +172,6 @@
                         }
                     </td>
                 </tr>
-                oddgroup = !oddgroup;
                 }
             </tbody>
             <tfoot>
@@ -199,9 +195,8 @@
                 </tr>
             </thead>
             <tbody>
-                @{var oddaccess = true ;}
                 @foreach (var access in Model.Access) {
-                <tr @(oddaccess ? "class=odd" : "class=even")>
+                <tr>
                     <td><a href="@Url.Action("Access/" + access.Id.ToString())">@access.Function</a></td>
                     <td>@access.GroupName</td>
                     <td>@access.Updated.ToString("yyyy-MM-dd")</td>
@@ -212,7 +207,6 @@
                         }
                     </td>
                 </tr>
-                oddaccess = !oddaccess;
                 }
             </tbody>
             <tfoot>
@@ -235,9 +229,8 @@
                 </tr>
             </thead>
             <tbody>
-                @{var oddparam = true ;}
                 @foreach (var param in Model.Params) {
-                <tr @(oddparam ? "class=odd" : "class=even")>
+                <tr>
                     <td><a href="@Url.Action("Param/" + param.Id.ToString())">@param.Name</a></td>
                     <td>@param.Updated.ToString("yyyy-MM-dd")</td>
                     <td>@param.Created.ToString("yyyy-MM-dd")</td>
@@ -247,7 +240,6 @@
                         }
                     </td>
                 </tr>
-                oddparam = !oddparam;
                 }
             </tbody>
             <tfoot>

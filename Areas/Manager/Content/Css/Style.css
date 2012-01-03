@@ -314,7 +314,7 @@ table.list th, table.list tfoot td {
     padding: 12px 20px;
     font-weight: bold;
     }
-table.list .odd {
+table.list tbody tr:nth-child(2n+1) {
     background: #fff;
     }
 table.list .even {
@@ -334,7 +334,10 @@ table.list .three {
     }
 table.list .one {
     width: 30px;
-    } 
+    }
+table.list .sort {
+    cursor: pointer;
+    }
 table.list .level2 {
     text-indent: 18px;
     }

@@ -219,7 +219,7 @@ namespace byBrick.Areas.Manager.Controllers
 				where += (where != "" ? " OR " : "") +
 					"(sysaccess_function LIKE @0 OR " +
 					"sysaccess_description LIKE @0 OR " +
-					"SysGroup.Name LIKE @0 OR " +
+					"sysgroup_name LIKE @0 OR " +
 					"sysaccess_created LIKE @0 OR " +
 					"sysaccess_updated LIKE @0)" ;
 				args.Add("%" + str + "%") ;

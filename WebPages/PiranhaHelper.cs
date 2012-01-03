@@ -30,6 +30,30 @@ namespace Piranha.WebPages
 		}
 
 		/// <summary>
+		/// Generates an image tag for the specified thumbnail.
+		/// </summary>
+		/// <param name="id">The content id</param>
+		/// <param name="size">Optional size</param>
+		/// <returns>The image html string</returns>
+		public HtmlString Thumbnail(Guid id, int size = 0) {
+			Content cnt = Content.GetSingle(id) ;
+			string  fmt = "<img src=\"{0}\" alt=\"{1}\" />" ;
+
+			return new HtmlString(String.Format(fmt, Parent.Href("~/thumb/" +
+				id.ToString() + (size > 0 ? "/" + size.ToString() : "")), cnt.AlternateText)) ;
+		}
+
+		/// <summary>
+		/// Generates an image tag for the specified thumbnail.
+		/// </summary>
+		/// <param name="id">The content id</param>
+		/// <param name="size">Optional size</param>
+		/// <returns>The image html string</returns>
+		public HtmlString Thumbnail(string id, int size = 0) {
+			return Thumbnail(new Guid(id), size) ;
+		}
+
+		/// <summary>
 		/// Return the site structure as an ul/li list with the current page selected.
 		/// </summary>
 		/// <param name="StartLevel">The start level of the menu</param>

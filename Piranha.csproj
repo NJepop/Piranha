@@ -42,6 +42,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -120,10 +121,12 @@
     <Compile Include="AccessAttribute.cs" />
     <Compile Include="WebPages\BasePage.cs" />
     <Compile Include="WebPages\ContentPage.cs" />
+    <Compile Include="WebPages\PiranhaCache.cs" />
     <Compile Include="WebPages\SinglePost.cs" />
     <Compile Include="WebPages\LayoutPage.cs" />
     <Compile Include="WebPages\ModelBinder.cs" />
     <Compile Include="WebPages\PiranhaHelper.cs" />
+    <Compile Include="WebPages\WebThumbnail.cs" />
     <Compile Include="Web\ResourceHandler.cs" />
     <Compile Include="Web\ResourcePathProvider.cs" />
     <Compile Include="WebPages\SinglePage.cs" />

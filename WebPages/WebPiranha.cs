@@ -45,14 +45,15 @@ namespace Piranha.WebPages
 		public static void BeginRequest(HttpContext context) {
 			string path = context.Request.Path.Substring(context.Request.ApplicationPath.Length > 1 ? 
 				context.Request.ApplicationPath.Length : 0) ;
-        
+
 			// If this is a call to "hem" then URL rewrite
 			if (path.StartsWith("/hem/")) {
-				Permalink perm = Permalink.GetByName(path.Substring(5)) ;
+				Permalink perm = PiranhaCache.GetPermalinkByName(path.Substring(5)) ;
 
 				if (perm != null) {
 					if (perm.Type == Permalink.PermalinkType.PAGE) {
-						Page page = Page.GetSingle(perm.ParentId) ;
+						Page page = PiranhaCache.GetPage(perm.ParentId) ;
+
 						if (!String.IsNullOrEmpty(page.Controller)) {
 							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name) ;
 						} else {
@@ -69,11 +70,31 @@ namespace Piranha.WebPages
 						//
 					}
 				}
+			} else if (path.StartsWith("/media/")) {
+				//
+				// Media content
+				//
+				Content content = PiranhaCache.GetContent(new Guid(path.Substring(7))) ;
+
+				if (content != null)
+					content.GetMedia(context.Response) ;
+			} else if (path.StartsWith("/thumb/")) {
+				//
+				// Thumbnail content
+				//
+				string[] param = path.Substring(7).Split(new char[] { '/' }) ;
+				Content content = PiranhaCache.GetContent(new Guid(param[0])) ;
+
+				if (content != null) {
+					if (param.Length == 1)
+						content.GetThumbnail(context.Response) ;
+					else content.GetThumbnail(context.Response, Convert.ToInt32(param[1])) ;
+				}
 			} else if (path == "/") {
 				//
 				// Rewrite to current startpage
 				//
-				Page page = Page.GetStartpage() ;
+				Page page = PiranhaCache.GetStartpage() ;
 
 				if (!String.IsNullOrEmpty(page.Controller))
 					context.RewritePath("~/" + page.Controller) ;

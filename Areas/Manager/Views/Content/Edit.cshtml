@@ -82,7 +82,7 @@
         <div class="inner">
             <h2>Filinformation</h2>
             @if (!Model.Content.IsNew) {
-                <img style="max-width:190px" alt="@Model.Content.AlternateText" src="@Url.Action("Get", "Media", new { @area = "", @id = Model.Content.Id })" />
+                <img style="max-width:190px" alt="@Model.Content.AlternateText" src="@Url.Content("~/media/" + Model.Content.Id)" />
             } else {
                 <p><em>Eftersom ditt innehåll är helt nytt finns det inga detaljer om filen än.</em></p>
             }

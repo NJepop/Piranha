@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 using Piranha.Data;
 
@@ -17,6 +18,8 @@ namespace Piranha.Models.Manager.PageModels
 		/// Gets/sets the pages.
 		/// </summary>
 		public List<Sitemap> Pages { get ; set ; }
+
+		public List<Sitemap> Site { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the page templates.
@@ -38,7 +41,8 @@ namespace Piranha.Models.Manager.PageModels
 		/// <returns>The model.</returns>
 		public static ListModel Get() {
 			ListModel m = new ListModel() ;
-			m.Pages = Sitemap.GetStructure().Flatten() ;
+			m.Site = Sitemap.GetStructure() ;
+			m.Pages = m.Site.Flatten() ; //Sitemap.GetStructure().Flatten() ;
 
 			return m ;
 		}
