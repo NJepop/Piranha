@@ -338,6 +338,15 @@ table.list .one {
 table.list .sort {
     cursor: pointer;
     }
+table.list .asc, table.list .desc {
+    padding-right: 14px;
+    }
+table.list .desc {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAFCAYAAACXU8ZrAAAAKUlEQVR42oWMQQoAAAjC+v+nFwVdNErYRYcBhGSK2ppNQEQRnFPwx48EBGwk3KhTIi4AAAAASUVORK5CYII=) 100% 6px no-repeat;
+    }
+table.list .asc {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAFCAYAAACXU8ZrAAAAKElEQVR42oXK0QYAAAxC0f3/T7exh8syRUSnJordZPBCHrEdgAzevwFiDiTcdrzkkAAAAABJRU5ErkJggg==) 100% 6px no-repeat;
+    }
 table.list .level2 {
     text-indent: 18px;
     }
@@ -460,7 +469,7 @@ table.template td.locked {
 /**
  * Login splash
  */
-.login {
+div.login {
     float: none;
     display: block;
     margin: 80px auto 0;

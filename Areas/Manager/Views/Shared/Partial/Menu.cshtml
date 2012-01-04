@@ -1,0 +1,9 @@
+﻿<ul class="menu">
+    <li@(ViewBag.Selected == "Page" ? " class=selected" : "")><a href="@Url.Action("Index", "Page")">Sidor</a></li>
+    <li@(ViewBag.Selected == "Post" ? " class=selected" : "")><a href="@Url.Action("Index", "Post")">Artiklar</a></li>
+    @if (User.HasAccess("ADMIN_CONTENT")) {
+    <li@(ViewBag.Selected == "Content" ? " class=selected" : "")><a href="@Url.Action("Index", "Content")">Bilder & Dokument</a></li>
+    }
+    <li@(ViewBag.Selected == "Settings" ? " class=selected" : "")><a href="@Url.Action("Index", "Settings")">Inställningar</a></li>
+    <li><a href="@Url.Action("Logout", "Account")">Logga ut</a></li>
+</ul>

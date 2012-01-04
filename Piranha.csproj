@@ -172,6 +172,7 @@
     <EmbeddedResource Include="Areas\Manager\Content\Css\Style.ashx" />
     <EmbeddedResource Include="Areas\Manager\Content\Js\Script.ashx" />
     <EmbeddedResource Include="Areas\Manager\Views\Web.config" />
+    <EmbeddedResource Include="Areas\Manager\Views\Shared\Partial\Menu.cshtml" />
     <None Include="packages.config" />
     <None Include="README.markdown" />
   </ItemGroup>

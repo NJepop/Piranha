@@ -150,10 +150,8 @@ namespace Piranha.Models.Manager.PageModels
 		public virtual bool DeleteAll() {
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
 				try {
-					foreach (Region r in PageRegions)
-						r.Delete(tx) ;
-					foreach (Property p in Properties)
-						p.Delete(tx) ;
+					Region.GetByPageId(Page.Id).ForEach((r) => r.Delete(tx)) ;
+					Property.GetByParentId(Page.Id).ForEach((p) => p.Delete(tx)) ;
 					Permalink.Delete(tx) ;
 					Page.Delete(tx) ;
 					tx.Commit() ;

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Piranha.Data;
+
 namespace Piranha.Models.Manager.PostModels
 {
 	/// <summary>
@@ -33,7 +35,7 @@ namespace Piranha.Models.Manager.PostModels
 		public ListModel() {
 			Posts = new List<Post>() ;
 			Categories = Category.GetStructure().Flatten() ;
-			Templates = PostTemplate.Get() ;
+			Templates = PostTemplate.Get(new Params() { OrderBy = "posttemplate_name ASC" }) ;
 		}
 
 		/// <summary>
@@ -42,7 +44,7 @@ namespace Piranha.Models.Manager.PostModels
 		/// <returns>The model.</returns>
 		public static ListModel Get() {
 			ListModel m = new ListModel() ;
-			m.Posts = Post.Get() ;
+			m.Posts = Post.Get(new Params() { OrderBy = "post_title ASC" }) ;
 
 			return m ;
 		}

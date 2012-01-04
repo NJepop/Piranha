@@ -317,6 +317,24 @@ namespace Piranha.Data
 		}
 
 		/// <summary>
+		/// Executes the given statement and returns a scalar result.
+		/// </summary>
+		/// <param name="statement">The sql statement</param>
+		/// <param name="args">Statement parameters</param>
+		/// <returns>The scalar value</returns>
+		public static int GetScalar(string statement, params object[] args) {
+			int result = 0 ;
+
+			// Execute statement
+			using (IDbConnection conn = Database.OpenConnection()) {
+				using (IDbCommand cmd = CreateCommand(conn, statement, null, args)) {
+					result = Convert.ToInt32(cmd.ExecuteScalar()) ;
+				}
+			}
+			return result ;
+		}
+
+		/// <summary>
 		/// Executes the given query and returns the matching records.
 		/// </summary>
 		/// <param name="query">The query to run</param>

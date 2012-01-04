@@ -45,6 +45,12 @@
                         $(e).click();
                 });
             }
+
+            var userOptions = {
+                listClass: 'list-js',
+                valueNames: ['login', 'name', 'group', 'updated', 'created']
+            };
+            var userList = new List('user-list', userOptions);
         });
     </script>
     @if (ViewBag.SelectedTab != "") {
@@ -101,32 +107,32 @@
         }
     </ul>
     @if (User.HasAccess("ADMIN_USER")) {
-    <a name="users">
+    <a id="user-list" name="users">
         <table class="list tabbed">
             <thead>
                 <tr>
-                    <th>Inloggningsnamn</th>
-                    <th>Namn</th>
-                    <th>Grupp</th>
-                    <th class="date">Ändrad</th>
-                    <th class="date">Skapad</th>
+                    <th><span class="sort asc" data-sort="login">Inloggningsnamn</span></th>
+                    <th><span class="sort" data-sort="name">Namn</span></th>
+                    <th><span class="sort" data-sort="group">Grupp</span></th>
+                    <th class="date"><span class="sort" data-sort="updated">Ändrad</span></th>
+                    <th class="date"><span class="sort" data-sort="created">Skapad</span></th>
                     <th class="one"></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="list-js">
                 @foreach (var user in Model.Users) {
                 <tr>
-                    <td>
+                    <td class="login">
                         @if (User.IsMember(user.GroupId)) {
                         <a href="@Url.Action("User/" + user.Id.ToString())">@user.Login</a>
                         } else {
                         @user.Login
                         }
                     </td>        
-                    <td>@user.Firstname @user.Surname</td>
-                    <td>@user.GroupName</td>
-                    <td>@user.Updated.ToString("yyyy-MM-dd")</td>
-                    <td>@user.Created.ToString("yyyy-MM-dd")</td>
+                    <td class="name">@user.Firstname @user.Surname</td>
+                    <td class="group">@user.GroupName</td>
+                    <td class="updated">@user.Updated.ToString("yyyy-MM-dd")</td>
+                    <td class="created">@user.Created.ToString("yyyy-MM-dd")</td>
                     <td class="buttons">
                         @if (User.IsMember(user.GroupId)) {
                         <a class="icon delete" href="@Url.Action("DeleteUser", new { id = user.Id })"></a>

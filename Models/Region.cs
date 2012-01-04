@@ -64,5 +64,14 @@ namespace Piranha.Models
 		[Column(Name="region_updated_by")]
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
+
+		/// <summary>
+		/// Gets all regions associated with the given page id.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		/// <returns>The regions</returns>
+		public static List<Region> GetByPageId(Guid id) {
+			return Get("region_page_id = @0", id) ;
+		}
 	}
 }

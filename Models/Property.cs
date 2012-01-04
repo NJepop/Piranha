@@ -64,5 +64,14 @@ namespace Piranha.Models
 		[Column(Name="property_updated_by")]
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
+
+		/// <summary>
+		/// Gets all properties associated with the given parent id.
+		/// </summary>
+		/// <param name="id">The parent id.</param>
+		/// <returns>The properties</returns>
+		public static List<Property> GetByParentId(Guid id) {
+			return Get("property_page_id = @0", id) ;
+		}
 	}
 }
