@@ -23,6 +23,11 @@ namespace Piranha.Models.Manager.SettingModels
 		public virtual SysUser User { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets the user password.
+		/// </summary>
+		public SysUserPassword Password { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the available groups.
 		/// </summary>
 		public SelectList Groups { get ; set ; }
@@ -41,6 +46,7 @@ namespace Piranha.Models.Manager.SettingModels
 			});
 
 			User = new SysUser() ;
+			Password = new SysUserPassword() ;
 			Groups = new SelectList(groups, "Id", "Name") ;
 		}
 
@@ -52,6 +58,7 @@ namespace Piranha.Models.Manager.SettingModels
 		public static UserEditModel GetById(Guid id) {
 			UserEditModel m = new UserEditModel() ;
 			m.User = SysUser.GetSingle(id) ;
+			m.Password = SysUserPassword.GetSingle(id) ;
 			m.Groups = new SelectList(m.groups, "Id", "Name", m.User.GroupId) ;
 
 			return m ;
@@ -66,6 +73,8 @@ namespace Piranha.Models.Manager.SettingModels
 			
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
 				try {
+					if (Password.IsSet)
+						Password.Save(tx) ;
 					User.UpdatedBy = uid ;
 					User.Save(tx) ;
 					tx.Commit();

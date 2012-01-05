@@ -117,6 +117,7 @@
     <Compile Include="Models\SysGroup.cs" />
     <Compile Include="Models\SysParam.cs" />
     <Compile Include="Models\SysUser.cs" />
+    <Compile Include="Models\SysUserPassword.cs" />
     <Compile Include="Models\Upload.cs" />
     <Compile Include="AccessAttribute.cs" />
     <Compile Include="WebPages\BasePage.cs" />

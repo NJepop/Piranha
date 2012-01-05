@@ -98,6 +98,12 @@ button.full {
 .grid_4 .input {
     margin-left: 0;
     }
+.grid_3 .form .field-validation-error,
+.grid_4 .form .field-validation-error {
+    top: auto;
+    bottom: 16px;
+    }
+    
 .form p {
     display: block;
     color: #ccc;

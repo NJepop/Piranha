@@ -10,7 +10,7 @@ namespace Piranha.Models
 {
 	[PrimaryKey(Column="sysuser_id")]
 	[Join(TableName="SysGroup", ForeignKey="sysuser_group_id", PrimaryKey="sysgroup_id")]
-	public class SysUser : ActiveRecord<SysUser>
+	public class SysUser : GuidRecord<SysUser>
 	{
 		#region Fields
 		/// <summary>
@@ -18,7 +18,7 @@ namespace Piranha.Models
 		/// </summary>
 		[Column(Name="sysuser_id")]
 		[Required()]
-		public Guid Id { get ; set ; }
+		public override Guid Id { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the login name.
@@ -28,14 +28,6 @@ namespace Piranha.Models
 		[StringLength(64, ErrorMessage="Användarnamnet får inte vara längre än 64 tecken.")]
 		[Display(Name="Användarnamn")]
 		public string Login { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the login password.
-		/// </summary>
-		[Column(Name="sysuser_password")]
-		[StringLength(64, ErrorMessage="Användarnamnet får inte vara längre än 64 tecken.")]
-		[Display(Name="Lösenord")]
-		public string Password { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the firstname.
@@ -119,7 +111,7 @@ namespace Piranha.Models
 		/// <returns>An authenticated user</returns>
 		public static SysUser Authenticate(string login, string password) {
 			return GetSingle("sysuser_login = @0 AND sysuser_password = @1",
-				login, password) ;
+				login, SysUser.Encrypt(password)) ;
 		}
 
 		/// <summary>

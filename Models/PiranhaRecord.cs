@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 
@@ -117,6 +118,26 @@ namespace Piranha.Models
 		public abstract Guid Id { get ; set ; }
 		#endregion
 
+		#region Handlers
+		/// <summary>
+		/// NEVER load passwords from the database ever.
+		/// </summary>
+		/// <param name="pwd">The password</param>
+		/// <returns>An empty string</returns>
+		protected string OnPasswordLoad(string pwd) {
+			return "" ;
+		}
+
+		/// <summary>
+		/// Encrypts the password before saving it to the database.
+		/// </summary>
+		/// <param name="pwd">The password</param>
+		/// <returns>The encrypted password</returns>
+		protected string OnPasswordSave(string pwd) {
+			return Encrypt(pwd) ;
+		}
+		#endregion
+
 		/// <summary>
 		/// Saves the current record to the database.
 		/// </summary>
@@ -126,6 +147,17 @@ namespace Piranha.Models
 			if (IsNew && Id == Guid.Empty)
 				Id = Guid.NewGuid() ;
 			return base.Save(tx);			
+		}
+
+		/// <summary>
+		/// Encrypts the given string with MD5.
+		/// </summary>
+		/// <param name="str">The encrypted string</param>
+		/// <returns></returns>
+		public static string Encrypt(string str) {
+			UTF8Encoding encoder = new UTF8Encoding() ;
+			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
+			return encoder.GetString(crypto.ComputeHash(encoder.GetBytes(str))) ;
 		}
 	}
 }

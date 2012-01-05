@@ -56,6 +56,15 @@ namespace Piranha.WebPages
 		#endregion
 
 		/// <summary>
+		/// Invalidates the entire piranha application cache.
+		/// </summary>
+		public static void InvalidateCache() {
+			InvalidateCache(CacheObject.CONTENT) ;
+			InvalidateCache(CacheObject.PAGE) ;
+			InvalidateCache(CacheObject.PERMALINK) ;
+		}
+
+		/// <summary>
 		/// Invalidates the cache for the given cache object.
 		/// </summary>
 		/// <param name="obj">The cache object</param>

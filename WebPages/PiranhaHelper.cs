@@ -30,6 +30,25 @@ namespace Piranha.WebPages
 		}
 
 		/// <summary>
+		/// Generates the tags appropriate for the html head.
+		/// </summary>
+		/// <returns>The head information</returns>
+		public HtmlString Head() {
+			StringBuilder str = new StringBuilder() ;
+
+			str.AppendLine("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\" />") ;
+			str.AppendLine("<meta name=\"generator\" content=\"Piranha\" />") ;
+			if (Parent.Page.Current != null) {
+				str.AppendLine("<meta name=\"description\" content=\"" + 
+					((Page)Parent.Page.Current).Description + "\" />") ;
+				str.AppendLine("<meta name=\"keywords\" content=\"" + 
+					((Page)Parent.Page.Current).Keywords + "\" />") ;
+			}
+
+			return new HtmlString(str.ToString()) ;
+		}
+
+		/// <summary>
 		/// Generates an image tag for the specified thumbnail.
 		/// </summary>
 		/// <param name="id">The content id</param>
