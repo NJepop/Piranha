@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Web;
+
 using Piranha.Data;
 
 namespace Piranha.Models
@@ -14,7 +16,7 @@ namespace Piranha.Models
 	[PrimaryKey(Column="page_id")]
 	[Join(TableName="pagetemplate", ForeignKey="page_template_id", PrimaryKey="pagetemplate_id")]
 	[Join(TableName="permalink", ForeignKey="page_id", PrimaryKey="permalink_parent_id")]
-	public class Page : PiranhaRecord<Page>
+	public class Page : PiranhaRecord<Page>, ICacheRecord<Page>
 	{
 		#region Fields
 		/// <summary>
@@ -208,6 +210,17 @@ namespace Piranha.Models
 		public bool IsPublished {
 			get { return Published != DateTime.MinValue && Published < DateTime.Now ; }
 		}
+
+		/// <summary>
+		/// Gets the page cache object.
+		/// </summary>
+		private static Dictionary<Guid, Page> Cache {
+			get {
+				if (HttpContext.Current.Cache[typeof(Page).Name] == null)
+					HttpContext.Current.Cache[typeof(Page).Name] = new Dictionary<Guid, Page>() ;
+				return (Dictionary<Guid, Page>)HttpContext.Current.Cache[typeof(Page).Name] ;
+			}
+		}
 		#endregion
 
 		/// <summary>
@@ -218,12 +231,25 @@ namespace Piranha.Models
 		}
 
 		/// <summary>
+		/// Gets a single page.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		/// <returns>The page</returns>
+		public static Page GetSingle(Guid id) {
+			if (!Cache.ContainsKey(id))
+				Cache[id] = Page.GetSingle((object)id) ;
+			return Cache[id] ;
+		}
+
+		/// <summary>
 		/// Gets the site startpage
 		/// </summary>
 		/// <param name="lm">Optional load model</param>
 		/// <returns>The startpage</returns>
 		public static Page GetStartpage() {
-			return Page.GetSingle("page_parent_id IS NULL and page_seqno = 1") ;
+			if (!Cache.ContainsKey(Guid.Empty))
+				Cache[Guid.Empty] = Page.GetSingle("page_parent_id IS NULL and page_seqno = 1") ;
+			return Cache[Guid.Empty] ;
 		}
 
 		/// <summary>
@@ -315,6 +341,15 @@ namespace Piranha.Models
 					" WHERE page_parent_id = @0 AND page_seqno >= @1", tx, parentid, seqno) ;
 			else Execute("UPDATE page SET page_seqno = page_seqno " + (inc ? "+ 1" : "- 1") +
 				" WHERE page_parent_id IS NULL AND page_seqno >= @0", tx, seqno) ;
+		}
+
+		/// <summary>
+		/// Invalidates the current record from the cache.
+		/// </summary>
+		/// <param name="record">The record</param>
+		public void InvalidateRecord(Page record) {
+			if (Cache.ContainsKey(record.Id))
+				Cache.Remove(record.Id) ;
 		}
 	}
 }

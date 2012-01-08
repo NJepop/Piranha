@@ -122,7 +122,6 @@
     <Compile Include="AccessAttribute.cs" />
     <Compile Include="WebPages\BasePage.cs" />
     <Compile Include="WebPages\ContentPage.cs" />
-    <Compile Include="WebPages\PiranhaCache.cs" />
     <Compile Include="WebPages\SinglePost.cs" />
     <Compile Include="WebPages\LayoutPage.cs" />
     <Compile Include="WebPages\ModelBinder.cs" />

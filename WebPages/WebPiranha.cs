@@ -48,11 +48,11 @@ namespace Piranha.WebPages
 
 			// If this is a call to "hem" then URL rewrite
 			if (path.StartsWith("/hem/")) {
-				Permalink perm = PiranhaCache.GetPermalinkByName(path.Substring(5)) ;
+				Permalink perm = Permalink.GetByName(path.Substring(5)) ;
 
 				if (perm != null) {
 					if (perm.Type == Permalink.PermalinkType.PAGE) {
-						Page page = PiranhaCache.GetPage(perm.ParentId) ;
+						Page page = Page.GetSingle(perm.ParentId) ;
 
 						if (!String.IsNullOrEmpty(page.Controller)) {
 							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name) ;
@@ -74,7 +74,7 @@ namespace Piranha.WebPages
 				//
 				// Media content
 				//
-				Content content = PiranhaCache.GetContent(new Guid(path.Substring(7))) ;
+				Content content = Content.GetSingle(new Guid(path.Substring(7))) ;
 
 				if (content != null)
 					content.GetMedia(context.Response) ;
@@ -83,7 +83,7 @@ namespace Piranha.WebPages
 				// Thumbnail content
 				//
 				string[] param = path.Substring(7).Split(new char[] { '/' }) ;
-				Content content = PiranhaCache.GetContent(new Guid(param[0])) ;
+				Content content = Content.GetSingle(new Guid(param[0])) ;
 
 				if (content != null) {
 					if (param.Length == 1)
@@ -94,7 +94,7 @@ namespace Piranha.WebPages
 				//
 				// Rewrite to current startpage
 				//
-				Page page = PiranhaCache.GetStartpage() ;
+				Page page = Page.GetStartpage() ;
 
 				if (!String.IsNullOrEmpty(page.Controller))
 					context.RewritePath("~/" + page.Controller) ;

@@ -18,7 +18,7 @@ namespace Piranha.Models
 	/// the Upload record.
 	/// </summary>
 	[PrimaryKey(Column="content_id")]
-	public class Content : PiranhaRecord<Content>
+	public class Content : PiranhaRecord<Content>, ICacheRecord<Content>
 	{
 		#region Fields
 		/// <summary>
@@ -95,9 +95,31 @@ namespace Piranha.Models
 		public string PhysicalPath {
 			get { return HttpContext.Current.Server.MapPath(VirtualPath) ; }
 		}
+
+		/// <summary>
+		/// Gets the page cache object.
+		/// </summary>
+		private static Dictionary<Guid, Content> Cache {
+			get {
+				if (HttpContext.Current.Cache[typeof(Content).Name] == null)
+					HttpContext.Current.Cache[typeof(Content).Name] = new Dictionary<Guid, Content>() ;
+				return (Dictionary<Guid, Content>)HttpContext.Current.Cache[typeof(Content).Name] ;
+			}
+		}
 		#endregion
 
 		#region Static accessors
+		/// <summary>
+		/// Gets a single record.
+		/// </summary>
+		/// <param name="id">The record id</param>
+		/// <returns>The record</returns>
+		public static Content GetSingle(Guid id) {
+			if (!Cache.ContainsKey(id))
+				Cache[id] = Content.GetSingle((object)id) ;
+			return Cache[id] ;
+		}
+
 		/// <summary>
 		/// Gets all content attached to the given page id.
 		/// </summary>
@@ -213,5 +235,14 @@ namespace Piranha.Models
 			return CacheDir() + Id.ToString() + "-" + width.ToString() + "x" + height.ToString() ;
 		}
 		#endregion
+
+		/// <summary>
+		/// Invalidates the cache for the given record.
+		/// </summary>
+		/// <param name="record">The record</param>
+		public void InvalidateRecord(Content record) {
+			if (Cache.ContainsKey(record.Id))
+				Cache.Remove(record.Id) ;
+		}
 	}
 }

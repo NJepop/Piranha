@@ -90,6 +90,21 @@ namespace Piranha.Data
 	}
 	#endregion
 
+	#region Interfaces
+	/// <summary>
+	/// Interface for active records that are cahced.
+	/// </summary>
+	/// <typeparam name="T">The record type</typeparam>
+	public interface ICacheRecord<T> {
+		/// <summary>
+		/// Invalidates the given record from the current cache. The method is called
+		/// after save and delete.
+		/// </summary>
+		/// <param name="record"></param>
+		void InvalidateRecord(T record) ;
+	}
+	#endregion
+
 	/// <summary>
 	/// Generic implementation of the Active Record pattern. The class uses the DataHandler
 	/// for communication with the database.
@@ -223,6 +238,9 @@ namespace Piranha.Data
 					}
 				}
 			}
+			// Check for cache interface
+			if (this is ICacheRecord<T>)
+				((ICacheRecord<T>)this).InvalidateRecord((T)((object)this)) ;
 			return result ;
 		}
 
@@ -243,6 +261,9 @@ namespace Piranha.Data
 						IsNew = result ;
 					}
 				}
+				// Check for cache interface
+				if (this is ICacheRecord<T>)
+					((ICacheRecord<T>)this).InvalidateRecord((T)((object)this)) ;
 				return result ;
 			}
 			return false ;

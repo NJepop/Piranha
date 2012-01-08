@@ -112,18 +112,6 @@ public static class PiranhaApp
 	}
 
 	/// <summary>
-	/// Gets the current group list for the application.
-	/// </summary>
-	/// <param name="state">The application state</param>
-	/// <returns>The group list</returns>
-	public static List<SysGroup> GetGroupList(this HttpApplicationState state) {
-		if (state[GROUP_LIST] == null) {
-			state[GROUP_LIST] = SysGroup.GetStructure() ;
-		}
-		return (List<SysGroup>)state[GROUP_LIST] ;
-	}
-
-	/// <summary>
 	/// Gets the currently logged in user.
 	/// </summary>
 	/// <param name="p">The security principal</param>
@@ -150,8 +138,7 @@ public static class PiranhaApp
 			Dictionary<string, SysAccess> access = HttpContext.Current.Application.GetAccessList() ;
 
 			if (access.ContainsKey(function)) {
-				SysGroup group = HttpContext.Current.Application.GetGroupList().GetGroupById(
-					p.GetProfile().GroupId) ;
+				SysGroup group = SysGroup.GetStructure().GetGroupById(p.GetProfile().GroupId) ;
 				return group != null && (group.Id == access[function].GroupId || group.HasChild(access[function].GroupId)) ;
 			}
 		}
@@ -168,8 +155,7 @@ public static class PiranhaApp
 	public static bool IsMember(this IPrincipal p, Guid groupid) {
 		if (p.Identity.IsAuthenticated) {
 			if (groupid != Guid.Empty) {
-				SysGroup g = 
-					HttpContext.Current.Application.GetGroupList().GetGroupById(p.GetProfile().GroupId) ;
+				SysGroup g = SysGroup.GetStructure().GetGroupById(p.GetProfile().GroupId) ;
 				return g.Id == groupid || g.HasChild(groupid) ;
 			}
 			return true ;

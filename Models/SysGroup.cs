@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 using Piranha.Data;
 
 namespace Piranha.Models
 {
+	/// <summary>
+	/// The sys group is a member classification for users. Groups are hierarchical
+	/// and inherit permissions from child groups.
+	/// </summary>
 	[PrimaryKey(Column="sysgroup_id")]
-	public class SysGroup : PiranhaRecord<SysGroup>
+	public class SysGroup : PiranhaRecord<SysGroup>, ICacheRecord<SysGroup>
 	{
 		#region Fields
 		[Column(Name="sysgroup_id")]
@@ -63,12 +68,15 @@ namespace Piranha.Models
 		}
 
 		/// <summary>
-		/// Gets the groups sorted recursivly.
+		/// Gets the groups sorted recursivly. The result of this method is chaced
+		/// for performance.
 		/// </summary>
 		/// <returns>The groups</returns>
 		public static List<SysGroup> GetStructure() {
-			List<SysGroup> groups = SysGroup.Get(new Params() { OrderBy = "sysgroup_parent_id" }) ;
-			return Sort(groups, Guid.Empty) ;
+			if (HttpContext.Current.Cache[typeof(SysGroup).Name] == null)
+				HttpContext.Current.Cache[typeof(SysGroup).Name] = 
+					Sort(SysGroup.Get(new Params() { OrderBy = "sysgroup_parent_id" }), Guid.Empty) ;
+			return (List<SysGroup>)HttpContext.Current.Cache[typeof(SysGroup).Name] ;
 		}
 
 		/// <summary>
@@ -106,6 +114,15 @@ namespace Piranha.Models
 			return ret;
 		}
 		#endregion
+
+		/// <summary>
+		/// Invalidates the given record from the cache.
+		/// </summary>
+		/// <param name="record">The record to invalidate.</param>
+		public void InvalidateRecord(SysGroup record) {
+			// Invalidate entire cache as groups are recursivly linked
+			HttpContext.Current.Cache.Remove(typeof(SysGroup).Name) ;
+		}
 	}
 
 	/// <summary>

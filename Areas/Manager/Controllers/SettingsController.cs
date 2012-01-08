@@ -19,6 +19,8 @@ namespace byBrick.Areas.Manager.Controllers
 		#region Members
 		private const string TITLE_USERINSERT = "Lägg till användare" ;
 		private const string TITLE_USEREDIT   = "Ändra användare" ; 
+		private const string SUBTITLE_USERINSERT = "Ange lösenord" ;
+		private const string SUBTITLE_USEREDIT = "Ändra lösenord" ;
 		#endregion
 
 		/// <summary>
@@ -37,9 +39,11 @@ namespace byBrick.Areas.Manager.Controllers
 		public new ActionResult User(string id) {
 			if (!String.IsNullOrEmpty(id)) {
 				ViewBag.Title = TITLE_USEREDIT ;
+				ViewBag.SubTitle = SUBTITLE_USEREDIT ;
 				return View("User", UserEditModel.GetById(new Guid(id))) ;
 			} else {
 				ViewBag.Title = TITLE_USERINSERT ;
+				ViewBag.SubTitle = SUBTITLE_USERINSERT ;
 				return View("User", new UserEditModel()) ;
 			}
 		}
@@ -76,9 +80,13 @@ namespace byBrick.Areas.Manager.Controllers
 		[HttpPost()]
 		[Access(Function="ADMIN_USER")]
 		public new ActionResult User(UserEditModel um) {
-			if (um.User.IsNew)
+			if (um.User.IsNew) {
 				ViewBag.Title = TITLE_USERINSERT ;
-			else ViewBag.Title = TITLE_USEREDIT ;
+				ViewBag.SubTitle = SUBTITLE_USERINSERT ;
+			} else {
+				ViewBag.Title = TITLE_USEREDIT ;
+				ViewBag.SubTitle = SUBTITLE_USEREDIT ;
+			}
 
 			if (ModelState.IsValid) {
 				try {
