@@ -5,6 +5,12 @@
 @section Head {
     @Html.Partial("~/Areas/Manager/Views/Shared/Partial/TinyMCE.cshtml")
     <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/jquery.page.js")"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Page_Title").focus();
+        });
+    </script>
 }
 
 @section Toolbar {

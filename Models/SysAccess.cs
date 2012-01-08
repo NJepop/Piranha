@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 using Piranha.Data;
 
@@ -13,7 +14,7 @@ namespace Piranha.Models
 	/// </summary>
 	[PrimaryKey(Column="sysaccess_id")] 
 	[Join(TableName="sysgroup", ForeignKey="sysaccess_group_id", PrimaryKey="sysgroup_id")]
-	public class SysAccess : PiranhaRecord<SysAccess>
+	public class SysAccess : PiranhaRecord<SysAccess>, ICacheRecord<SysAccess>
 	{
 		#region Fields
 		[Column(Name="sysaccess_id")]
@@ -54,6 +55,21 @@ namespace Piranha.Models
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 
+		#region Static accessors
+		/// <summary>
+		/// Gets the indexed access list for the applications
+		/// </summary>
+		/// <returns>The access list</returns>
+		public static Dictionary<string, SysAccess> GetAccessList() {
+			if (HttpContext.Current.Cache[typeof(SysAccess).Name] == null) {
+				HttpContext.Current.Cache[typeof(SysAccess).Name] = new Dictionary<string, SysAccess>() ;
+				SysAccess.Get().ForEach((e) => 
+					((Dictionary<string, SysAccess>)HttpContext.Current.Cache[typeof(SysAccess).Name]).Add(e.Function, e)) ;
+			}
+			return (Dictionary<string, SysAccess>)HttpContext.Current.Cache[typeof(SysAccess).Name] ;
+		}
+		#endregion
+
 		/// <summary>
 		/// Saves the current record.
 		/// </summary>
@@ -63,6 +79,14 @@ namespace Piranha.Models
 			if (Function != null)
 				Function = Function.ToUpper() ;
 			return base.Save(tx);
+		}
+
+		/// <summary>
+		/// Invalidates the current access cache.
+		/// </summary>
+		/// <param name="record">The record</param>
+		public void InvalidateRecord(SysAccess record) {
+			HttpContext.Current.Cache.Remove(typeof(SysAccess).Name) ;
 		}
 	}
 }

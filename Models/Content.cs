@@ -43,6 +43,26 @@ namespace Piranha.Models
 		public string Type { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets the content size.
+		/// </summary>
+		public int Size { get ; set ; }
+
+		/// <summary>
+		/// Get/sets weather the content is an image or not.
+		/// </summary>
+		public bool IsImage { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets the possible width of the content.
+		/// </summary>
+		public int Width { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets the possible height of th econtent.
+		/// </summary>
+		public int Height { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the alternate text.
 		/// </summary>
 		[Column(Name="content_alt")]
@@ -189,6 +209,18 @@ namespace Piranha.Models
 
 			foreach (FileInfo file in dir.GetFiles(Id.ToString() + "*")) 
 				file.Delete() ;
+		}
+
+		/// <summary>
+		/// Deletes the current record.
+		/// </summary>
+		/// <param name="tx">Optional transaction</param>
+		/// <returns>Weather the operation succeeded or not</returns>
+		public override bool Delete(System.Data.IDbTransaction tx = null) {
+			bool ret = base.Delete(tx) ;
+			if (ret)
+				DeleteCache() ;
+			return ret ;
 		}
 
 		#region Private methods

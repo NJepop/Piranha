@@ -56,10 +56,11 @@ namespace Piranha.WebPages
 		/// <returns>The image html string</returns>
 		public HtmlString Thumbnail(Guid id, int size = 0) {
 			Content cnt = Content.GetSingle(id) ;
-			string  fmt = "<img src=\"{0}\" alt=\"{1}\" />" ;
-
-			return new HtmlString(String.Format(fmt, Parent.Href("~/thumb/" +
-				id.ToString() + (size > 0 ? "/" + size.ToString() : "")), cnt.AlternateText)) ;
+			
+			if (cnt != null)
+				return new HtmlString(String.Format("<img src=\"{0}\" alt=\"{1}\" />", Parent.Href("~/thumb/" +
+					id.ToString() + (size > 0 ? "/" + size.ToString() : "")), cnt.AlternateText)) ;
+			return new HtmlString("") ; // TODO: Maybe a "missing image" image
 		}
 
 		/// <summary>

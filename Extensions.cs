@@ -6,7 +6,6 @@ using System.Security.Principal;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 
 using Piranha.Models;
 
@@ -16,9 +15,7 @@ using Piranha.Models;
 public static class PiranhaApp
 {
 	#region Members
-	public const string ACCESS_LIST = "Piranha_Access_List" ;
-	public const string GROUP_LIST  = "Piranha_Group_List" ;
-	public const string USER        = "Piranha_User" ;
+	public const string USER = "Piranha_User" ;
 	#endregion
 	
 	#region Language extensions
@@ -98,20 +95,6 @@ public static class PiranhaApp
 
 	#region CMS extension
 	/// <summary>
-	/// Gets the current access list for the application.
-	/// </summary>
-	/// <param name="state">The application state</param>
-	/// <returns>The access list</returns>
-	public static Dictionary<string, SysAccess> GetAccessList(this HttpApplicationState state) {
-		if (state[ACCESS_LIST] == null) {
-			state[ACCESS_LIST] = new Dictionary<string, SysAccess>() ;
-			SysAccess.Get().Each<SysAccess>((i, e) => 
-				((Dictionary<string, SysAccess>)state[ACCESS_LIST]).Add(e.Function, e)) ;
-		}
-		return (Dictionary<string, SysAccess>)state[ACCESS_LIST] ;
-	}
-
-	/// <summary>
 	/// Gets the currently logged in user.
 	/// </summary>
 	/// <param name="p">The security principal</param>
@@ -135,7 +118,7 @@ public static class PiranhaApp
 	/// <returns>Weather the user has access</returns>
 	public static bool HasAccess(this IPrincipal p, string function) {
 		if (p.Identity.IsAuthenticated) {
-			Dictionary<string, SysAccess> access = HttpContext.Current.Application.GetAccessList() ;
+			Dictionary<string, SysAccess> access = SysAccess.GetAccessList() ;
 
 			if (access.ContainsKey(function)) {
 				SysGroup group = SysGroup.GetStructure().GetGroupById(p.GetProfile().GroupId) ;
@@ -175,23 +158,6 @@ public static class PiranhaApp
 		if (g != null)
 			return IsMember(p, g.Id) ;
 		return false ;
-	}
-
-	/// <summary>
-	/// Gets the current permalink based on the current routedata values.
-	/// </summary>
-	/// <returns>The permalink</returns>
-	public static string GetPermalink(this RouteData rd) {
-		string controller = (string)rd.Values["controller"] ;
-		string action     = (string)rd.Values["action"] ;
-
-		if (controller.ToLower() != "home") {
-			return controller + (action.ToLower() != "index" ? "/" + action : "") ;
-		} else {
-			if (action.ToLower() == "page")
-				return (string)rd.Values["permalink"] ;
-		}
-		return "" ;		
 	}
 	#endregion
 }

@@ -253,7 +253,6 @@ namespace byBrick.Areas.Manager.Controllers
 				} catch (Exception e) {
 					ViewBag.Message = e.ToString() ;
 				}
-				ControllerContext.HttpContext.Application.Remove(PiranhaApp.ACCESS_LIST) ;
 			}
 			return View("Access", am) ;
 		}
@@ -270,8 +269,6 @@ namespace byBrick.Areas.Manager.Controllers
 			if (am.DeleteAll())
 				ViewBag.Message = "Behörigheten har raderats." ;
 			else ViewBag.Message = "Ett fel har inträffat och behörigheten kunde inte raderas." ;
-
-			ControllerContext.HttpContext.Application.Remove(PiranhaApp.ACCESS_LIST) ;			
 
 			return Index() ;
 		}
