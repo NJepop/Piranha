@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Installera";
+    Layout = "" ;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Installera</title>
+	<link rel="shortcut icon" href="@Url.Content("~/Areas/Manager/Content/Img/favicon.ico")">
+    <link rel="apple-touch-icon" href="@Url.Content("~/Areas/Manager/Content/Img/apple-touch-icon.png")"/>
+    <link href="@Url.Content("~/Areas/Manager/Content/Css/Style.ashx")" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/Ext/jquery-1.6.4.min.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".message").click(function () { $(this).fadeOut("medium"); });
+
+            if ($("#sysMsg").text() != "") {
+                floatBox.show("boxMessage");
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container_12">
+        <div class="grid_6 box login">
+            <div class="inner">
+                <h2>Skapa ny installation</h2>
+                @{ Html.BeginForm("Create", "Install") ; }
+                <ul class="form">
+                    <li><label>Användarnamn:</label>
+                        <div class="input"><input name="UserLogin" type="text" /></div></li>
+                    <li><label>E-post:</label>
+                        <div class="input"><input name="UserEmail" type="text" /></div></li>
+                    <li><label>Lösenord:</label>
+                        <div class="input"><input name="Password" type="password" /></div></li>
+                    <li><label>Bekräfta:</label>
+                        <div class="input"><input name="PasswordConfirm" type="password" /></div></li>
+                    <li><button class="btn blue right">Installera</button></li>
+                </ul>
+                @{ Html.EndForm() ; }
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

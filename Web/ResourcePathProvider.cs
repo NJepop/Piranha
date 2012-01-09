@@ -13,6 +13,23 @@ namespace Piranha.Web
 {
 	public class ResourcePathProvider : VirtualPathProvider
 	{
+		#region Properties
+		/// <summary>
+		/// Gets the cached resource map.
+		/// </summary>
+		public static Dictionary<string, string> Resources {
+			get {
+				if (HttpContext.Current.Cache["ResourceMap"] == null) {
+					HttpContext.Current.Cache["ResourceMap"] = new Dictionary<string, string>() ;
+					string[] names = Assembly.GetExecutingAssembly().GetManifestResourceNames() ;
+					foreach (string name in names)
+						((Dictionary<string, string>)HttpContext.Current.Cache["ResourceMap"]).Add(name.ToLower(), name) ;
+				}
+				return (Dictionary<string, string>)HttpContext.Current.Cache["ResourceMap"] ;
+			}
+		}
+		#endregion
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -24,8 +41,9 @@ namespace Piranha.Web
 		/// <param name="virtualpath">The virtual path</param>
 		/// <returns>If the path exists</returns>
 		private bool IsResourceFile(string virtualpath) {
-			ManifestResourceInfo info = Assembly.GetExecutingAssembly().GetManifestResourceInfo(
-				VirtualPathUtility.ToAppRelative(virtualpath).Replace("/", ".").Replace("~", "Piranha").Replace("res.ashx.", "")) ;
+			string name = VirtualPathUtility.ToAppRelative(virtualpath).Replace("/", ".").Replace("~", "Piranha").Replace("res.ashx.", "").ToLower() ;
+			ManifestResourceInfo info = Resources.ContainsKey(name) ? 
+				Assembly.GetExecutingAssembly().GetManifestResourceInfo(Resources[name]) : null ;
 			return !File.Exists(HttpContext.Current.Server.MapPath(virtualpath)) && info != null ;
 		}
 
@@ -86,9 +104,8 @@ namespace Piranha.Web
 		/// </summary>
 		/// <returns>The stream</returns>
         public override Stream Open() {
-			string res = path.Replace("/", ".").Replace("~", "Piranha").Replace("res.ashx.", "") ;
-
-			return Assembly.GetExecutingAssembly().GetManifestResourceStream(res) ;
+			string res = path.Replace("/", ".").Replace("~", "Piranha").Replace("res.ashx.", "").ToLower() ;
+			return Assembly.GetExecutingAssembly().GetManifestResourceStream(ResourcePathProvider.Resources[res]) ;
         }
     }
 }

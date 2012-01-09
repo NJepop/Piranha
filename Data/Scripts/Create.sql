@@ -237,10 +237,6 @@ CREATE TABLE attachment (
 INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_group_id, sysuser_created, sysuser_updated)
 VALUES ('ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'sys', '7c536b66-d292-4369-8f37-948b32229b83',
 	GETDATE(), GETDATE());
-INSERT INTO sysuser (sysuser_id, sysuser_login, sysuser_password, sysuser_firstname, sysuser_surname, 
-	sysuser_group_id, sysuser_created, sysuser_updated)
-VALUES ('4037dc45-90d2-4adc-84aa-593be867c29d', 'admin', 'bybrick', 'byBrick', 'Administrator', 
-	'7c536b66-d292-4369-8f37-948b32229b83', GETDATE(), GETDATE());
 
 -- Default groups
 INSERT INTO sysgroup (sysgroup_id, sysgroup_parent_id, sysgroup_name, sysgroup_description, sysgroup_created,
@@ -313,11 +309,11 @@ VALUES ('8a4ca0f3-261b-4689-8c1f-98065b65f9ee', '8940b41a-e3a9-44f3-b564-bfd2814
 -- Default params
 INSERT INTO sysparam (sysparam_id, sysparam_name, sysparam_value, sysparam_description, sysparam_locked,
 	sysparam_created, sysparam_updated, sysparam_created_by, sysparam_updated_by)
-VALUES ('EBB65F0A-F2CA-4932-B590-C899922DE847', 'SITE_TITLE', 'Piranha', 'Webbplatsens titel.', 1,
+VALUES ('EBB65F0A-F2CA-4932-B590-C899922DE847', 'SITE_TITLE', '', '', 1,
 	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 INSERT INTO sysparam (sysparam_id, sysparam_name, sysparam_value, sysparam_description, sysparam_locked,
 	sysparam_created, sysparam_updated, sysparam_created_by, sysparam_updated_by)
-VALUES ('160C9971-3D04-40AA-A2A3-B25F11D11D29', 'SITE_DESCRIPTION', 'En liten webbplats', 'Webbplatsens beskrivning.', 1,
+VALUES ('160C9971-3D04-40AA-A2A3-B25F11D11D29', 'SITE_DESCRIPTION', '', '', 1,
 	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 
 -- Default templates

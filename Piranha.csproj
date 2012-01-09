@@ -61,6 +61,7 @@
     </Compile>
     <Compile Include="Areas\Manager\Controllers\AccountController.cs" />
     <Compile Include="Areas\Manager\Controllers\ContentController.cs" />
+    <Compile Include="Areas\Manager\Controllers\InstallController.cs" />
     <Compile Include="Areas\Manager\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Manager\Controllers\PageController.cs" />
     <Compile Include="Areas\Manager\Controllers\PostController.cs" />
@@ -173,6 +174,7 @@
     <EmbeddedResource Include="Areas\Manager\Content\Js\Script.ashx" />
     <EmbeddedResource Include="Areas\Manager\Views\Web.config" />
     <EmbeddedResource Include="Areas\Manager\Views\Shared\Partial\Menu.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Install\Index.cshtml" />
     <None Include="packages.config" />
     <None Include="README.markdown" />
   </ItemGroup>
