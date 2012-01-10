@@ -50,7 +50,6 @@ namespace Piranha.Models.Manager.ContentModels
 		/// Saves the edit model.
 		/// </summary>
 		public bool SaveAll() {
-			Guid uid = new Guid("4037dc45-90d2-4adc-84aa-593be867c29d") ;
 			var context = HttpContext.Current ;
 
 			Content.Filename = UploadedFile.FileName ;

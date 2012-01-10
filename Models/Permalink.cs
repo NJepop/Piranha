@@ -70,6 +70,15 @@ namespace Piranha.Models
 				Cache[name] = GetSingle("permalink_name = @0", name) ;
 			return Cache[name] ;
 		}
+
+		/// <summary>
+		/// Gets the permalink associated with the given parent id.
+		/// </summary>
+		/// <param name="id">The id</param>
+		/// <returns>The permalink</returns>
+		public static Permalink GetByParentId(Guid id) {
+			return Permalink.GetSingle("permalink_parent_id = @0", id) ;
+		}
 		#endregion
 
 		/// <summary>

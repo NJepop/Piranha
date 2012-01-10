@@ -33,7 +33,7 @@ namespace Piranha.WebPages
 		public static void InitManager(AreaRegistrationContext context) {
 			context.MapRoute(
 				"Manager",
-				"Manager.aspx/{controller}/{action}/{id}",
+				"Manager/{controller}/{action}/{id}",
 				new { controller = "Page", action = "Index", id = UrlParameter.Optional }
 			) ;
 		}

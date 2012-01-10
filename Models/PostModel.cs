@@ -72,7 +72,7 @@ namespace Piranha.Models
 		/// </summary>
 		private void GetRelated() {
 			// Get categories
-			Categories = Relation.GetCategoriesByPostId(Post.Id) ;
+			Categories = Category.GetByPostId(Post.Id) ;
 
 			// Get archive
 			Archive = Post.Get("post_template_id = @0", Post.TemplateId,

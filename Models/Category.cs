@@ -25,26 +25,26 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the optional parent id.
 		/// </summary>
-		[Column(Name="category_parent_id")]
+		[Column(Name="category_parent_id"), Display(Name="Överordnad")]
 		public Guid ParentId { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the name.
 		/// </summary>
 		[Column(Name="category_name"), Required(ErrorMessage="Du måste ange ett namn för kategorin.")]
-		[StringLength(64, ErrorMessage="Namnet får max innehålla 64 tecken.")]
+		[Display(Name="Namn"), StringLength(64, ErrorMessage="Namnet får max innehålla 64 tecken.")]
 		public string Name { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the permalink.
 		/// </summary>
-		[Column(Name="permalink_name", ReadOnly=true)]
+		[Column(Name="permalink_name", ReadOnly=true), Display(Name="Permalänk")]
 		public string Permalink { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the description.
 		/// </summary>
-		[Column(Name="category_description")]
+		[Column(Name="category_description"), Display(Name="Beskrivning")]
 		[StringLength(255, ErrorMessage="Beskrivningen får max innehålla 255 tecken.")]
 		public string Description { get ; set ; }
 		/// <summary>
@@ -91,14 +91,27 @@ namespace Piranha.Models
 			Categories = new List<Category>() ;
 		}
 
+		#region Static accessors
 		/// <summary>
 		/// Gets the categories sorted recursivly.
 		/// </summary>
 		/// <returns>The categories</returns>
 		public static List<Category> GetStructure() {
-			List<Category> cats = Category.Get(new Params() { OrderBy = "category_parent_id" }) ;
+			List<Category> cats = Category.Get(new Params() { OrderBy = "category_parent_id, category_name" }) ;
 			return Sort(cats, Guid.Empty) ;
 		}
+
+		/// <summary>
+		/// Get the available categories for the given post
+		/// </summary>
+		/// <param name="id">The post id</param>
+		/// <returns>The categories</returns>
+		public static List<Category> GetByPostId(Guid id) {
+			return Category.Get("category_id IN (" +
+				"SELECT relation_related_id FROM relation WHERE relation_type = @0 AND relation_data_id = @1)",
+				Relation.RelationType.POSTCATEGORY, id) ;
+		}
+		#endregion
 
 		#region Private methods
 		/// <summary>

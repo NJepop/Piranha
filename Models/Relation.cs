@@ -59,14 +59,13 @@ namespace Piranha.Models
 		}
 
 		/// <summary>
-		/// Get the available categories for the given post
+		/// Gets the available relations for the given type and related id.
 		/// </summary>
-		/// <param name="id">The post id</param>
-		/// <returns>The categories</returns>
-		public static List<Category> GetCategoriesByPostId(Guid id) {
-			return Category.Get("category_id IN (" +
-				"SELECT relation_related_id FROM relation WHERE relation_type = @0 AND relation_data_id = @1)",
-				RelationType.POSTCATEGORY, id) ;
+		/// <param name="type">The relation type</param>
+		/// <param name="id">The relation data</param>
+		/// <returns>The relations</returns>
+		public static List<Relation> GetByTypeAndRelatedId(RelationType type, Guid id) {
+			return Relation.Get("relation_type = @0 AND relation_related_id = @1", type, id) ;
 		}
 	}
 }

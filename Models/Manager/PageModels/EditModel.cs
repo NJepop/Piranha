@@ -183,7 +183,7 @@ namespace Piranha.Models.Manager.PageModels
 
 			// Get template & permalink
 			Template  = PageTemplate.GetSingle("pagetemplate_id = @0", Page.TemplateId) ;
-			Permalink = Permalink.GetSingle("permalink_parent_id = @0", Page.Id) ;
+			Permalink = Permalink.GetByParentId(Page.Id) ;
 			if (Permalink == null)
 				Permalink = new Permalink() { ParentId = Page.Id, Type = Permalink.PermalinkType.PAGE } ;
 

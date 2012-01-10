@@ -40,7 +40,7 @@
                         break;
                     case "#categories":
                         $(".toolbar .add").removeAttr("onclick");
-                        $(".toolbar .add").attr("href", "@Url.Action("Category")");
+                        $(".toolbar .add").attr("href", "@Url.Action("Edit", "Category")");
                         $("#tt-add p").text("Lägg till ny kategori");
                         deletemsg = "Är du säker på att du vill ta bort kategorin?" ;
                         break;
@@ -146,7 +146,7 @@
         <tbody class="list-js">
             @foreach (var pt in Model.Templates) {
             <tr>
-                <td class="name"><a href="@Url.Action("Post/" + pt.Id.ToString(), "Template")">@pt.Name.Singular</a></td>
+                <td class="name"><a href="@Url.Action("Post/" + pt.Id.ToString(), "Template")">@pt.Name.Plural</a></td>
                 <td class="updated">@pt.Updated.ToString("yyyy-MM-dd")</td>
                 <td class="created">@pt.Created.ToString("yyyy-MM-dd")</td>
                 <td class="buttons">
@@ -173,17 +173,15 @@
                 <th class="one"></th>
             </tr>
         </thead>
-        <tbody>
-            @{var oddc = true ;}
+        <tbody cöass="list-js">
             @foreach (var pc in Model.Categories) {
-            <tr @(oddc? "class=odd" : "class=even")>
-                <td><a href="@Url.Action("Category", new { id = pc.Id})">@pc.Name</a></td>
+            <tr>
+                <td@(pc.Level > 1 ? " class=level" + pc.Level : "")><a href="@Url.Action("Edit", "Category", new { id = pc.Id})">@pc.Name</a></td>
                 <td>@pc.Updated.ToString("yyyy-MM-dd")</td>
                 <td>@pc.Created.ToString("yyyy-MM-dd")</td>
                 <td class="buttons">
                     <a class="icon delete" href="@Url.Action("DeleteCategory", new { id = pc.Id })"></a></td>
             </tr>
-            oddc = !oddc;
             }
         </tbody>
         <tfoot>

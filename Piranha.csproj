@@ -60,6 +60,7 @@
       <DependentUpon>Script.ashx</DependentUpon>
     </Compile>
     <Compile Include="Areas\Manager\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Manager\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Manager\Controllers\ContentController.cs" />
     <Compile Include="Areas\Manager\Controllers\InstallController.cs" />
     <Compile Include="Areas\Manager\Controllers\DashboardController.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Models\Attachment.cs" />
     <Compile Include="Models\Content.cs" />
     <Compile Include="Models\IModel.cs" />
+    <Compile Include="Models\Manager\CategoryModels\EditModel.cs" />
     <Compile Include="Models\Manager\ContentModels\EditModel.cs" />
     <Compile Include="Models\Manager\ContentModels\ListModel.cs" />
     <Compile Include="Models\Manager\PageModels\EditModel.cs" />
@@ -175,6 +177,7 @@
     <EmbeddedResource Include="Areas\Manager\Views\Web.config" />
     <EmbeddedResource Include="Areas\Manager\Views\Shared\Partial\Menu.cshtml" />
     <EmbeddedResource Include="Areas\Manager\Views\Install\Index.cshtml" />
+    <EmbeddedResource Include="Areas\Manager\Views\Category\Edit.cshtml" />
     <None Include="packages.config" />
     <None Include="README.markdown" />
   </ItemGroup>
@@ -274,9 +277,7 @@
     <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\jquery-ui-1.8.16.custom.min.js" />
     <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\jquery.equalheights.js" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\Manager\CategoryModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

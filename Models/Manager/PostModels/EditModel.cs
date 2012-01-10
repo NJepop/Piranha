@@ -52,6 +52,11 @@ namespace Piranha.Models.Manager.PostModels
 		/// Gets/sets the post template.
 		/// </summary>
 		public PostTemplate Template { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets the categories associated with the post.
+		/// </summary>
+		public List<Category> PostCategories { get ; set ; }
 		#endregion
 
 		/// <summary>
@@ -77,6 +82,7 @@ namespace Piranha.Models.Manager.PostModels
 			m.Template = PostTemplate.GetSingle(templateId) ;
 			m.Permalink = new Permalink() { 
 				ParentId = m.Post.Id, Type = Permalink.PermalinkType.POST } ;
+			m.PostCategories = new List<Category>() ;
 
 			return m ;
 		}
@@ -94,6 +100,7 @@ namespace Piranha.Models.Manager.PostModels
 			if (m.Permalink == null)
 				m.Permalink = new Permalink() { 
 					ParentId = m.Post.Id, Type = Permalink.PermalinkType.POST } ;
+			m.PostCategories = Category.GetByPostId(m.Post.Id) ;
 
 			return m ;
 		}
