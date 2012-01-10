@@ -23,20 +23,20 @@
 </head>
 <body>
     <div class="container_12">
-        <div class="grid_6 box login">
+        <div class="grid_4 box login">
             <div class="inner">
-                <h2>Skapa ny installation</h2>
+                <h2>Ny webbplats</h2>
                 @{ Html.BeginForm("Create", "Install") ; }
                 <ul class="form">
-                    <li><label>Användarnamn:</label>
+                    <li><label>Inloggning:</label>
                         <div class="input"><input name="UserLogin" type="text" /></div></li>
-                    <li><label>E-post:</label>
-                        <div class="input"><input name="UserEmail" type="text" /></div></li>
                     <li><label>Lösenord:</label>
                         <div class="input"><input name="Password" type="password" /></div></li>
-                    <li><label>Bekräfta:</label>
+                    <li><label>Bekräfta lösenord:</label>
                         <div class="input"><input name="PasswordConfirm" type="password" /></div></li>
-                    <li><button class="btn blue right">Installera</button></li>
+                    <li><label>E-post:</label>
+                        <div class="input"><input name="UserEmail" type="text" /></div></li>
+                    <li><button class="btn blue right">Installera webbplatsen</button></li>
                 </ul>
                 @{ Html.EndForm() ; }
                 <div class="clear"></div>

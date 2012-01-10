@@ -37,6 +37,14 @@ namespace byBrick.Areas.Manager.Controllers
 		/// Default action
 		/// </summary>
         public ActionResult Index() {
+			// Check for existing installation.
+			try {
+				SysParam p = SysParam.GetByName("SITE_VERSION") ;
+				
+				// If we got here we have a database. TODO: Check version and go to
+				// update page if needed.
+				return RedirectToAction("Index", "Account") ;
+			} catch {}
             return View();
         }
 

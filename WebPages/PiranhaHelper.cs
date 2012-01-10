@@ -33,7 +33,7 @@ namespace Piranha.WebPages
 		/// Generates the tags appropriate for the html head.
 		/// </summary>
 		/// <returns>The head information</returns>
-		public HtmlString Head() {
+		public IHtmlString Head() {
 			StringBuilder str = new StringBuilder() ;
 
 			str.AppendLine("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\" />") ;
@@ -54,7 +54,7 @@ namespace Piranha.WebPages
 		/// <param name="id">The content id</param>
 		/// <param name="size">Optional size</param>
 		/// <returns>The image html string</returns>
-		public HtmlString Thumbnail(Guid id, int size = 0) {
+		public IHtmlString Thumbnail(Guid id, int size = 0) {
 			Content cnt = Content.GetSingle(id) ;
 			
 			if (cnt != null)
@@ -69,7 +69,7 @@ namespace Piranha.WebPages
 		/// <param name="id">The content id</param>
 		/// <param name="size">Optional size</param>
 		/// <returns>The image html string</returns>
-		public HtmlString Thumbnail(string id, int size = 0) {
+		public IHtmlString Thumbnail(string id, int size = 0) {
 			return Thumbnail(new Guid(id), size) ;
 		}
 
@@ -79,7 +79,7 @@ namespace Piranha.WebPages
 		/// <param name="StartLevel">The start level of the menu</param>
 		/// <param name="StopLevel">The stop level of the menu</param>
 		/// <returns>A html string</returns>
-		public HtmlString Menu(int StartLevel = 1, int StopLevel = Int32.MaxValue, 
+		public IHtmlString Menu(int StartLevel = 1, int StopLevel = Int32.MaxValue, 
 			string RootNode = "") 
 		{
 			StringBuilder str = new StringBuilder() ;
@@ -115,7 +115,7 @@ namespace Piranha.WebPages
 		/// <param name="Root">The root node</param>
 		/// <param name="StopLevel">The stop level of the menu</param>
 		/// <returns>A html string</returns>
-		public HtmlString Menu(Page CurrentPage, Guid Root, int StopLevel = Int32.MaxValue) {
+		public IHtmlString Menu(Page CurrentPage, Guid Root, int StopLevel = Int32.MaxValue) {
 			StringBuilder str = new StringBuilder() ;
 
 			Sitemap sm = GetRootNode(Sitemap.GetStructure(true), Root) ;
@@ -125,12 +125,14 @@ namespace Piranha.WebPages
 			return new HtmlString(str.ToString()) ;
 		}
 
-		public HtmlString BeginForm(string action = "", string template = "") {
-			string form = "<form{0} method=\"post\">" ;
-			string act  = "<input type=\"hidden\" name=\"piranha_form_action\" value=\"{0}\" />" ;
-
-			return new HtmlString(String.Format(form, template != "" ? " action=\"" + template + "\"" : "") +
-				action != "" ? String.Format(act, action) : "") ;
+		/// <summary>
+		/// Creates the action input for a piranha post back.
+		/// </summary>
+		/// <param name="action">The form action</param>
+		/// <returns>A html string</returns>
+		public IHtmlString FormAction(string action) {
+			return new HtmlString(String.Format("<input type=\"hidden\" name=\"piranha_form_action\" value=\"{0}\" />",
+				action)) ;
 		}
 
 		#region Private methods

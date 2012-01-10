@@ -29,7 +29,7 @@
                     case "#pages":
                         $(".toolbar .add").removeAttr("href");
                         $(".toolbar .add").attr("onclick", "floatBox.show('boxTemplates', 200, 240)") ;
-                        $("#tt-add p").text("Lägg till ny sida");
+                        $("#tt-add p").text("Lägg till ny startsida");
                         deletemsg = "Är du säker på att du vill ta bort sidan?";
                         break;
                     case "#templates":
@@ -64,6 +64,7 @@
 
             var options = {
                 listClass:  'list-js',
+                searchId: 'search',
                 valueNames: ['name', 'created', 'updated']
             };
             var templateList = new List('template-list', options);
@@ -75,7 +76,7 @@
     <div class="inner">
         <ul>
             <li id="tt-add"><a onclick="floatBox.show('boxTemplates', 200, 240)" class="add"></a>
-                <div class="tooltip"><p>Lägg till ny sida</p></div></li>
+                <div class="tooltip"><p>Lägg till ny startsida</p></div></li>
             <li id="tt-refresh"><a href="" class="refresh"></a>
                 <div class="tooltip"><p>Ladda om listan</p></div></li>
             <li></li>

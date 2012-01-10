@@ -55,7 +55,7 @@ namespace Piranha.WebPages
 						Page page = Page.GetSingle(perm.ParentId) ;
 
 						if (!String.IsNullOrEmpty(page.Controller)) {
-							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name) ;
+							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name, false) ;
 						} else {
 							context.RewritePath("~/page/" + perm.Name) ;
 						}
