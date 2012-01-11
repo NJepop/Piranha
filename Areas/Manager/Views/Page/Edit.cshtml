@@ -17,11 +17,18 @@
 <div class="grid_12 toolbar">
     <div class="inner">
         <ul>
-            <li><a class="save submit" title="Spara sidan"></a></li>
-            <li><a href="@Url.Action("Delete", new { id = Model.Page.Id })" class="delete" title="Ta bort sidan"></a></li>
-            <li><a href="@Url.Action("Index", "Page")" class="back" title="Backa"></a></li>
-            <li><a href="" class="refresh" title="Ladda om sidan"></a></li>
-            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+            <li><a class="save submit"></a>
+                <div class="tooltip"><p>Spara sidan</p></div></li>
+            <li><a href="@Url.Action("Delete", new { id = Model.Page.Id })" class="delete"></a>
+                <div class="tooltip"><p>Ta bort sidan</p></div></li>
+            <li><a href="@Url.Action("Index", "Page")" class="back"></a>
+                <div class="tooltip"><p>Backa</p></div></li>
+            <li><a href="" class="refresh"></a>
+                <div class="tooltip"><p>Ladda om sidan</p></div></li>
+            <li><a href="" class="info"></a>
+                <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
+            <li><a href="" class="preview"></a>
+                <div class="tooltip"><p>Förhandsgranska sidan</p></div></li>
         </ul>
         <div class="clear"></div>
     </div>

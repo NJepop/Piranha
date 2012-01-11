@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -53,6 +54,22 @@ namespace Piranha.Models
 		public Guid CreatedBy { get ; set ; }
 		#endregion
 
+		#region Properties
+		/// <summary>
+		/// Gets the virtual path for the content media file.
+		/// </summary>
+		public string VirtualPath { 
+			get { return "~/App_Data/Uploads/" + Id ; }
+		}
+
+		/// <summary>
+		/// Gets the physical path for the content media file.
+		/// </summary>
+		public string PhysicalPath {
+			get { return HttpContext.Current.Server.MapPath(VirtualPath) ; }
+		}
+		#endregion
+
 		#region Static accessors
 		/// <summary>
 		/// Gets the uploads associated with the given parent id.
@@ -87,6 +104,15 @@ namespace Piranha.Models
 		#endregion
 
 		/// <summary>
+		/// Gets the physical media related to the upload and writes it to
+		/// the given http response.
+		/// </summary>
+		/// <param name="response">The http response</param>
+		public void GetFile(HttpResponse response) {
+			WriteFile(response, PhysicalPath) ;
+		}
+
+		/// <summary>
 		/// Saves the record to the database.
 		/// </summary>
 		/// <param name="tx">Optional transaction</param>
@@ -98,5 +124,23 @@ namespace Piranha.Models
 			}
 			return base.Save(tx) ;
 		}
+
+		#region Private methods
+		/// <summary>
+		/// Writes the given file to the http response
+		/// </summary>
+		/// <param name="response"></param>
+		/// <param name="path"></param>
+		private void WriteFile(HttpResponse response, string path) {
+			if (File.Exists(path)) {
+				response.StatusCode = 200 ;
+				response.ContentType = Type ;
+				response.WriteFile(path) ;
+				response.End() ;
+			} else {
+				response.StatusCode = 404 ;
+			}
+		}
+		#endregion
 	}
 }

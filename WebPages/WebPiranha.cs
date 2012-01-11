@@ -90,6 +90,15 @@ namespace Piranha.WebPages
 						content.GetThumbnail(context.Response) ;
 					else content.GetThumbnail(context.Response, Convert.ToInt32(param[1])) ;
 				}
+			} else if (path.StartsWith("/upload/")) {
+				//
+				// Uploaded content
+				//
+				string [] param = path.Substring(8).Split(new char[] { '/' }) ;
+				Upload upload = Upload.GetSingle(new Guid(param[0])) ;
+
+				if (upload != null)
+					upload.GetFile(context.Response) ;
 			} else if (path == "/") {
 				//
 				// Rewrite to current startpage
