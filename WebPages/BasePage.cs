@@ -23,6 +23,8 @@ namespace Piranha.WebPages
 		/// </summary>
 		public PiranhaHelper Piranha { get ; private set ; }
 
+		public PiranhaFacade Facade { get ; private set ; }
+
 		/// <summary>
 		/// Gets the current permalink.
 		/// </summary>
@@ -34,6 +36,7 @@ namespace Piranha.WebPages
 		/// </summary>
 		public BasePage() : base() {
 			Piranha = new PiranhaHelper(this, Html) ;
+			Facade = new PiranhaFacade() ;
 		}
 	}
 }

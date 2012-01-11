@@ -11,6 +11,9 @@ using System.Web.Hosting;
 
 namespace Piranha.Web
 {
+	/// <summary>
+	/// Provider that serves embedded content from the manager area.
+	/// </summary>
 	public class ResourcePathProvider : VirtualPathProvider
 	{
 		#region Properties

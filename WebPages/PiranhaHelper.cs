@@ -231,6 +231,8 @@ namespace Piranha.WebPages
 		private string GenerateUrl(Sitemap page) {
 			if (page != null) {
 				if (!String.IsNullOrEmpty(page.Redirect)) {
+					if (page.Redirect.Contains("://"))
+						return page.Redirect ;
 					Sitemap sr = Sitemap.GetSingle("permalink_name = @0", page.Redirect) ;
 					return GenerateUrl(sr) ;
 				} 

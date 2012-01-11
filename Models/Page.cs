@@ -212,6 +212,13 @@ namespace Piranha.Models
 		}
 
 		/// <summary>
+		/// Gets weather the page is the site startpage.
+		/// </summary>
+		public bool IsStartpage {
+			get { return ParentId == Guid.Empty && Seqno == 1 ; }
+		}
+
+		/// <summary>
 		/// Gets the page cache object.
 		/// </summary>
 		private static Dictionary<Guid, Page> Cache {
@@ -350,6 +357,8 @@ namespace Piranha.Models
 		public void InvalidateRecord(Page record) {
 			if (Cache.ContainsKey(record.Id))
 				Cache.Remove(record.Id) ;
+			if (record.IsStartpage && Cache.ContainsKey(Guid.Empty))
+				Cache.Remove(Guid.Empty) ;
 		}
 	}
 }

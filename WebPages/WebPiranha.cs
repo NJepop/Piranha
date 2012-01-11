@@ -97,7 +97,7 @@ namespace Piranha.WebPages
 				Page page = Page.GetStartpage() ;
 
 				if (!String.IsNullOrEmpty(page.Controller))
-					context.RewritePath("~/" + page.Controller) ;
+					context.RewritePath("~/templates/" + page.Controller, false) ;
 				else context.RewritePath("~/page") ;
 			}
 		}
