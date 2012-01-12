@@ -226,6 +226,9 @@ em     { font-style: italic; }
 /**
  * Tooltip
  */
+.toolbar li:hover .tooltip {
+    display: block;
+    }
 .tooltip {
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAGCAYAAAAVMmT4AAAALElEQVR42o2LsQkAAAjD/P/pqOAWBQvpUNIARKVL+yWyHSway5Z8kHgy4UsC5/BukrSdy1kAAAAASUVORK5CYII=) 50% 0 no-repeat;
     display: none;

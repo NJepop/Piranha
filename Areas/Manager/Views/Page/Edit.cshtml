@@ -81,13 +81,6 @@
                     @Html.ValidationMessageFor(m => m.Page.PageController)
                 </li>
                 }
-                @if (Model.Template.ShowView) {
-                <li>@Html.LabelFor(m => m.Page.PageView)
-                    <div class="input">
-                        @Html.TextBoxFor(m => m.Page.PageView, new { @placeholder = !String.IsNullOrEmpty(Model.Template.View) ? Model.Template.View : "Ej obligatorisk" })</div>
-                    @Html.ValidationMessageFor(m => m.Page.PageView)
-                </li>
-                }
                 @if (Model.Template.ShowRedirect) {
                 <li>@Html.LabelFor(m => m.Page.PageRedirect)
                     <div class="input">

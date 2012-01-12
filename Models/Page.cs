@@ -98,15 +98,8 @@ namespace Piranha.Models
 		/// Gets/sets the custom controller.
 		/// </summary>
 		[Column(Name="page_controller")]
-		[StringLength(128, ErrorMessage="Kontrollerns namn får max innehålla 128 tecken."), Display(Name="Kontroller")]
+		[StringLength(128, ErrorMessage="Mallens namn får max innehålla 128 tecken."), Display(Name="Webbmall")]
 		public string PageController { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the custom view.
-		/// </summary>
-		[Column(Name="page_view")]
-		[StringLength(128, ErrorMessage="Vyns namn får max innehålla 128 tecken."), Display(Name="Vy")]
-		public string PageView { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the custom redirect.
@@ -114,12 +107,6 @@ namespace Piranha.Models
 		[Column(Name="page_redirect")]
 		[StringLength(128, ErrorMessage="Omdirigeringen får max innehålla 128 tecken."), Display(Name="Omdirigering")]
 		public string PageRedirect { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the custom view.
-		/// </summary>
-		[Column(Name="pagetemplate_view", ReadOnly=true, Table="pagetemplate")]
-		private string TemplateView { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the custom controller.
@@ -188,13 +175,6 @@ namespace Piranha.Models
 		/// </summary>
 		public string Controller { 
 			get { return !String.IsNullOrEmpty(PageController) ? PageController : TemplateController ; }
-		}
-
-		/// <summary>
-		/// Gets the view for the page.
-		/// </summary>
-		public string View { 
-			get { return !String.IsNullOrEmpty(PageView) ? PageView : TemplateView ; }
 		}
 
 		/// <summary>

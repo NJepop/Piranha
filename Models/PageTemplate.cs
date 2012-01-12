@@ -57,21 +57,8 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the optional view name for the template.
 		/// </summary>
-		[Column(Name="pagetemplate_view")]
-		[Display(Name="Vy")]
-		public string View { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets wether the view can be overridden by the implementing page.
-		/// </summary>
-		[Column(Name="pagetemplate_view_show")]
-		public bool ShowView { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the optional view name for the template.
-		/// </summary>
 		[Column(Name="pagetemplate_controller")]
-		[Display(Name="Kontroller")]
+		[Display(Name="Webbmall")]
 		public string Controller { get ; set ; }
 
 		/// <summary>
