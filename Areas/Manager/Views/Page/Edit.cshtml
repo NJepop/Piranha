@@ -27,8 +27,10 @@
                 <div class="tooltip"><p>Ladda om sidan</p></div></li>
             <li><a href="" class="info"></a>
                 <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
-            <li><a href="" class="preview"></a>
-                <div class="tooltip"><p>Förhandsgranska sidan</p></div></li>
+            @if (!Model.Page.IsNew) {
+            <li><a href="http://@Request.Url.DnsSafeHost@Url.GetPermalink(Model.Page.Permalink).ToLower()" target="preview" class="preview"></a>
+                <div class="tooltip"><img class="page-preview" src="http://@Request.Url.DnsSafeHost@Url.GetPreviewlink(Model.Page.Id).ToLower()" alt="Förhandsgranskning" /></div></li>
+            }
         </ul>
         <div class="clear"></div>
     </div>

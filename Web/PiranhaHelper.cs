@@ -23,5 +23,15 @@ namespace Piranha.Web
 		public static string GetPermalink(this UrlHelper helper, string permalink) {
 			return helper.Content("~/hem/" + permalink.ToLower()) ;
 		}
+
+		/// <summary>
+		/// Url helper for generating the preview url for the given page id.
+		/// </summary>
+		/// <param name="helper">The url helper</param>
+		/// <param name="id">The page id</param>
+		/// <returns></returns>
+		public static string GetPreviewlink(this UrlHelper helper, Guid id) {
+			return helper.Content("~/preview/" + id.ToString()) ;
+		}
 	}
 }

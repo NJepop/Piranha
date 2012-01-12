@@ -138,6 +138,11 @@ namespace Piranha.Models.Manager.PageModels
 					foreach (Property p in Properties)
 						p.Save(tx) ;
 					tx.Commit() ;
+
+					try {
+						// Delete page preview
+						WebPages.WebThumb.RemovePagePreview(Page.Id) ;
+					} catch {}
 				} catch { tx.Rollback() ; throw ; }
 			}
 			return true ;
@@ -155,6 +160,11 @@ namespace Piranha.Models.Manager.PageModels
 					Permalink.Delete(tx) ;
 					Page.Delete(tx) ;
 					tx.Commit() ;
+
+					try {
+						// Delete page preview
+						WebPages.WebThumb.RemovePagePreview(Page.Id) ;
+					} catch {}
 				} catch { tx.Rollback() ; return false ; }
 			}
 			return true ;

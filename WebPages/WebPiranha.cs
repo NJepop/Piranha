@@ -90,6 +90,13 @@ namespace Piranha.WebPages
 						content.GetThumbnail(context.Response) ;
 					else content.GetThumbnail(context.Response, Convert.ToInt32(param[1])) ;
 				}
+			} else if (path.StartsWith("/preview/")) {
+				//
+				// Http preview
+				//
+				Page page = Page.GetSingle(new Guid(path.Substring(9))) ;
+				WebThumb.GetThumbnail(context.Response, page.Id, "http://" + context.Request.Url.DnsSafeHost + 
+					VirtualPathUtility.ToAbsolute("~/hem/" + page.Permalink), 300, 225) ;
 			} else if (path.StartsWith("/upload/")) {
 				//
 				// Uploaded content

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Threading;
 using System.Web;
 using System.Windows.Forms;
+
+using Piranha.Models;
 
 namespace Piranha.WebPages
 {
@@ -76,6 +80,51 @@ namespace Piranha.WebPages
 		}
 		#endregion
 
+		/// <summary>
+		/// Generates the thumbnail for the specifed page id.
+		/// </summary>
+		/// <param name="response">The http response</param>
+		/// <param name="id">The page id</param>
+		/// <param name="url">The url</param>
+		/// <param name="width">Thumbnail width</param>
+		/// <param name="height">Thumbnail height</param>
+		/// <returns>The thumbnail</returns>
+		public static void GetThumbnail(HttpResponse response, Guid id, string url, int width, int height) {
+			Bitmap bmp = null ;
+
+			if (HasPagePreview(id)) {
+				bmp = (Bitmap)Bitmap.FromFile(GetPagePreviewPath(id)) ;
+			} else {
+				bmp = new WebThumbEngine() { 
+					Url    = url, 
+					Width  = width, 
+					Height = height }.GetThumb() ;
+				bmp.Save(GetPagePreviewPath(id)) ;
+			}
+
+			if (bmp != null) {
+				response.StatusCode = 200 ;
+				response.ContentType = "image/jpeg" ;
+				bmp.Save(response.OutputStream, ImageFormat.Jpeg) ;
+				response.End() ;
+			} else {
+				response.StatusCode = 404 ;
+			}
+        }
+
+		public static string GetPagePreviewPath(Guid id) {
+			return HttpContext.Current.Server.MapPath("~/App_Data/Cache/Previews/" + id.ToString()) ;
+		}
+
+		public static bool HasPagePreview(Guid id) {
+			return File.Exists(GetPagePreviewPath(id)) ;
+		}
+
+		public static void RemovePagePreview(Guid id) {
+			if (HasPagePreview(id))
+				File.Delete(GetPagePreviewPath(id)) ;
+		}
+	
 		/// <summary>
 		/// Generates the thumbnail for the specifed url with the given size.
 		/// </summary>
