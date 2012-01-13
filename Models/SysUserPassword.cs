@@ -43,6 +43,24 @@ namespace Piranha.Models
 		#endregion
 
 		/// <summary>
+		/// Generates a simple 8 character random password.
+		/// </summary>
+		/// <returns>The password</returns>
+		public static string GeneratePassword() {
+			Random rnd = new Random() ;
+			string sc = "!#%&/()=@$" ;
+
+			// Generate base password
+			string pw = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 6) ;
+
+			// Insert two random special characters somewhere
+			pw = pw.Insert(rnd.Next() % pw.Length, sc.Substring(rnd.Next() % sc.Length, 1)) ;
+			pw = pw.Insert(rnd.Next() % pw.Length, sc.Substring(rnd.Next() % sc.Length, 1)) ;
+
+			return pw ;
+		}
+
+		/// <summary>
 		/// Saves the record to the database. Checks so empty passwords don't get saved.
 		/// </summary>
 		/// <param name="tx">Optional transaction</param>

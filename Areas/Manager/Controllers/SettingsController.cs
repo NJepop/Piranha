@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Piranha;
 using Piranha.Data;
 using Piranha.Controllers;
+using Piranha.Models;
 using Piranha.Models.Manager.SettingModels;
 
 namespace byBrick.Areas.Manager.Controllers
@@ -115,6 +116,22 @@ namespace byBrick.Areas.Manager.Controllers
 			else ViewBag.Message = "Ett fel har inträffat och användaren kunde inte raderas." ;
 			
 			return Index() ;
+		}
+
+		/// <summary>
+		/// Generates a new random password for the given user.
+		/// </summary>
+		/// <param name="id">The user id</param>
+		[Access(Function="ADMIN_USER")]
+		public ActionResult GeneratePassword(string id) {
+			SysUserPassword password = SysUserPassword.GetSingle(new Guid(id)) ;
+			string newpwd = SysUserPassword.GeneratePassword() ;
+
+			password.Password = password.PasswordConfirm = newpwd ;
+			password.Save() ;
+			ViewBag.Message = "Ditt nya lösenord är " + newpwd ;
+
+			return User(id) ;
 		}
 		#endregion
 
