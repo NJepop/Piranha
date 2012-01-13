@@ -40,20 +40,21 @@ namespace Piranha.WebPages
 				// Don't cache authenticated pages
 				Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
 			} else {
-				// We only cache public pages && in release
+				// We only cache public pages
 #if !DEBUG
+				Response.Cache.SetETag(GenerateETag()) ;
+				Response.Cache.SetLastModified(Model.Page.Updated) ;	
 				if (IsCached()) {
 					Response.StatusCode = 304 ;
 					Response.SuppressContent = true ;
 					Response.End() ;
 				} else {
 					Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
-					Response.Cache.SetETag(GenerateETag()) ;
-					Response.Cache.SetLastModified(Model.Page.Updated) ;	
-					Response.Cache.SetExpires(DateTime.Now.AddHours(1)) ;
-					Response.Cache.SetMaxAge(new TimeSpan(1, 0, 0)) ;
+					Response.Cache.SetExpires(DateTime.Now.AddMinutes(30)) ;
+					Response.Cache.SetMaxAge(new TimeSpan(0, 30, 0)) ;
 				}
 #else
+				// Don't cache when we're in DEBUG
 				Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
 #endif
 			}
@@ -75,11 +76,18 @@ namespace Piranha.WebPages
 		/// Check if the page is cached on the client.
 		/// </summary>
 		private bool IsCached() {
-			string header = Request.Headers["If-Modified-Since"] ;
-			if (header != null)
+			// Check If-None-Match
+			string etag = Request.Headers["If-None-Match"] ;
+			if (!String.IsNullOrEmpty(etag))
+				if (etag == GenerateETag())
+					return true ;
+
+			// Check If-Modified-Since
+			string mod = Request.Headers["If-Modified-Since"] ;
+			if (!String.IsNullOrEmpty(mod))
 				try {
 					DateTime since ;
-					if (DateTime.TryParse(header, out since))
+					if (DateTime.TryParse(mod, out since))
 						return since >= Model.Page.Updated ;
 				} catch {}
 			return false ;
