@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
 
 using Piranha.Models;
 
@@ -29,13 +30,33 @@ namespace Piranha.WebPages
 			else InitModel(PageModel.GetByStartpage<T>()) ;
 
 			// Check for basic permissions
-			if (Model.Page.GroupId != Guid.Empty)
+			if (Model.Page.GroupId != Guid.Empty) {
 				if (!User.IsMember(Model.Page.GroupId)) {
 					SysParam param = SysParam.GetByName("LOGIN_PAGE") ;
 					if (param != null)
 						Server.TransferRequest(param.Value) ;
 					else Server.TransferRequest("~/") ;
 				}
+				// Don't cache authenticated pages
+				Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
+			} else {
+				// We only cache public pages && in release
+#if !DEBUG
+				if (IsCached()) {
+					Response.StatusCode = 304 ;
+					Response.SuppressContent = true ;
+					Response.End() ;
+				} else {
+					Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
+					Response.Cache.SetETag(GenerateETag()) ;
+					Response.Cache.SetLastModified(Model.Page.Updated) ;	
+					Response.Cache.SetExpires(DateTime.Now.AddHours(1)) ;
+					Response.Cache.SetMaxAge(new TimeSpan(1, 0, 0)) ;
+				}
+#else
+				Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
+#endif
+			}
 			base.InitializePage() ;
 		}
 
@@ -48,6 +69,32 @@ namespace Piranha.WebPages
 			Model = pm ;
 
 			Page.Current = Model.Page ;
+		}
+
+		/// <summary>
+		/// Check if the page is cached on the client.
+		/// </summary>
+		private bool IsCached() {
+			string header = Request.Headers["If-Modified-Since"] ;
+			if (header != null)
+				try {
+					DateTime since ;
+					if (DateTime.TryParse(header, out since))
+						return since >= Model.Page.Updated ;
+				} catch {}
+			return false ;
+		}
+
+		/// <summary>
+		/// Generates the page ETag from the id and updated time.
+		/// </summary>
+		/// <returns>The ETag</returns>
+		private string GenerateETag() {
+			UTF8Encoding encoder = new UTF8Encoding() ;
+			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
+			string str = Model.Page.Id.ToString() + Model.Page.Updated.ToLongTimeString() ;
+			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;
+			return Convert.ToBase64String(bts, 0, bts.Length);
 		}
 		#endregion
 	}
