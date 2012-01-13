@@ -27,7 +27,7 @@ namespace Piranha.WebPages
 		/// </summary>
 		/// <param name="name">The category name</param>
 		/// <returns>A list of posts</returns>
-		public List<Post> GetPostByCategoryName(string name) {
+		public List<Post> GetPostsByCategoryName(string name) {
 			return Post.Get("post_id IN (" +
 				"SELECT relation_data_id FROM relation WHERE relation_type = @0 AND relation_related_id = (" +
 				"SELECT category_id FROM category WHERE category_name = @1))", Relation.RelationType.POSTCATEGORY, name) ;
@@ -38,7 +38,7 @@ namespace Piranha.WebPages
 		/// </summary>
 		/// <param name="id">The category id</param>
 		/// <returns>A list of posts</returns>
-		public List<Post> GetPostByCategoryId(Guid id) {
+		public List<Post> GetPostsByCategoryId(Guid id) {
 			return Post.Get("post_id IN (" +
 				"SELECT relation_data_id FROM relation WHERE relation_type = @0 AND relation_related_id = @1)",
 				Relation.RelationType.POSTCATEGORY, id) ;

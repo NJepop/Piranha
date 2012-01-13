@@ -109,23 +109,6 @@ namespace Piranha.WebPages
 		}
 
 		/// <summary>
-		/// Return the site structure as an ul/li list with the current page selected.
-		/// </summary>
-		/// <param name="CurrentPage">The current page</param>
-		/// <param name="Root">The root node</param>
-		/// <param name="StopLevel">The stop level of the menu</param>
-		/// <returns>A html string</returns>
-		public IHtmlString Menu(Page CurrentPage, Guid Root, int StopLevel = Int32.MaxValue) {
-			StringBuilder str = new StringBuilder() ;
-
-			Sitemap sm = GetRootNode(Sitemap.GetStructure(true), Root) ;
-			if (sm != null && sm.Pages.Count > 0) {
-				RenderUL(CurrentPage, sm.Pages, str, StopLevel) ;
-			}
-			return new HtmlString(str.ToString()) ;
-		}
-
-		/// <summary>
 		/// Creates the action input for a piranha post back.
 		/// </summary>
 		/// <param name="action">The form action</param>
