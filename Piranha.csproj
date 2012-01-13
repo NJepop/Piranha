@@ -71,9 +71,6 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LogoutController.cs" />
     <Compile Include="Models\Category.cs" />
-    <Compile Include="Models\IModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ComplexName.cs" />
     <Compile Include="Models\ArchiveModel.cs" />
