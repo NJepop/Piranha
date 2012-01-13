@@ -358,6 +358,9 @@ namespace Piranha.Models
 				Cache.Remove(record.Id) ;
 			if (record.IsStartpage && Cache.ContainsKey(Guid.Empty))
 				Cache.Remove(Guid.Empty) ;
+
+			// Invalidate public sitemap
+			Sitemap.InvalidateCache() ;
 		}
 	}
 }
