@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 using Piranha.Data;
 
@@ -12,7 +13,7 @@ namespace Piranha.Models
 	/// Active record for the system parameters.
 	/// </summary>
 	[PrimaryKey(Column="sysparam_id")] 
-	public class SysParam : PiranhaRecord<SysParam>
+	public class SysParam : PiranhaRecord<SysParam>, ICacheRecord<SysParam>
 	{
 		#region Fields
 		/// <summary>
@@ -75,6 +76,19 @@ namespace Piranha.Models
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 
+		#region Properties
+		/// <summary>
+		/// Gets the page cache object.
+		/// </summary>
+		private static Dictionary<string, SysParam> Cache {
+			get {
+				if (HttpContext.Current.Cache[typeof(SysParam).Name] == null)
+					HttpContext.Current.Cache[typeof(SysParam).Name] = new Dictionary<string, SysParam>() ;
+				return (Dictionary<string, SysParam>)HttpContext.Current.Cache[typeof(SysParam).Name] ;
+			}
+		}
+		#endregion
+
 		#region Static accessors
 		/// <summary>
 		/// Gets the param with the given name.
@@ -82,7 +96,9 @@ namespace Piranha.Models
 		/// <param name="name">The param name</param>
 		/// <returns>The param</returns>
 		public static SysParam GetByName(string name) {
-			return GetSingle("sysparam_name = @0", name) ;
+			if (!Cache.ContainsKey(name.ToUpper()))
+				Cache[name.ToUpper()] = SysParam.GetSingle("sysparam_name = @0", name) ;
+			return Cache[name.ToUpper()] ;
 		}
 		#endregion
 
@@ -95,6 +111,15 @@ namespace Piranha.Models
 			if (Name != null)
 				Name = Name.ToUpper() ;
 			return base.Save(tx);
+		}
+
+		/// <summary>
+		/// Invalidates the current record from the cache.
+		/// </summary>
+		/// <param name="record">The record</param>
+		public void InvalidateRecord(SysParam record) {
+			if (Cache.ContainsKey(record.Name.ToUpper()))
+				Cache.Remove(record.Name.ToUpper()) ;
 		}
 	}
 }

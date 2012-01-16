@@ -52,9 +52,18 @@ namespace Piranha.Models
 		/// <param name="p">The page record</param>
 		/// <returns>The model</returns>
 		public static PageModel Get(Page p) {
-			PageModel m = new PageModel() {
-				Page = p
-			} ;
+			return Get<PageModel>(p) ;
+		}
+
+		/// <summary>
+		/// Gets the page model for the given page.
+		/// </summary>
+		/// <param name="p">The page record</param>
+		/// <returns>The model</returns>
+		public static T Get<T>(Page p) where T : PageModel {
+			T m = Activator.CreateInstance<T>() ;
+
+			m.Page = p ;
 			m.Init() ;
 			return m ;
 		}

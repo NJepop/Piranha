@@ -36,7 +36,6 @@ namespace Piranha.WebPages
 		public IHtmlString Head() {
 			StringBuilder str = new StringBuilder() ;
 
-			str.AppendLine("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\" />") ;
 			str.AppendLine("<meta name=\"generator\" content=\"Piranha\" />") ;
 			if (Parent.Page.Current != null) {
 				str.AppendLine("<meta name=\"description\" content=\"" + 

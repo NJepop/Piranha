@@ -17,47 +17,40 @@ namespace Piranha.WebPages
 	/// Page class for a single page where the model is of the generic type T.
 	/// </summary>
 	/// <typeparam name="T">The model type</typeparam>
-	public abstract class SinglePage<T> : ContentPage<T> where T : PageModel {
+	public abstract class SinglePage<T> : ContentPage<T> where T : PageModel
+	{
+		#region Members
+		private Models.Page page = null ;
+		#endregion
+
 		/// <summary>
 		/// Initializes the web page
 		/// </summary>
 		protected override void InitializePage() {
 			string permalink = UrlData.Count > 0 ? UrlData[UrlData.Count - 1] : "" ;
+			bool   cached = false ;
 			
-			// Load the current page model
+			// Load the current page
 			if (!String.IsNullOrEmpty(permalink))
-				InitModel(PageModel.GetByPermalink<T>(permalink)) ;
-			else InitModel(PageModel.GetByStartpage<T>()) ;
+				page = Models.Page.GetByPermalink(permalink) ;
+			else page = Models.Page.GetStartpage() ;
 
-			// Check for basic permissions
-			if (Model.Page.GroupId != Guid.Empty) {
-				if (!User.IsMember(Model.Page.GroupId)) {
+			// Check permissions
+			if (page.GroupId != Guid.Empty) {
+				if (!User.IsMember(page.GroupId)) {
 					SysParam param = SysParam.GetByName("LOGIN_PAGE") ;
 					if (param != null)
 						Server.TransferRequest(param.Value) ;
 					else Server.TransferRequest("~/") ;
 				}
-				// Don't cache authenticated pages
 				Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
 			} else {
-				// We only cache public pages
-#if !DEBUG
-				Response.Cache.SetETag(GenerateETag()) ;
-				Response.Cache.SetLastModified(Model.Page.Updated) ;	
-				if (IsCached()) {
-					Response.StatusCode = 304 ;
-					Response.SuppressContent = true ;
-					Response.End() ;
-				} else {
-					Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
-					Response.Cache.SetExpires(DateTime.Now.AddMinutes(30)) ;
-					Response.Cache.SetMaxAge(new TimeSpan(0, 30, 0)) ;
-				}
-#else
-				// Don't cache when we're in DEBUG
-				Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
-#endif
+				// Only cache public pages
+				cached = HandleCache() ;
 			}
+			// Load the model if the page wasn't cached
+			if (!cached)
+				InitModel(PageModel.Get<T>(page)) ;
 			base.InitializePage() ;
 		}
 
@@ -73,36 +66,25 @@ namespace Piranha.WebPages
 		}
 
 		/// <summary>
-		/// Check if the page is cached on the client.
+		/// Generates the unique entity tag for the page.
 		/// </summary>
-		private bool IsCached() {
-			// Check If-None-Match
-			string etag = Request.Headers["If-None-Match"] ;
-			if (!String.IsNullOrEmpty(etag))
-				if (etag == GenerateETag())
-					return true ;
+		/// <param name="modified">Last modified date</param>
+		/// <returns>The entity tag</returns>
+		protected override string GenerateETag(DateTime modified) {
+			UTF8Encoding encoder = new UTF8Encoding() ;
+			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
 
-			// Check If-Modified-Since
-			string mod = Request.Headers["If-Modified-Since"] ;
-			if (!String.IsNullOrEmpty(mod))
-				try {
-					DateTime since ;
-					if (DateTime.TryParse(mod, out since))
-						return since >= Model.Page.Updated ;
-				} catch {}
-			return false ;
+			string str = page.Id.ToString() + modified.ToLongTimeString() ;
+			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;
+			return Convert.ToBase64String(bts, 0, bts.Length);
 		}
 
 		/// <summary>
-		/// Generates the page ETag from the id and updated time.
+		/// Gets the last modification date for the page.
 		/// </summary>
-		/// <returns>The ETag</returns>
-		private string GenerateETag() {
-			UTF8Encoding encoder = new UTF8Encoding() ;
-			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
-			string str = Model.Page.Id.ToString() + Model.Page.Updated.ToLongTimeString() ;
-			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;
-			return Convert.ToBase64String(bts, 0, bts.Length);
+		/// <returns>The modification date</returns>
+		protected override DateTime GetLastModified() {
+			return page.Updated ;
 		}
 		#endregion
 	}
