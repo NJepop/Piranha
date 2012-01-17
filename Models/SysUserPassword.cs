@@ -54,8 +54,8 @@ namespace Piranha.Models
 			string pw = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 6) ;
 
 			// Insert two random special characters somewhere
-			pw.Insert(rnd.Next() % pw.Length, sc.Substring(rnd.Next() % sc.Length, 1)) ;
-			pw.Insert(rnd.Next() % pw.Length, sc.Substring(rnd.Next() % sc.Length, 1)) ;
+			pw = pw.Insert(rnd.Next() % pw.Length, sc.Substring(rnd.Next() % sc.Length, 1)) ;
+			pw = pw.Insert(rnd.Next() % pw.Length, sc.Substring(rnd.Next() % sc.Length, 1)) ;
 
 			return pw ;
 		}
