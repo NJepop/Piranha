@@ -73,10 +73,13 @@ namespace Piranha.Models.Manager.SettingModels
 			
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
 				try {
-					if (Password.IsSet)
-						Password.Save(tx) ;
 					User.UpdatedBy = uid ;
 					User.Save(tx) ;
+					if (Password.IsSet) {
+						Password.Id = User.Id ;
+						Password.IsNew = false ;
+						Password.Save(tx) ;
+					}
 					tx.Commit();
 				} catch { tx.Rollback() ; throw ; }
 			}

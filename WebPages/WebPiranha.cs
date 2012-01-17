@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Hosting;
@@ -33,7 +34,7 @@ namespace Piranha.WebPages
 		public static void InitManager(AreaRegistrationContext context) {
 			context.MapRoute(
 				"Manager",
-				"Manager/{controller}/{action}/{id}",
+				"manager/{controller}/{action}/{id}",
 				new { controller = "Page", action = "Index", id = UrlParameter.Optional }
 			) ;
 		}
@@ -117,6 +118,74 @@ namespace Piranha.WebPages
 				else context.RewritePath("~/page") ;
 			}
 		}
+
+		/// <summary>
+		/// Checks request headers against the given etag and last modification data and
+		/// sets the correct response headers. Returns weather the file is client cached 
+		/// or should be loaded/rendered.
+		/// </summary>
+		/// <param name="context">The current context</param>
+		/// <param name="etag">The entity tag</param>
+		/// <param name="modified">Last nodification</param>
+		/// <returns>If the file is cached</returns>
+		public static bool HandleClientCache(HttpContext context, string etag, DateTime modified) {
+#if !DEBUG
+			context.Response.Cache.SetETag(etag) ;
+			context.Response.Cache.SetLastModified(modified <= DateTime.Now ? modified : DateTime.Now) ;	
+			context.Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
+			context.Response.Cache.SetExpires(DateTime.Now.AddMinutes(Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_EXPIRES").Value))) ;
+			context.Response.Cache.SetMaxAge(new TimeSpan(0, Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_MAXAGE").Value), 0)) ;
+
+			if (IsCached(context, modified, etag)) {
+				context.Response.StatusCode = 304 ;
+				context.Response.SuppressContent = true ;
+				context.Response.End() ;
+				return true ;
+			}
+#else
+			Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
+#endif
+			return false ;
+		}
+
+		/// <summary>
+		/// Generates an unique entity tag.
+		/// </summary>
+		/// <param name="name">Object name</param>
+		/// <param name="modified">Last modified date</param>
+		/// <returns>The entity tag</returns>
+		public static string GenerateETag(string name, DateTime modified) {
+			UTF8Encoding encoder = new UTF8Encoding() ;
+			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
+
+			string str = name + modified.ToLongTimeString() ;
+			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;
+			return Convert.ToBase64String(bts, 0, bts.Length);
+		}
+
+		/// <summary>
+		/// Check if the page is client cached.
+		/// </summary>
+		/// <param name="modified">Last modification date</param>
+		/// <param name="entitytag">Entity tag</param>
+		private static bool IsCached(HttpContext context, DateTime modified, string entitytag) {
+			// Check If-None-Match
+			string etag = context.Request.Headers["If-None-Match"] ;
+			if (!String.IsNullOrEmpty(etag))
+				if (etag == entitytag)
+					return true ;
+
+			// Check If-Modified-Since
+			string mod = context.Request.Headers["If-Modified-Since"] ;
+			if (!String.IsNullOrEmpty(mod))
+				try {
+					DateTime since ;
+					if (DateTime.TryParse(mod, out since))
+						return since >= modified ;
+				} catch {}
+			return false ;
+		}
+
 
 		#region Private methods
 		/// <summary>

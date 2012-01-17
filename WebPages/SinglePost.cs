@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 using Piranha.Models;
 
@@ -28,30 +28,19 @@ namespace Piranha.WebPages
 			if (!String.IsNullOrEmpty(permalink))
 				InitModel(PostModel.GetByPermalink<T>(permalink)) ;
 
-			HandleCache() ;
+			// Cache management
+			DateTime mod = GetLastModified() ;
+			string etag = WebPiranha.GenerateETag(Model.Post.Id.ToString(), mod) ;
+			WebPiranha.HandleClientCache(HttpContext.Current, etag, mod) ;
 
 			base.InitializePage() ;
 		}
 
 		/// <summary>
-		/// Generates the unique entity tag for the page.
+		/// Gets the lastest modification date for caching.
 		/// </summary>
-		/// <param name="modified">Last modified date</param>
-		/// <returns>The entity tag</returns>
-		protected override string GenerateETag(DateTime modified) {
-			UTF8Encoding encoder = new UTF8Encoding() ;
-			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
-
-			string str = Model.Post.Id.ToString() + modified.ToLongTimeString() ;
-			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;
-			return Convert.ToBase64String(bts, 0, bts.Length);
-		}
-
-		/// <summary>
-		/// Gets the last modification date for the page.
-		/// </summary>
-		/// <returns>The modification date</returns>
-		protected override DateTime GetLastModified() {
+		/// <returns></returns>
+		protected virtual DateTime GetLastModified() {
 			return Model.Post.Updated ;
 		}
 

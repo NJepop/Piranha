@@ -157,7 +157,8 @@ namespace Piranha.Models
 		public static string Encrypt(string str) {
 			UTF8Encoding encoder = new UTF8Encoding() ;
 			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
-			return encoder.GetString(crypto.ComputeHash(encoder.GetBytes(str))) ;
+			byte[] bytes = crypto.ComputeHash(encoder.GetBytes(str)) ;
+			return Convert.ToBase64String(bytes) ;
 		}
 	}
 }

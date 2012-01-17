@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Security.Cryptography;
+using System.Web;
 
 using Piranha.Models;
 
@@ -46,12 +46,22 @@ namespace Piranha.WebPages
 				Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
 			} else {
 				// Only cache public pages
-				cached = HandleCache() ;
+				DateTime mod = GetLastModified() ;
+				string etag = WebPiranha.GenerateETag(page.Id.ToString(), mod) ;
+				cached = WebPiranha.HandleClientCache(HttpContext.Current, etag, mod) ;
 			}
 			// Load the model if the page wasn't cached
 			if (!cached)
 				InitModel(PageModel.Get<T>(page)) ;
 			base.InitializePage() ;
+		}
+
+		/// <summary>
+		/// Gets the lastest modification date for caching.
+		/// </summary>
+		/// <returns></returns>
+		protected virtual DateTime GetLastModified() {
+			return page.Updated ;
 		}
 
 		#region Private methods
@@ -63,28 +73,6 @@ namespace Piranha.WebPages
 			Model = pm ;
 
 			Page.Current = Model.Page ;
-		}
-
-		/// <summary>
-		/// Generates the unique entity tag for the page.
-		/// </summary>
-		/// <param name="modified">Last modified date</param>
-		/// <returns>The entity tag</returns>
-		protected override string GenerateETag(DateTime modified) {
-			UTF8Encoding encoder = new UTF8Encoding() ;
-			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
-
-			string str = page.Id.ToString() + modified.ToLongTimeString() ;
-			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;
-			return Convert.ToBase64String(bts, 0, bts.Length);
-		}
-
-		/// <summary>
-		/// Gets the last modification date for the page.
-		/// </summary>
-		/// <returns>The modification date</returns>
-		protected override DateTime GetLastModified() {
-			return page.Updated ;
 		}
 		#endregion
 	}
