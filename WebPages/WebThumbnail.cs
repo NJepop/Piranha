@@ -50,7 +50,7 @@ namespace Piranha.WebPages
 			/// </summary>
             private void Generate() {
                 WebBrowser browser = new WebBrowser() { ScrollBarsEnabled = false } ;
-
+				
 				browser.Navigate(Url) ;
                 browser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(DocumentCompleted) ;
 
@@ -91,9 +91,16 @@ namespace Piranha.WebPages
 		/// <returns>The thumbnail</returns>
 		public static void GetThumbnail(HttpResponse response, Guid id, string url, int width, int height) {
 			Bitmap bmp = null ;
+			bool cached = false ;
 
 			if (HasPagePreview(id)) {
-				bmp = (Bitmap)Bitmap.FromFile(GetPagePreviewPath(id)) ;
+				FileInfo file = new FileInfo(GetPagePreviewPath(id)) ;
+				DateTime mod = file.LastWriteTime ;
+				string etag = WebPiranha.GenerateETag(id.ToString(), mod) ;
+				
+				if (!WebPiranha.HandleClientCache(HttpContext.Current, etag, mod, true)) {
+					bmp = (Bitmap)Bitmap.FromFile(GetPagePreviewPath(id)) ;
+				} else cached = true ;
 			} else {
 				bmp = new WebThumbEngine() { 
 					Url    = url, 
@@ -101,25 +108,40 @@ namespace Piranha.WebPages
 					Height = height }.GetThumb() ;
 				bmp.Save(GetPagePreviewPath(id)) ;
 			}
-
-			if (bmp != null) {
-				response.StatusCode = 200 ;
-				response.ContentType = "image/jpeg" ;
-				bmp.Save(response.OutputStream, ImageFormat.Jpeg) ;
-				response.End() ;
-			} else {
-				response.StatusCode = 404 ;
+			if (!cached) {
+				if (bmp != null) {
+					response.StatusCode = 200 ;
+					response.ContentType = "image/jpeg" ;
+					bmp.Save(response.OutputStream, ImageFormat.Jpeg) ;
+					response.End() ;
+				} else {
+					response.StatusCode = 404 ;
+				}
 			}
         }
 
+		/// <summary>
+		/// Gets the physical path to the preview for the page with the given id.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		/// <returns>The path</returns>
 		public static string GetPagePreviewPath(Guid id) {
 			return HttpContext.Current.Server.MapPath("~/App_Data/Cache/Previews/" + id.ToString()) ;
 		}
 
+		/// <summary>
+		/// Checks if there exists a preview for the page with the given id.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		/// <returns>Weather a generated preview exists</returns>
 		public static bool HasPagePreview(Guid id) {
 			return File.Exists(GetPagePreviewPath(id)) ;
 		}
 
+		/// <summary>
+		/// Removes the specified preview.
+		/// </summary>
+		/// <param name="id">The page id</param>
 		public static void RemovePagePreview(Guid id) {
 			if (HasPagePreview(id))
 				File.Delete(GetPagePreviewPath(id)) ;

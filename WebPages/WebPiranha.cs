@@ -128,22 +128,29 @@ namespace Piranha.WebPages
 		/// <param name="etag">The entity tag</param>
 		/// <param name="modified">Last nodification</param>
 		/// <returns>If the file is cached</returns>
-		public static bool HandleClientCache(HttpContext context, string etag, DateTime modified) {
+		public static bool HandleClientCache(HttpContext context, string etag, DateTime modified, bool noexpire = false) {
 #if !DEBUG
-			context.Response.Cache.SetETag(etag) ;
-			context.Response.Cache.SetLastModified(modified <= DateTime.Now ? modified : DateTime.Now) ;	
-			context.Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
-			context.Response.Cache.SetExpires(DateTime.Now.AddMinutes(Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_EXPIRES").Value))) ;
-			context.Response.Cache.SetMaxAge(new TimeSpan(0, Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_MAXAGE").Value), 0)) ;
-
-			if (IsCached(context, modified, etag)) {
-				context.Response.StatusCode = 304 ;
-				context.Response.SuppressContent = true ;
-				context.Response.End() ;
-				return true ;
+			if (!context.Request.IsLocal) {
+				context.Response.Cache.SetETag(etag) ;
+				context.Response.Cache.SetLastModified(modified <= DateTime.Now ? modified : DateTime.Now) ;	
+				context.Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
+				if (!noexpire) {
+					context.Response.Cache.SetExpires(DateTime.Now.AddMinutes(Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_EXPIRES").Value))) ;
+					context.Response.Cache.SetMaxAge(new TimeSpan(0, Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_MAXAGE").Value), 0)) ;
+				} else {
+					context.Response.Cache.SetExpires(DateTime.Now) ;
+				}
+				if (IsCached(context, modified, etag)) {
+					context.Response.StatusCode = 304 ;
+					context.Response.SuppressContent = true ;
+					context.Response.End() ;
+					return true ;
+				}
+			} else {
+				context.Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
 			}
 #else
-			Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
+			context.Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
 #endif
 			return false ;
 		}

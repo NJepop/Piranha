@@ -24,7 +24,7 @@ namespace Piranha.Data
 		/// </summary>
 		/// <param name="name">Optional name of the connection string to use</param>
 		/// <returns>An open connection</returns>
-		public static IDbConnection OpenConnection(string name = "default") {
+		public static IDbConnection OpenConnection(string name = "piranha") {
 			if (_factory == null)
 				_factory = GetFactory(name) ;
 			IDbConnection conn = GetConnection(name) ;
