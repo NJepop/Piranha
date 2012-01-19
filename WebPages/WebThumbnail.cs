@@ -102,11 +102,9 @@ namespace Piranha.WebPages
 					bmp = (Bitmap)Bitmap.FromFile(GetPagePreviewPath(id)) ;
 				} else cached = true ;
 			} else {
-				bmp = new WebThumbEngine() { 
-					Url    = url, 
-					Width  = width, 
-					Height = height }.GetThumb() ;
-				bmp.Save(GetPagePreviewPath(id)) ;
+				using (bmp = new WebThumbEngine() { Url = url, Width = width, Height = height }.GetThumb()) {
+					bmp.Save(GetPagePreviewPath(id)) ;
+				}			
 			}
 			if (!cached) {
 				if (bmp != null) {
