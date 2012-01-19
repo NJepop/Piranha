@@ -38,10 +38,42 @@ namespace Piranha.WebPages
 
 			str.AppendLine("<meta name=\"generator\" content=\"Piranha\" />") ;
 			if (Parent.Page.Current != null) {
-				str.AppendLine("<meta name=\"description\" content=\"" + 
-					((Page)Parent.Page.Current).Description + "\" />") ;
-				str.AppendLine("<meta name=\"keywords\" content=\"" + 
-					((Page)Parent.Page.Current).Keywords + "\" />") ;
+				/**
+				 * Basic meta tags
+				 */
+				if (!String.IsNullOrEmpty(((Page)Parent.Page.Current).Description))
+					str.AppendLine("<meta name=\"description\" content=\"" + 
+						((Page)Parent.Page.Current).Description + "\" />") ;
+				if (!String.IsNullOrEmpty(((Page)Parent.Page.Current).Keywords))
+					str.AppendLine("<meta name=\"keywords\" content=\"" + 
+						((Page)Parent.Page.Current).Keywords + "\" />") ;
+
+				/**
+				 * Open graph meta tags
+				 */
+				str.AppendLine("<meta property=\"og:site_name\" content=\"" + 
+					SysParam.GetByName("SITE_TITLE").Value + "\" />") ;
+				str.AppendLine("<meta property=\"og:url\" content=\"" + 
+					"http://" + Parent.Request.Url.DnsSafeHost +
+					Parent.Request.RawUrl + "\" />") ;
+				if (((Page)Parent.Page.Current).IsStartpage) {
+					str.AppendLine("<meta property=\"og:type\" content=\"website\" />") ;
+					str.AppendLine("<meta property=\"og:description\" content=\"" + 
+						SysParam.GetByName("SITE_DESCRIPTION").Value + "\" />") ;
+				} else {
+					str.AppendLine("<meta property=\"og:type\" content=\"article\" />") ;
+					if (!String.IsNullOrEmpty(((Page)Parent.Page.Current).Description)) {
+						str.AppendLine("<meta property=\"og:description\" content=\"" + 
+							((Page)Parent.Page.Current).Description + "\" />") ;
+					}
+				}
+				str.AppendLine("<meta property=\"og:title\" content=\"" + 
+					((Page)Parent.Page.Current).Title + "\" />") ;
+			} else {
+				/**
+				 * Open graph meta tags
+				 */
+				str.AppendLine("<meta property=\"og:type\" content=\"article\" />") ;
 			}
 
 			return new HtmlString(str.ToString()) ;

@@ -27,7 +27,7 @@
                 <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
             @if (!Model.Page.IsNew) {
             <li><a href="http://@Request.Url.DnsSafeHost@Url.GetPermalink(Model.Page.Permalink).ToLower()" target="preview" class="preview"></a>
-                <div class="tooltip"><img class="page-preview" src="http://@Request.Url.DnsSafeHost@Url.GetPreviewlink(Model.Page.Id).ToLower()" alt="Förhandsgranskning" /></div></li>
+                <div class="tooltip"><p>Förhandsgranska sidan</p><!-- img class="page-preview" src="" alt="Förhandsgranskning" /--></div></li>
             }
         </ul>
         <div class="clear"></div>
@@ -176,3 +176,15 @@
     }
 </div>
 @{ Html.EndForm() ; }
+@section Foot {
+    @if (false) { // (!Model.Page.IsNew) {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".toolbar .page-preview").attr("src", "http://@Request.Url.DnsSafeHost@Url.GetPreviewlink(Model.Page.Id).ToLower()");
+            $.each($(".toolbar .tooltip"), function (i, e) {
+                $(this).css({ left: -(($(this).outerWidth() - $(this).parent("li").width()) / 2) });
+            });
+        });
+    </script>
+    }
+}

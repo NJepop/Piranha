@@ -141,7 +141,7 @@ namespace Piranha.Models.Manager.PageModels
 
 					try {
 						// Delete page preview
-						WebPages.WebThumb.RemovePagePreview(Page.Id) ;
+						// WebPages.WebThumb.RemovePagePreview(Page.Id) ;
 					} catch {}
 				} catch { tx.Rollback() ; throw ; }
 			}
@@ -163,7 +163,7 @@ namespace Piranha.Models.Manager.PageModels
 
 					try {
 						// Delete page preview
-						WebPages.WebThumb.RemovePagePreview(Page.Id) ;
+						// WebPages.WebThumb.RemovePagePreview(Page.Id) ;
 					} catch {}
 				} catch { tx.Rollback() ; return false ; }
 			}
