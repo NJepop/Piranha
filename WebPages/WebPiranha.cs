@@ -21,10 +21,8 @@ namespace Piranha.WebPages
 			// Register virtual path provider for the manager area
 			HostingEnvironment.RegisterVirtualPathProvider(new Piranha.Web.ResourcePathProvider()) ;
 
+			// This will trigger the manager area registration
 			AreaRegistration.RegisterAllAreas() ;
-			RegisterGlobalFilters(GlobalFilters.Filters) ;
-			RegisterRoutes(RouteTable.Routes) ;
-			RegisterBinders() ;
 		}
 
 		/// <summary>
@@ -32,11 +30,16 @@ namespace Piranha.WebPages
 		/// </summary>
 		/// <param name="context"></param>
 		public static void InitManager(AreaRegistrationContext context) {
+			// Register manager routing
 			context.MapRoute(
 				"Manager",
 				"manager/{controller}/{action}/{id}",
 				new { controller = "Page", action = "Index", id = UrlParameter.Optional }
 			) ;
+
+			// Register filters & binders
+			RegisterGlobalFilters(GlobalFilters.Filters) ;
+			RegisterBinders() ;
 		}
 
 		/// <summary>
@@ -195,16 +198,6 @@ namespace Piranha.WebPages
 
 
 		#region Private methods
-		/// <summary>
-		/// Registers all routes.
-		/// </summary>
-		/// <param name="routes">The current route collection</param>
-		private static void RegisterRoutes(RouteCollection routes) {
-			/*routes.MapRoute("Manager",
-				"Manager.aspx/{controller}/{action}/{id}",
-				new { controller = "Page", action = "Index", id = UrlParameter.Optional }) ;*/
-		}
-
 		/// <summary>
 		/// Registers all global filters.
 		/// </summary>
