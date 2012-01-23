@@ -4,8 +4,6 @@
 }
 @section Head {
     @Html.Partial("~/Areas/Manager/Views/Shared/Partial/TinyMCE.cshtml")
-    <script type="text/javascript" src="@Url.Content("~/Areas/Manager/Content/Js/jquery.page.js")"></script>
-
     <script type="text/javascript">
         $(document).ready(function () {
             $("#Page_Title").focus();
@@ -17,11 +15,20 @@
 <div class="grid_12 toolbar">
     <div class="inner">
         <ul>
-            <li><a class="save submit" title="Spara sidan"></a></li>
-            <li><a href="@Url.Action("Delete", new { id = Model.Page.Id })" class="delete" title="Ta bort sidan"></a></li>
-            <li><a href="@Url.Action("Index", "Page")" class="back" title="Backa"></a></li>
-            <li><a href="" class="refresh" title="Ladda om sidan"></a></li>
-            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+            <li><a class="save submit"></a>
+                <div class="tooltip"><p>Spara sidan</p></div></li>
+            <li><a href="@Url.Action("Delete", new { id = Model.Page.Id })" class="delete"></a>
+                <div class="tooltip"><p>Ta bort sidan</p></div></li>
+            <li><a href="@Url.Action("Index", "Page")" class="back"></a>
+                <div class="tooltip"><p>Backa</p></div></li>
+            <li><a href="" class="refresh"></a>
+                <div class="tooltip"><p>Ladda om sidan</p></div></li>
+            <li><a href="" class="info"></a>
+                <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
+            @if (!Model.Page.IsNew) {
+            <li><a href="http://@Request.Url.DnsSafeHost@Url.GetPermalink(Model.Page.Permalink).ToLower()" target="preview" class="preview"></a>
+                <div class="tooltip"><p>Förhandsgranska sidan</p><!-- img class="page-preview" src="" alt="Förhandsgranskning" /--></div></li>
+            }
         </ul>
         <div class="clear"></div>
     </div>
@@ -72,13 +79,6 @@
                     <div class="input">
                         @Html.TextBoxFor(m => m.Page.PageController, new { @placeholder = !String.IsNullOrEmpty(Model.Template.Controller) ? Model.Template.Controller : "Ej obligatorisk" })</div>
                     @Html.ValidationMessageFor(m => m.Page.PageController)
-                </li>
-                }
-                @if (Model.Template.ShowView) {
-                <li>@Html.LabelFor(m => m.Page.PageView)
-                    <div class="input">
-                        @Html.TextBoxFor(m => m.Page.PageView, new { @placeholder = !String.IsNullOrEmpty(Model.Template.View) ? Model.Template.View : "Ej obligatorisk" })</div>
-                    @Html.ValidationMessageFor(m => m.Page.PageView)
                 </li>
                 }
                 @if (Model.Template.ShowRedirect) {
@@ -176,3 +176,15 @@
     }
 </div>
 @{ Html.EndForm() ; }
+@section Foot {
+    @if (false) { // (!Model.Page.IsNew) {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".toolbar .page-preview").attr("src", "http://@Request.Url.DnsSafeHost@Url.GetPreviewlink(Model.Page.Id).ToLower()");
+            $.each($(".toolbar .tooltip"), function (i, e) {
+                $(this).css({ left: -(($(this).outerWidth() - $(this).parent("li").width()) / 2) });
+            });
+        });
+    </script>
+    }
+}

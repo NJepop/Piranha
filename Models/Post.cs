@@ -10,13 +10,29 @@ using Piranha.Data;
 
 namespace Piranha.Models
 {
+	#region Client API
+	/// <summary>
+	/// This is the interface through which the post is accessed from the client API.
+	/// </summary>
+	public interface IPost {
+		Guid Id { get ; }
+		string Title { get ; }
+		string Permalink { get ; }
+		string Excerpt { get ; }
+		HtmlString Body { get ; }
+		DateTime Created { get ; }
+		DateTime Updated { get ; }
+		DateTime Published { get ; }
+	}
+	#endregion
+
 	/// <summary>
 	/// Active record for a page.
 	/// </summary>
 	[PrimaryKey(Column="post_id")]
 	[Join(TableName="posttemplate", ForeignKey="post_template_id", PrimaryKey="posttemplate_id")]
 	[Join(TableName="permalink", ForeignKey="post_id", PrimaryKey="permalink_parent_id")]
-	public class Post : PiranhaRecord<Post>
+	public class Post : PiranhaRecord<Post>, IPost
 	{
 		#region Fields
 		/// <summary>

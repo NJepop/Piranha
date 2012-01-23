@@ -10,11 +10,16 @@
 <div class="grid_12 toolbar">
     <div class="inner">
         <ul>
-            <li><a class="save submit" title="Spara mallen"></a></li>
-            <li><a href="@Url.Action("DeletePage", new { id = Model.Template.Id })" class="delete" title="Ta bort mallen"></a></li>
-            <li><a href="@Url.Action("Index", "Page")#templates" class="back" title="Backa"></a></li>
-            <li><a href="" class="refresh" title="Ladda om mallen"></a></li>
-            <li><a href="" class="info" title="Visa information & hjälptext"></a></li>
+            <li><a class="save submit"></a>
+                <div class="tooltip"><p>Spara mallen</p></div></li>
+            <li><a href="@Url.Action("DeletePage", new { id = Model.Template.Id })" class="delete" title=""></a>
+                <div class="tooltip"><p>Ta bort mallen</p></div></li>
+            <li><a href="@Url.Action("Index", "Page")#templates" class="back"></a>
+                <div class="tooltip"><p>Backa</p></div></li>
+            <li><a href="" class="refresh"></a>
+                <div class="tooltip"><p>Ladda om mallen</p></div></li>
+            <li><a href="" class="info"></a>
+                <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
         </ul>
         <div class="clear"></div>
     </div>
@@ -62,12 +67,6 @@
         <div class="inner">
             <h2>Avancerat</h2>
             <ul class="form">
-                <li>@Html.LabelFor(m => m.Template.View)
-                    <div class="right">
-                        @Html.CheckBoxFor(m => m.Template.ShowView)</div>
-                    <div class="input short">
-                        @Html.TextBoxFor(m => m.Template.View, new { @placeholder = "Ej obligatorisk" })</div>
-                </li>
                 <li>@Html.LabelFor(m => m.Template.Controller)
                     <div class="right">
                         @Html.CheckBoxFor(m => m.Template.ShowController)</div>

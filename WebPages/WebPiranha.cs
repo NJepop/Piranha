@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Hosting;
@@ -20,10 +21,8 @@ namespace Piranha.WebPages
 			// Register virtual path provider for the manager area
 			HostingEnvironment.RegisterVirtualPathProvider(new Piranha.Web.ResourcePathProvider()) ;
 
+			// This will trigger the manager area registration
 			AreaRegistration.RegisterAllAreas() ;
-			RegisterGlobalFilters(GlobalFilters.Filters) ;
-			RegisterRoutes(RouteTable.Routes) ;
-			RegisterBinders() ;
 		}
 
 		/// <summary>
@@ -31,11 +30,16 @@ namespace Piranha.WebPages
 		/// </summary>
 		/// <param name="context"></param>
 		public static void InitManager(AreaRegistrationContext context) {
+			// Register manager routing
 			context.MapRoute(
 				"Manager",
-				"Manager/{controller}/{action}/{id}",
+				"manager/{controller}/{action}/{id}",
 				new { controller = "Page", action = "Index", id = UrlParameter.Optional }
 			) ;
+
+			// Register filters & binders
+			RegisterGlobalFilters(GlobalFilters.Filters) ;
+			RegisterBinders() ;
 		}
 
 		/// <summary>
@@ -90,6 +94,22 @@ namespace Piranha.WebPages
 						content.GetThumbnail(context.Response) ;
 					else content.GetThumbnail(context.Response, Convert.ToInt32(param[1])) ;
 				}
+			} else if (path.StartsWith("/preview/")) {
+				//
+				// Http preview
+				//
+				Page page = Page.GetSingle(new Guid(path.Substring(9))) ;
+				WebThumb.GetThumbnail(context.Response, page.Id, "http://" + context.Request.Url.DnsSafeHost + 
+					VirtualPathUtility.ToAbsolute("~/hem/" + page.Permalink), 300, 225) ;
+			} else if (path.StartsWith("/upload/")) {
+				//
+				// Uploaded content
+				//
+				string [] param = path.Substring(8).Split(new char[] { '/' }) ;
+				Upload upload = Upload.GetSingle(new Guid(param[0])) ;
+
+				if (upload != null)
+					upload.GetFile(context.Response) ;
 			} else if (path == "/") {
 				//
 				// Rewrite to current startpage
@@ -102,17 +122,82 @@ namespace Piranha.WebPages
 			}
 		}
 
-		#region Private methods
 		/// <summary>
-		/// Registers all routes.
+		/// Checks request headers against the given etag and last modification data and
+		/// sets the correct response headers. Returns weather the file is client cached 
+		/// or should be loaded/rendered.
 		/// </summary>
-		/// <param name="routes">The current route collection</param>
-		private static void RegisterRoutes(RouteCollection routes) {
-			/*routes.MapRoute("Manager",
-				"Manager.aspx/{controller}/{action}/{id}",
-				new { controller = "Page", action = "Index", id = UrlParameter.Optional }) ;*/
+		/// <param name="context">The current context</param>
+		/// <param name="etag">The entity tag</param>
+		/// <param name="modified">Last nodification</param>
+		/// <returns>If the file is cached</returns>
+		public static bool HandleClientCache(HttpContext context, string etag, DateTime modified, bool noexpire = false) {
+#if !DEBUG
+			if (!context.Request.IsLocal) {
+				context.Response.Cache.SetETag(etag) ;
+				context.Response.Cache.SetLastModified(modified <= DateTime.Now ? modified : DateTime.Now) ;	
+				context.Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
+				if (!noexpire) {
+					context.Response.Cache.SetExpires(DateTime.Now.AddMinutes(Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_EXPIRES").Value))) ;
+					context.Response.Cache.SetMaxAge(new TimeSpan(0, Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_MAXAGE").Value), 0)) ;
+				} else {
+					context.Response.Cache.SetExpires(DateTime.Now) ;
+				}
+				if (IsCached(context, modified, etag)) {
+					context.Response.StatusCode = 304 ;
+					context.Response.SuppressContent = true ;
+					context.Response.End() ;
+					return true ;
+				}
+			} else {
+				context.Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
+			}
+#else
+			context.Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
+#endif
+			return false ;
 		}
 
+		/// <summary>
+		/// Generates an unique entity tag.
+		/// </summary>
+		/// <param name="name">Object name</param>
+		/// <param name="modified">Last modified date</param>
+		/// <returns>The entity tag</returns>
+		public static string GenerateETag(string name, DateTime modified) {
+			UTF8Encoding encoder = new UTF8Encoding() ;
+			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
+
+			string str = name + modified.ToLongTimeString() ;
+			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;
+			return Convert.ToBase64String(bts, 0, bts.Length);
+		}
+
+		/// <summary>
+		/// Check if the page is client cached.
+		/// </summary>
+		/// <param name="modified">Last modification date</param>
+		/// <param name="entitytag">Entity tag</param>
+		private static bool IsCached(HttpContext context, DateTime modified, string entitytag) {
+			// Check If-None-Match
+			string etag = context.Request.Headers["If-None-Match"] ;
+			if (!String.IsNullOrEmpty(etag))
+				if (etag == entitytag)
+					return true ;
+
+			// Check If-Modified-Since
+			string mod = context.Request.Headers["If-Modified-Since"] ;
+			if (!String.IsNullOrEmpty(mod))
+				try {
+					DateTime since ;
+					if (DateTime.TryParse(mod, out since))
+						return since >= modified ;
+				} catch {}
+			return false ;
+		}
+
+
+		#region Private methods
 		/// <summary>
 		/// Registers all global filters.
 		/// </summary>

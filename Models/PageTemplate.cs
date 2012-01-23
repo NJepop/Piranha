@@ -13,7 +13,7 @@ namespace Piranha.Models
 	/// Active record for a page template.
 	/// </summary>
 	[PrimaryKey(Column="pagetemplate_id")]
-	public class PageTemplate : PiranhaRecord<PageTemplate>
+	public class PageTemplate : PiranhaRecord<PageTemplate>, ICacheRecord<PageTemplate>
 	{
 		#region Fields
 		/// <summary>
@@ -57,21 +57,8 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the optional view name for the template.
 		/// </summary>
-		[Column(Name="pagetemplate_view")]
-		[Display(Name="Vy")]
-		public string View { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets wether the view can be overridden by the implementing page.
-		/// </summary>
-		[Column(Name="pagetemplate_view_show")]
-		public bool ShowView { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the optional view name for the template.
-		/// </summary>
 		[Column(Name="pagetemplate_controller")]
-		[Display(Name="Kontroller")]
+		[Display(Name="Webbmall")]
 		public string Controller { get ; set ; }
 
 		/// <summary>
@@ -124,6 +111,19 @@ namespace Piranha.Models
 		public int Count { get ; set ; }
 		#endregion
 
+		#region Properties
+		/// <summary>
+		/// Gets the cache object.
+		/// </summary>
+		private static Dictionary<Guid, PageTemplate> Cache {
+			get {
+				if (HttpContext.Current.Cache[typeof(PageTemplate).Name] == null)
+					HttpContext.Current.Cache[typeof(PageTemplate).Name] = new Dictionary<Guid, PageTemplate>() ;
+				return (Dictionary<Guid, PageTemplate>)HttpContext.Current.Cache[typeof(PageTemplate).Name] ;
+			}
+		}
+		#endregion
+
 		/// <summary>
 		/// Default constructor.
 		/// </summary>
@@ -131,6 +131,26 @@ namespace Piranha.Models
 			PageRegions = new List<string>() ;
 			Properties = new List<string>() ;
 			Name = new ComplexName() ;
+		}
+
+		/// <summary>
+		/// Gets a single page template.
+		/// </summary>
+		/// <param name="id">The template id</param>
+		/// <returns>The page</returns>
+		public static PageTemplate GetSingle(Guid id) {
+			if (!Cache.ContainsKey(id))
+				Cache[id] = PageTemplate.GetSingle((object)id) ;
+			return Cache[id] ;
+		}
+
+		/// <summary>
+		/// Invalidate the cache for the given record.
+		/// </summary>
+		/// <param name="record">The record.</param>
+		public void InvalidateRecord(PageTemplate record) {
+			if (Cache.ContainsKey(record.Id))
+				Cache.Remove(record.Id) ;
 		}
 	}
 }

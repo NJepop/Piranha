@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+
+using Piranha.WebPages;
 
 namespace Piranha.Web
 {
@@ -25,17 +30,22 @@ namespace Piranha.Web
 			if (res.FileExists(context.Request.Path)) {
 				var file = res.GetFile(context.Request.Path) ;
 
-				if (file.Name.EndsWith(".js")) {
-					context.Response.ContentType = "text/javascript" ;
-				} else if (file.Name.EndsWith(".css")) {
-					context.Response.ContentType = "text/css" ;
-				}
+				DateTime mod = new FileInfo(Assembly.GetExecutingAssembly().Location).LastWriteTime ;
+				string etag = WebPiranha.GenerateETag(file.VirtualPath, mod) ;
 
-				var stream = file.Open() ;
-				byte[] bytes = new byte[stream.Length] ;
-				stream.Read(bytes, 0, Convert.ToInt32(stream.Length)) ;
-				context.Response.BinaryWrite(bytes) ;
-				stream.Close() ;
+				if (!WebPiranha.HandleClientCache(context, etag, mod)) {
+					if (file.Name.EndsWith(".js")) {
+						context.Response.ContentType = "text/javascript" ;
+					} else if (file.Name.EndsWith(".css")) {
+						context.Response.ContentType = "text/css" ;
+					}
+					var stream = file.Open() ;
+					byte[] bytes = new byte[stream.Length] ;
+
+					stream.Read(bytes, 0, Convert.ToInt32(stream.Length)) ;
+					context.Response.BinaryWrite(bytes) ;
+					stream.Close() ;
+				}
 			}
 		}
 	}

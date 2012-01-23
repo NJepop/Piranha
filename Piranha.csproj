@@ -68,14 +68,9 @@
     <Compile Include="Areas\Manager\Controllers\PostController.cs" />
     <Compile Include="Areas\Manager\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Manager\Controllers\TemplateController.cs" />
-    <Compile Include="Controllers\MediaController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LogoutController.cs" />
-    <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Models\Category.cs" />
-    <Compile Include="Models\IModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ComplexName.cs" />
     <Compile Include="Models\ArchiveModel.cs" />
@@ -133,17 +128,9 @@
     <Compile Include="WebPages\ModelBinder.cs" />
     <Compile Include="WebPages\PiranhaHelper.cs" />
     <Compile Include="WebPages\WebThumbnail.cs" />
-    <Compile Include="Web\MvcPiranha.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Web\ResourceHandler.cs" />
     <Compile Include="Web\ResourcePathProvider.cs" />
     <Compile Include="WebPages\SinglePage.cs" />
-    <Compile Include="Web\UploadResult.cs" />
-    <Compile Include="Web\ImageResult.cs" />
-    <Compile Include="Controllers\PiranhaController.cs" />
-    <Compile Include="Web\PiranhaImageResult.cs" />
-    <Compile Include="Web\TransferResult.cs" />
     <Compile Include="Web\PiranhaHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebPages\WebPiranha.cs" />

@@ -79,7 +79,7 @@ namespace Piranha.Web
 		/// <returns>The dependency</returns>
         public override CacheDependency GetCacheDependency(string virtualpath, IEnumerable dependencies, DateTime start) {
             if (IsResourceFile(virtualpath))
-                return null ;
+				return new CacheDependency(Assembly.GetExecutingAssembly().Location, start) ;
             return base.GetCacheDependency(virtualpath, dependencies, start) ;
         }
 	}
@@ -99,7 +99,7 @@ namespace Piranha.Web
 		/// </summary>
 		/// <param name="virtualpath">The virtual path</param>
 		public ResourceVirtualFile(string virtualpath) : base(virtualpath) {
-            path = VirtualPathUtility.ToAppRelative(virtualpath);
+            path = VirtualPathUtility.ToAppRelative(virtualpath) ;
         }
 
 		/// <summary>

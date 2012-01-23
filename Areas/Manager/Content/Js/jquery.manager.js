@@ -743,25 +743,9 @@ $(document).ready(function () {
     });
 
     //
-    // Toggle tooltips
-    //
-    $(".toolbar li").hover(function () {
-        var tooltip = $(this).children(".tooltip:first");
-        var item = $(this);
-
-        tooltip.css({ left: -((tooltip.outerWidth() - item.width()) / 2) });
-        active_tooltip = item.attr("id");
-
-        // We need to do a classic delay so we don't flicker 
-        // when moving the mouse across the toolbar.
-        setTimeout(function () {
-            if (active_tooltip == item.attr("id"))
-                item.children(".tooltip").fadeIn();
-        }, 200);
-    }, function () {
-        if (active_tooltip == $(this).attr("id"))
-            active_tooltip = "";
-        $(this).children(".tooltip").fadeOut();
+    // Position tooltips
+    $.each($(".toolbar .tooltip"), function (i, e) {
+        $(this).css({ left: -(($(this).outerWidth() - $(this).parent("li").width()) / 2) });
     });
 
     //
@@ -938,6 +922,7 @@ function bindEvents() {
         if (name != null && name != "") {
             $("#pageregions").append(
                 '<li><span>' + name + '</span><button class="btn delete right remove-region"></button></li>');
+            $("#pr_name").val("");
             bindEvents();
         } else alert("Du måste ange ett namn för regionen.");
         return false;
@@ -949,6 +934,7 @@ function bindEvents() {
         if (name != null && name != "") {
             $("#properties").append(
                 '<li><span>' + name + '</span><button class="btn delete right remove-region"></button></li>');
+            $("#po_name").val("");
             bindEvents();
         } else alert("Du måste ange ett namn för egenskapen.");
         return false;

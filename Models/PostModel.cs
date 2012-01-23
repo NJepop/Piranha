@@ -7,13 +7,13 @@ using Piranha.Data;
 
 namespace Piranha.Models
 {
-	public class PostModel : IModel
+	public class PostModel
 	{
 		#region Properties
 		/// <summary>
 		/// Gets/sets the post.
 		/// </summary>
-		public Post Post { get ; set ; }
+		public IPost Post { get ; set ; }
 	
 		/// <summary>
 		/// Gets/sets the post categories.
@@ -38,7 +38,7 @@ namespace Piranha.Models
 		/// <returns>The model</returns>
 		public static PostModel GetById(Guid id) {
 			PostModel m = new PostModel() {
-				Post = Post.GetSingle(id)
+				Post = Models.Post.GetSingle(id)
 			} ;
 			m.GetRelated() ;
 			return m ;
@@ -62,7 +62,7 @@ namespace Piranha.Models
 		public static T GetByPermalink<T>(string permalink) where T : PostModel {
 			T m = Activator.CreateInstance<T>() ;
 
-			m.Post = Post.GetByPermalink(permalink) ;
+			m.Post = Models.Post.GetByPermalink(permalink) ;
 			m.GetRelated() ;
 			return m ;
 		}
@@ -75,7 +75,7 @@ namespace Piranha.Models
 			Categories = Category.GetByPostId(Post.Id) ;
 
 			// Get archive
-			Archive = Post.Get("post_template_id = @0", Post.TemplateId,
+			Archive = Models.Post.Get("post_template_id = @0", ((Post)Post).TemplateId,
 				new Params() { OrderBy = "post_created DESC" }) ;
 		}
 	}

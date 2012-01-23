@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 using Piranha.Models;
 
@@ -27,15 +28,20 @@ namespace Piranha.WebPages
 			if (!String.IsNullOrEmpty(permalink))
 				InitModel(PostModel.GetByPermalink<T>(permalink)) ;
 
-			// Check for basic permissions
-			//if (Model.Page.GroupId != Guid.Empty)
-			//	if (!User.IsMember(Model.Page.GroupId)) {
-			//		SysParam param = SysParam.GetByName("LOGIN_PAGE") ;
-			//		if (param != null)
-			//			Server.TransferRequest(param.Value) ;
-			//		else Server.TransferRequest("~/") ;
-			//	}
+			// Cache management
+			DateTime mod = GetLastModified() ;
+			string etag = WebPiranha.GenerateETag(Model.Post.Id.ToString(), mod) ;
+			WebPiranha.HandleClientCache(HttpContext.Current, etag, mod) ;
+
 			base.InitializePage() ;
+		}
+
+		/// <summary>
+		/// Gets the lastest modification date for caching.
+		/// </summary>
+		/// <returns></returns>
+		protected virtual DateTime GetLastModified() {
+			return Model.Post.Updated ;
 		}
 
 		#region Private methods

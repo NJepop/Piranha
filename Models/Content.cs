@@ -179,21 +179,21 @@ namespace Piranha.Models
 				
 				if (img != null) {
 					// Generate thumbnail from image
-					Bitmap   bmp = new Bitmap(size, size) ;
-					Graphics grp = Graphics.FromImage(bmp) ;
+					using (Bitmap bmp = new Bitmap(size, size)) {
+						Graphics grp = Graphics.FromImage(bmp) ;
 
-					grp.SmoothingMode = SmoothingMode.HighQuality ;
-					grp.CompositingQuality = CompositingQuality.HighQuality ;
-					grp.InterpolationMode = InterpolationMode.High ;
+						grp.SmoothingMode = SmoothingMode.HighQuality ;
+						grp.CompositingQuality = CompositingQuality.HighQuality ;
+						grp.InterpolationMode = InterpolationMode.High ;
 
-					// Resize and crop image
-					Rectangle dst = new Rectangle(0, 0, bmp.Width, bmp.Height) ;
-					grp.DrawImage(img, dst, img.Width > img.Height ? (img.Width - img.Height) / 2 : 0,
-						img.Height > img.Width ? (img.Height - img.Width) / 2 : 0, Math.Min(img.Width, img.Height), 
-						Math.Min(img.Height, img.Width), GraphicsUnit.Pixel) ;
+						// Resize and crop image
+						Rectangle dst = new Rectangle(0, 0, bmp.Width, bmp.Height) ;
+						grp.DrawImage(img, dst, img.Width > img.Height ? (img.Width - img.Height) / 2 : 0,
+							img.Height > img.Width ? (img.Height - img.Width) / 2 : 0, Math.Min(img.Width, img.Height), 
+							Math.Min(img.Height, img.Width), GraphicsUnit.Pixel) ;
 
-					bmp.Save(CachedThumbnailPath(size)) ;
-
+						bmp.Save(CachedThumbnailPath(size)) ;
+					}
 					WriteFile(response, CachedThumbnailPath(size)) ;
 				} else {
 					// TODO: Generate thumbnail for non-images

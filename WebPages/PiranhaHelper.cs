@@ -36,13 +36,44 @@ namespace Piranha.WebPages
 		public IHtmlString Head() {
 			StringBuilder str = new StringBuilder() ;
 
-			str.AppendLine("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\" />") ;
 			str.AppendLine("<meta name=\"generator\" content=\"Piranha\" />") ;
 			if (Parent.Page.Current != null) {
-				str.AppendLine("<meta name=\"description\" content=\"" + 
-					((Page)Parent.Page.Current).Description + "\" />") ;
-				str.AppendLine("<meta name=\"keywords\" content=\"" + 
-					((Page)Parent.Page.Current).Keywords + "\" />") ;
+				/**
+				 * Basic meta tags
+				 */
+				if (!String.IsNullOrEmpty(((Page)Parent.Page.Current).Description))
+					str.AppendLine("<meta name=\"description\" content=\"" + 
+						((Page)Parent.Page.Current).Description + "\" />") ;
+				if (!String.IsNullOrEmpty(((Page)Parent.Page.Current).Keywords))
+					str.AppendLine("<meta name=\"keywords\" content=\"" + 
+						((Page)Parent.Page.Current).Keywords + "\" />") ;
+
+				/**
+				 * Open graph meta tags
+				 */
+				str.AppendLine("<meta property=\"og:site_name\" content=\"" + 
+					SysParam.GetByName("SITE_TITLE").Value + "\" />") ;
+				str.AppendLine("<meta property=\"og:url\" content=\"" + 
+					"http://" + Parent.Request.Url.DnsSafeHost +
+					Parent.Request.RawUrl + "\" />") ;
+				if (((Page)Parent.Page.Current).IsStartpage) {
+					str.AppendLine("<meta property=\"og:type\" content=\"website\" />") ;
+					str.AppendLine("<meta property=\"og:description\" content=\"" + 
+						SysParam.GetByName("SITE_DESCRIPTION").Value + "\" />") ;
+				} else {
+					str.AppendLine("<meta property=\"og:type\" content=\"article\" />") ;
+					if (!String.IsNullOrEmpty(((Page)Parent.Page.Current).Description)) {
+						str.AppendLine("<meta property=\"og:description\" content=\"" + 
+							((Page)Parent.Page.Current).Description + "\" />") ;
+					}
+				}
+				str.AppendLine("<meta property=\"og:title\" content=\"" + 
+					((Page)Parent.Page.Current).Title + "\" />") ;
+			} else {
+				/**
+				 * Open graph meta tags
+				 */
+				str.AppendLine("<meta property=\"og:type\" content=\"article\" />") ;
 			}
 
 			return new HtmlString(str.ToString()) ;
@@ -104,23 +135,6 @@ namespace Piranha.WebPages
 				if (sm != null) {
 					RenderUL(CurrentPage, sm, str, StopLevel) ;
 				}
-			}
-			return new HtmlString(str.ToString()) ;
-		}
-
-		/// <summary>
-		/// Return the site structure as an ul/li list with the current page selected.
-		/// </summary>
-		/// <param name="CurrentPage">The current page</param>
-		/// <param name="Root">The root node</param>
-		/// <param name="StopLevel">The stop level of the menu</param>
-		/// <returns>A html string</returns>
-		public IHtmlString Menu(Page CurrentPage, Guid Root, int StopLevel = Int32.MaxValue) {
-			StringBuilder str = new StringBuilder() ;
-
-			Sitemap sm = GetRootNode(Sitemap.GetStructure(true), Root) ;
-			if (sm != null && sm.Pages.Count > 0) {
-				RenderUL(CurrentPage, sm.Pages, str, StopLevel) ;
 			}
 			return new HtmlString(str.ToString()) ;
 		}

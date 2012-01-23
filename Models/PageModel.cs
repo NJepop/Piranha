@@ -12,13 +12,13 @@ namespace Piranha.Models
 	/// <summary>
 	/// Page model for the from cms application.
 	/// </summary>
-	public class PageModel : IModel
+	public class PageModel
 	{
 		#region Properties
 		/// <summary>
 		/// Gets the page.
 		/// </summary>
-		public Page Page { get ; set ; }
+		public IPage Page { get ; set ; }
 
 		/// <summary>
 		/// Gets the available html regions for the page.
@@ -52,9 +52,18 @@ namespace Piranha.Models
 		/// <param name="p">The page record</param>
 		/// <returns>The model</returns>
 		public static PageModel Get(Page p) {
-			PageModel m = new PageModel() {
-				Page = p
-			} ;
+			return Get<PageModel>(p) ;
+		}
+
+		/// <summary>
+		/// Gets the page model for the given page.
+		/// </summary>
+		/// <param name="p">The page record</param>
+		/// <returns>The model</returns>
+		public static T Get<T>(Page p) where T : PageModel {
+			T m = Activator.CreateInstance<T>() ;
+
+			m.Page = p ;
 			m.Init() ;
 			return m ;
 		}
@@ -75,7 +84,7 @@ namespace Piranha.Models
 		public static T GetByStartpage<T>() where T : PageModel {
 			T m = Activator.CreateInstance<T>() ;
 
-			m.Page = Page.GetStartpage() ;
+			m.Page = Models.Page.GetStartpage() ;
 			m.Init() ;
 			return m ;
 		}
@@ -98,7 +107,7 @@ namespace Piranha.Models
 		public static T GetByPermalink<T>(string permalink) where T : PageModel {
 			T m = Activator.CreateInstance<T>() ;
 
-			m.Page = Page.GetByPermalink(permalink) ;
+			m.Page = Models.Page.GetByPermalink(permalink) ;
 			m.Init() ;
 			return m ;
 		}
@@ -110,7 +119,7 @@ namespace Piranha.Models
 		/// <returns>The model</returns>
 		public static PageModel GetById(Guid id) {
 			PageModel m = new PageModel() {
-				Page = Page.GetSingle(id)
+				Page = Models.Page.GetSingle(id)
 			} ;
 			m.Init() ;
 			return m ;
@@ -133,7 +142,7 @@ namespace Piranha.Models
 
 			if (controller.ToLower() != "home") {
 				T m = Activator.CreateInstance<T>() ;
-				m.Page = Page.GetSingle("page_controller = @0 OR (page_controller is NULL AND pagetemplate_controller = @0)", route) ;
+				m.Page = Models.Page.GetSingle("page_controller = @0 OR (page_controller is NULL AND pagetemplate_controller = @0)", route) ;
 
 				if (m.Page.GroupId != Guid.Empty) {
 					if (!HttpContext.Current.User.Identity.IsAuthenticated || !HttpContext.Current.User.IsMember(m.Page.GroupId))
@@ -151,7 +160,7 @@ namespace Piranha.Models
 		/// Gets the associated regions for the current page
 		/// </summary>
 		protected void Init() {
-			PageTemplate pt = PageTemplate.GetSingle(Page.TemplateId) ;
+			PageTemplate pt = PageTemplate.GetSingle(((Page)Page).TemplateId) ;
 
 			// Page regions
 			foreach (string str in pt.PageRegions) {

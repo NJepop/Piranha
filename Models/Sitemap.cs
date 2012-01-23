@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 using Piranha.Data;
 
@@ -193,8 +194,25 @@ namespace Piranha.Models
 		/// <param name="published">Weather only published pages should be included.</param>
 		/// <returns>The site structure</returns>
 		public static List<Sitemap> GetStructure(bool published = true) {
+			// Return the cached public sitemap if it exists.
+			if (published && HttpContext.Current.Cache[typeof(Sitemap).Name] != null)
+				return (List<Sitemap>)HttpContext.Current.Cache[typeof(Sitemap).Name] ;
+
+			// Get the sitemap from the database
 			List<Sitemap> pages = Get(new Params() { OrderBy = "page_parent_id, page_seqno" }) ;
-			return Sort(pages, Guid.Empty) ;
+			pages = Sort(pages, Guid.Empty) ;
+			
+			// If this is the public sitemap, cache it
+			if (published)
+				HttpContext.Current.Cache[typeof(Sitemap).Name] = pages ;
+			return pages ;
+		}
+
+		/// <summary>
+		/// Invalidate the cache.
+		/// </summary>
+		public static void InvalidateCache() {
+			HttpContext.Current.Cache.Remove(typeof(Sitemap).Name) ;
 		}
 
 		#region Private methods
