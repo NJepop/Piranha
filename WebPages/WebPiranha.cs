@@ -78,10 +78,16 @@ namespace Piranha.WebPages
 				//
 				// Media content
 				//
-				Content content = Content.GetSingle(new Guid(path.Substring(7))) ;
+				string[] param = path.Substring(7).Split(new char[] { '/' }) ;
+				Content content = Content.GetSingle(new Guid(param[0])) ;
 
-				if (content != null)
-					content.GetMedia(context.Response) ;
+				if (content != null) {
+					int? width = null ;
+
+					if (param.Length > 1)
+						width = Convert.ToInt32(param[1]) ;
+					content.GetMedia(context, width) ;
+				}
 			} else if (path.StartsWith("/thumb/")) {
 				//
 				// Thumbnail content
@@ -91,8 +97,8 @@ namespace Piranha.WebPages
 
 				if (content != null) {
 					if (param.Length == 1)
-						content.GetThumbnail(context.Response) ;
-					else content.GetThumbnail(context.Response, Convert.ToInt32(param[1])) ;
+						content.GetThumbnail(context) ;
+					else content.GetThumbnail(context, Convert.ToInt32(param[1])) ;
 				}
 			} else if (path.StartsWith("/preview/")) {
 				//

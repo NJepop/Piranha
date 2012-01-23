@@ -9,6 +9,7 @@ using System.Text;
 using System.Web;
 
 using Piranha.Data;
+using Piranha.WebPages;
 
 namespace Piranha.Models
 {
@@ -45,21 +46,26 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the content size.
 		/// </summary>
+		[Column(Name="content_size")]
+		[Display(Name="Filstorlek")]
 		public int Size { get ; set ; }
 
 		/// <summary>
 		/// Get/sets weather the content is an image or not.
 		/// </summary>
+		[Column(Name="content_image")]
 		public bool IsImage { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the possible width of the content.
 		/// </summary>
+		[Column(Name="content_width")]
 		public int Width { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the possible height of th econtent.
 		/// </summary>
+		[Column(Name="content_height")]
 		public int Height { get ; set ; }
 
 		/// <summary>
@@ -156,8 +162,37 @@ namespace Piranha.Models
 		/// the given http response.
 		/// </summary>
 		/// <param name="response">The http response</param>
-		public void GetMedia(HttpResponse response) {
-			WriteFile(response, PhysicalPath) ;
+		public void GetMedia(HttpContext context, int? width = null) {
+			string etag = WebPiranha.GenerateETag(Id.ToString(), Updated) ;
+
+			if (!WebPiranha.HandleClientCache(context, etag, Updated)) {
+				if (IsImage && width != null) {
+					width = width < Width ? width : Width ;
+					int height = Convert.ToInt32(((double)width / Width) * Height) ;
+
+					if (File.Exists(CachedImagePath(width.Value, height))) {
+						// Return generated & cached resized image
+						WriteFile(context.Response, CachedImagePath(width.Value, height)) ;
+					} else if (File.Exists(PhysicalPath)) {
+						using (Bitmap bmp = new Bitmap(width.Value, height)) {
+							Graphics grp = Graphics.FromImage(bmp) ;
+							Image img = Image.FromFile(PhysicalPath) ;
+
+							grp.SmoothingMode = SmoothingMode.HighQuality ;
+							grp.CompositingQuality = CompositingQuality.HighQuality ;
+							grp.InterpolationMode = InterpolationMode.High ;
+
+							// Resize and crop image
+							Rectangle dst = new Rectangle(0, 0, bmp.Width, bmp.Height) ;
+							grp.DrawImage(img, dst, 0, 0, Width, Height, GraphicsUnit.Pixel) ;
+
+							bmp.Save(CachedImagePath(width.Value, height)) ;
+						}
+						WriteFile(context.Response, CachedImagePath(width.Value, height)) ;
+					}
+				}
+				WriteFile(context.Response, PhysicalPath) ;
+			}
 		}
 
 		/// <summary>
@@ -165,38 +200,38 @@ namespace Piranha.Models
 		/// </summary>
 		/// <param name="response">The http response</param>
 		/// <param name="size">The desired size</param>
-		public void GetThumbnail(HttpResponse response, int size = 60) {
-			if (File.Exists(CachedThumbnailPath(size))) {
-				// Return generated & cached thumbnail
-				WriteFile(response, CachedThumbnailPath(size)) ;
-			} else if (File.Exists(PhysicalPath)) {
-				string[] segments = Filename.ToLower().Split(new char[] { '.' }) ;
-				
-				Image img = null ; 
-				try {
-					img = Image.FromFile(PhysicalPath) ;
-				} catch {}
-				
-				if (img != null) {
-					// Generate thumbnail from image
-					using (Bitmap bmp = new Bitmap(size, size)) {
-						Graphics grp = Graphics.FromImage(bmp) ;
+		public void GetThumbnail(HttpContext context, int size = 60) {
+			string etag = WebPiranha.GenerateETag(Id.ToString(), Updated) ;
 
-						grp.SmoothingMode = SmoothingMode.HighQuality ;
-						grp.CompositingQuality = CompositingQuality.HighQuality ;
-						grp.InterpolationMode = InterpolationMode.High ;
+			if (!WebPiranha.HandleClientCache(context, etag, Updated)) {
+				if (File.Exists(CachedThumbnailPath(size))) {
+					// Return generated & cached thumbnail
+					WriteFile(context.Response, CachedThumbnailPath(size)) ;
+				} else if (File.Exists(PhysicalPath)) {
+					if (IsImage) {
+						Image img = Image.FromFile(PhysicalPath) ; 
 
-						// Resize and crop image
-						Rectangle dst = new Rectangle(0, 0, bmp.Width, bmp.Height) ;
-						grp.DrawImage(img, dst, img.Width > img.Height ? (img.Width - img.Height) / 2 : 0,
-							img.Height > img.Width ? (img.Height - img.Width) / 2 : 0, Math.Min(img.Width, img.Height), 
-							Math.Min(img.Height, img.Width), GraphicsUnit.Pixel) ;
+						// Generate thumbnail from image
+						using (Bitmap bmp = new Bitmap(size, size)) {
+							Graphics grp = Graphics.FromImage(bmp) ;
 
-						bmp.Save(CachedThumbnailPath(size)) ;
+							grp.SmoothingMode = SmoothingMode.HighQuality ;
+							grp.CompositingQuality = CompositingQuality.HighQuality ;
+							grp.InterpolationMode = InterpolationMode.High ;
+
+							// Resize and crop image
+							Rectangle dst = new Rectangle(0, 0, bmp.Width, bmp.Height) ;
+							grp.DrawImage(img, dst, img.Width > img.Height ? (img.Width - img.Height) / 2 : 0,
+								img.Height > img.Width ? (img.Height - img.Width) / 2 : 0, Math.Min(img.Width, img.Height), 
+								Math.Min(img.Height, img.Width), GraphicsUnit.Pixel) ;
+
+							bmp.Save(CachedThumbnailPath(size)) ;
+						}
+						WriteFile(context.Response, CachedThumbnailPath(size)) ;
+					} else {
+						// TODO: Generate thumbnail for non-images, this should be done by resizing 
+						// standard icons for different file-types 
 					}
-					WriteFile(response, CachedThumbnailPath(size)) ;
-				} else {
-					// TODO: Generate thumbnail for non-images
 				}
 			}
 		}
