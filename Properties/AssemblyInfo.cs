@@ -7,11 +7,11 @@ using System.Web.UI;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Piranha")]
-[assembly: AssemblyDescription("Component library for creating MVC applications.")]
+[assembly: AssemblyDescription("Application framework for building CMS based web applications for .NET.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("byBrick Interface")]
+[assembly: AssemblyCompany("piranhacms.org")]
 [assembly: AssemblyProduct("Piranha")]
-[assembly: AssemblyCopyright("Copyright © byBrick Interface 2011")]
+[assembly: AssemblyCopyright("Copyright © piranhacms.org")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

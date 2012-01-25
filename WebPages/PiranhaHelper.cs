@@ -80,6 +80,30 @@ namespace Piranha.WebPages
 		}
 
 		/// <summary>
+		/// Gets the URL to the content with the given id.
+		/// </summary>
+		/// <param name="id">The content id</param>
+		/// <param name="size">Optional image size</param>
+		/// <returns>The content url</returns>
+		public IHtmlString Media(Guid id, int size = 0) {
+			Content cnt = Content.GetSingle(id) ;
+			
+			if (cnt != null)
+				return new HtmlString(Parent.Href("~/media/" + id.ToString() + (size > 0 ? "/" + size.ToString() : ""))) ;
+			return new HtmlString("") ; // TODO: Maybe a "missing content" url
+		}
+
+		/// <summary>
+		/// Gets the URL to the content with the given id.
+		/// </summary>
+		/// <param name="id">The content id</param>
+		/// <param name="size">Optional image size</param>
+		/// <returns>The content url</returns>
+		public IHtmlString Media(string id, int size = 0) {
+			return Media(new Guid(id), size) ;
+		}
+	
+		/// <summary>
 		/// Generates an image tag for the specified thumbnail.
 		/// </summary>
 		/// <param name="id">The content id</param>

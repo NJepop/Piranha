@@ -186,7 +186,7 @@ namespace Piranha.Models
 							Rectangle dst = new Rectangle(0, 0, bmp.Width, bmp.Height) ;
 							grp.DrawImage(img, dst, 0, 0, Width, Height, GraphicsUnit.Pixel) ;
 
-							bmp.Save(CachedImagePath(width.Value, height)) ;
+							bmp.Save(CachedImagePath(width.Value, height), img.RawFormat) ;
 						}
 						WriteFile(context.Response, CachedImagePath(width.Value, height)) ;
 					}
@@ -225,7 +225,7 @@ namespace Piranha.Models
 								img.Height > img.Width ? (img.Height - img.Width) / 2 : 0, Math.Min(img.Width, img.Height), 
 								Math.Min(img.Height, img.Width), GraphicsUnit.Pixel) ;
 
-							bmp.Save(CachedThumbnailPath(size)) ;
+							bmp.Save(CachedThumbnailPath(size), img.RawFormat) ;
 						}
 						WriteFile(context.Response, CachedThumbnailPath(size)) ;
 					} else {
@@ -244,6 +244,20 @@ namespace Piranha.Models
 
 			foreach (FileInfo file in dir.GetFiles(Id.ToString() + "*")) 
 				file.Delete() ;
+		}
+
+		/// <summary>
+		/// Gets the total size of the content on disk including all cached thumbnails.
+		/// </summary>
+		/// <returns>The total size in bytes</returns>
+		public long GetTotalSize() {
+			long total = Size ;
+
+			DirectoryInfo dir = new DirectoryInfo(CacheDir()) ;
+			foreach (FileInfo file in dir.GetFiles(Id.ToString() + "*")) {
+				total += file.Length ;
+			}
+			return Math.Max(total, 1024) ;
 		}
 
 		/// <summary>
@@ -310,6 +324,36 @@ namespace Piranha.Models
 		public void InvalidateRecord(Content record) {
 			if (Cache.ContainsKey(record.Id))
 				Cache.Remove(record.Id) ;
+		}
+	}
+
+	public static class ContentExtensions {
+		/// <summary>
+		/// Gets the number of images in the content list.
+		/// </summary>
+		/// <param name="self">The content list</param>
+		/// <returns>The image count</returns>
+		public static int CountImages(this List<Content> self) {
+			int images = 0 ;
+			self.ForEach((c) => { 
+				if (c.IsImage) 
+					images++ ;
+			}) ;
+			return images ;
+		}
+
+		/// <summary>
+		/// Gets the number of documents in the content list.
+		/// </summary>
+		/// <param name="self">The content list</param>
+		/// <returns>The document count</returns>
+		public static int CountDocuments(this List<Content> self) {
+			int documents = 0 ;
+			self.ForEach((c) => { 
+				if (!c.IsImage) 
+					documents++ ;
+			}) ;
+			return documents ;
 		}
 	}
 }

@@ -64,6 +64,11 @@ namespace Piranha.Models.Manager.PageModels
 		public virtual List<Content> Attachments { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets the available content.
+		/// </summary>
+		public List<Content> Content { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the current template.
 		/// </summary>
 		public virtual PageTemplate Template { get ; private set ; }
@@ -81,6 +86,7 @@ namespace Piranha.Models.Manager.PageModels
 			PageRegions = new List<Region>() ;
 			Properties = new List<Property>() ;
 			Attachments = new List<Piranha.Models.Content>() ;
+			Content = Piranha.Models.Content.Get() ;
 
 			List<SysGroup> groups = SysGroup.GetStructure().Flatten() ;
 			groups.Insert(0, new SysGroup() { Name = "Alla" }) ;

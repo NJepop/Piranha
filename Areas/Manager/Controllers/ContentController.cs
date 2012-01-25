@@ -25,8 +25,12 @@ namespace byBrick.Areas.Manager.Controllers
 		/// <param name="id">The id of the content</param>
 		public ActionResult Edit(string id) {
 			if (!String.IsNullOrEmpty(id)) {
-				ViewBag.Title = "Ändra bild eller dokument" ;
-				return View("Edit", EditModel.GetById(new Guid(id))) ;
+				EditModel m = EditModel.GetById(new Guid(id)) ;
+				if (m.Content.IsImage)
+					ViewBag.Title = "Ändra bild" ;
+				else ViewBag.Title = "Ändra dokument" ;
+
+				return View("Edit", m) ;
 			} else {
 				ViewBag.Title = "Lägg till ny bild eller dokument" ;
 				return View("Edit", new EditModel()) ;
@@ -40,8 +44,13 @@ namespace byBrick.Areas.Manager.Controllers
 		[HttpPost()]
 		public ActionResult Edit(EditModel m) {
 			if (m.SaveAll()) {
-				ViewBag.Title = "Ändra bild eller dokument" ;
-				ViewBag.Message = "Din bild eller ditt dokument har sparats." ;
+				if (m.Content.IsImage) {
+					ViewBag.Title = "Ändra bild" ;
+					ViewBag.Message = "Din bild har sparats." ;
+				} else {
+					ViewBag.Title = "Ändra dokument" ;
+					ViewBag.Message = "Ditt dokument har sparats." ;
+				}
 				return View("Edit", m) ;
 			} else {
 				ViewBag.Title = "Lägg till bild eller dokument" ;

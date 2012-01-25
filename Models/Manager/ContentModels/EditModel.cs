@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,14 +53,26 @@ namespace Piranha.Models.Manager.ContentModels
 		public bool SaveAll() {
 			var context = HttpContext.Current ;
 
+			// Check if this is an image
+			try {
+				Image img = Image.FromStream(UploadedFile.InputStream) ;
+				Content.IsImage = true ;
+				Content.Width = img.Width ;
+				Content.Height = img.Height ;
+			} catch {
+				Content.IsImage = false ;
+			}
+
 			Content.Filename = UploadedFile.FileName ;
 			Content.Type = UploadedFile.ContentType ;
-			Content.Save() ;
+			Content.Size = UploadedFile.ContentLength ;
 
-			string path = context.Server.MapPath("~/App_Data/content") ;
-			UploadedFile.SaveAs(path + "/" + Content.Id) ;
-
-			return true ;
+			if (Content.Save()) {
+				string path = context.Server.MapPath("~/App_Data/content") ;
+				UploadedFile.SaveAs(path + "/" + Content.Id) ;
+				return true ;
+			}
+			return false ;
 		}
 
 		/// <summary>

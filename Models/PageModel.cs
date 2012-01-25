@@ -172,6 +172,8 @@ namespace Piranha.Models
 				Property pr = Property.GetSingle("property_page_id = @0 AND property_name = @1", Page.Id, str) ;
 				((IDictionary<string, object>)Properties).Add(str, pr != null ? pr.Value : "") ;
 			}
+			// Attachments
+			Attachments = Content.GetByPageId(Page.Id) ;
 		}
 	}
 }
