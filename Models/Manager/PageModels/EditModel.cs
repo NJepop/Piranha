@@ -137,7 +137,8 @@ namespace Piranha.Models.Manager.PageModels
 				try {
 					Page.Save(tx) ;
 					if (Permalink.IsNew)
-						Permalink.Name = Permalink.Generate(Page.Title) ;
+						Permalink.Name = Permalink.Generate(!String.IsNullOrEmpty(Page.NavigationTitle) ?
+							Page.NavigationTitle : Page.Title) ;
 					Permalink.Save(tx) ;
 					foreach (Region r in PageRegions)
 						r.Save(tx) ;

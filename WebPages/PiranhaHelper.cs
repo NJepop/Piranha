@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.WebPages;
@@ -15,9 +16,35 @@ namespace Piranha.WebPages
 	/// </summary>
 	public class PiranhaHelper
 	{
+		#region Inner classes
+		/// <summary>
+		/// Gravatar helper.
+		/// </summary>
+		public class GravatarHelper {
+			/// <summary>
+			/// Gets the image URL for the gravatar with the given email
+			/// </summary>
+			/// <param name="email">The gravatar email</param>
+			/// <param name="size">Optional size</param>
+			/// <returns>The image URL</returns>
+			public IHtmlString Image(string email, int size = 0) {
+				string hash = System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(email.Trim().ToLower(), "MD5") ;
+				return new HtmlString("http://www.gravatar.com/avatar/" + hash.ToLower() +
+					(size > 0 ? "?s=" + size : "")) ;
+			}
+		}
+		#endregion
+
 		#region Members
 		private HtmlHelper Html ;
 		private WebPage Parent ;
+		#endregion
+
+		#region Properties
+		/// <summary>
+		/// Gets the gravatar helper
+		/// </summary>
+		public GravatarHelper Gravatar { get ; private set ; }
 		#endregion
 
 		/// <summary>
@@ -27,6 +54,7 @@ namespace Piranha.WebPages
 		public PiranhaHelper(WebPage parent, HtmlHelper html) {
 			Parent = parent ;
 			Html = html ;
+			Gravatar = new GravatarHelper() ;
 		}
 
 		/// <summary>
@@ -85,8 +113,8 @@ namespace Piranha.WebPages
 		/// <param name="id">The content id</param>
 		/// <param name="size">Optional image size</param>
 		/// <returns>The content url</returns>
-		public IHtmlString Media(Guid id, int size = 0) {
-			Content cnt = Content.GetSingle(id) ;
+		public IHtmlString Content(Guid id, int size = 0) {
+			Content cnt = Models.Content.GetSingle(id) ;
 			
 			if (cnt != null)
 				return new HtmlString(Parent.Href("~/media/" + id.ToString() + (size > 0 ? "/" + size.ToString() : ""))) ;
@@ -99,8 +127,8 @@ namespace Piranha.WebPages
 		/// <param name="id">The content id</param>
 		/// <param name="size">Optional image size</param>
 		/// <returns>The content url</returns>
-		public IHtmlString Media(string id, int size = 0) {
-			return Media(new Guid(id), size) ;
+		public IHtmlString Content(string id, int size = 0) {
+			return Content(new Guid(id), size) ;
 		}
 	
 		/// <summary>
@@ -110,7 +138,7 @@ namespace Piranha.WebPages
 		/// <param name="size">Optional size</param>
 		/// <returns>The image html string</returns>
 		public IHtmlString Thumbnail(Guid id, int size = 0) {
-			Content cnt = Content.GetSingle(id) ;
+			Content cnt = Models.Content.GetSingle(id) ;
 			
 			if (cnt != null)
 				return new HtmlString(String.Format("<img src=\"{0}\" alt=\"{1}\" />", Parent.Href("~/thumb/" +

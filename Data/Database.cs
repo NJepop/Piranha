@@ -37,7 +37,7 @@ namespace Piranha.Data
 		/// </summary>
 		/// <param name="name">Optional name of the connection string to use</param>
 		/// <returns>An open transaction</returns>
-		public static IDbTransaction OpenTransaction(string name = "default") {
+		public static IDbTransaction OpenTransaction(string name = "piranha") {
 			return OpenConnection().BeginTransaction() ;
 		}
 
