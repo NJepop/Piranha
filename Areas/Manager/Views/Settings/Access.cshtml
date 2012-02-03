@@ -32,7 +32,12 @@
                 <li>
                     @Html.LabelFor(m => m.Access.Function)
                     <div class="input">
-                        @Html.TextBoxFor(m => m.Access.Function)</div>
+                        @if (!Model.Access.IsLocked) {
+                            @Html.TextBoxFor(m => m.Access.Function)
+                        } else {
+                            @Html.TextBoxFor(m => m.Access.Function, new { disabled = "disabled" })
+                        }
+                    </div>
                     @Html.ValidationMessageFor(m => m.Access.Function)
                 </li>
                 <li>
@@ -44,7 +49,12 @@
                 <li>
                     @Html.LabelFor(m => m.Access.Description)
                     <div class="input">
-                        @Html.TextAreaFor(m => m.Access.Description, new { @rows = 3, @placeholder = "Ej obligatoriskt" })</div>
+                        @if (!Model.Access.IsLocked) {
+                            @Html.TextAreaFor(m => m.Access.Description, new { @rows = 3, @placeholder = "Ej obligatoriskt" })
+                        } else {
+                            @Html.TextAreaFor(m => m.Access.Description, new { @rows = 3, @disabled = "disabled", @placeholder = "Ej obligatoriskt" })
+                        }
+                    </div>
                 </li>
             </ul>
         </div>

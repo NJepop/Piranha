@@ -32,7 +32,12 @@
                 <li>
                     @Html.LabelFor(m => m.Param.Name)
                     <div class="input">
-                        @Html.TextBoxFor(m => m.Param.Name)</div>
+                        @if (!Model.Param.IsLocked) {
+                            @Html.TextBoxFor(m => m.Param.Name)
+                        } else {
+                            @Html.TextBoxFor(m => m.Param.Name, new { @disabled = "disabled" })
+                        }
+                    </div>
                     @Html.ValidationMessageFor(m => m.Param.Name)
                 </li>
                 <li>
@@ -43,7 +48,12 @@
                 <li>
                     @Html.LabelFor(m => m.Param.Description)
                     <div class="input">
-                        @Html.TextAreaFor(m => m.Param.Description, new { @rows = 3, @placeholder = "Ej obligatoriskt" })</div>
+                        @if (!Model.Param.IsLocked) {
+                            @Html.TextAreaFor(m => m.Param.Description, new { @rows = 3, @placeholder = "Ej obligatoriskt" })
+                        } else {
+                            @Html.TextAreaFor(m => m.Param.Description, new { @rows = 3, @disabled = "disabled", @placeholder = "Ej obligatoriskt" })
+                        }
+                    </div>
                 </li>
             </ul>
         </div>
