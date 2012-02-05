@@ -140,6 +140,10 @@ namespace Piranha.WebPages
 		public static bool HandleClientCache(HttpContext context, string etag, DateTime modified, bool noexpire = false) {
 #if !DEBUG
 			if (!context.Request.IsLocal) {
+				try {
+					DateTime siteDt = DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
+					modified = modified > siteDt ? modified : siteDt ;
+				} catch {}
 				context.Response.Cache.SetETag(etag) ;
 				context.Response.Cache.SetLastModified(modified <= DateTime.Now ? modified : DateTime.Now) ;	
 				context.Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
@@ -173,6 +177,11 @@ namespace Piranha.WebPages
 		public static string GenerateETag(string name, DateTime modified) {
 			UTF8Encoding encoder = new UTF8Encoding() ;
 			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
+
+			try {
+				DateTime siteDt = DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
+				modified = modified > siteDt ? modified : siteDt ;
+			} catch {}
 
 			string str = name + modified.ToLongTimeString() ;
 			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;
