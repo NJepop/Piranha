@@ -148,7 +148,6 @@ namespace Piranha.Models
 			get { return !String.IsNullOrEmpty(PageController) ? PageController : TemplateController ; }
 		}
 
-
 		/// <summary>
 		/// Gets the view for the page.
 		/// </summary>
@@ -173,6 +172,13 @@ namespace Piranha.Models
 		/// </summary>
 		public bool IsPublished {
 			get { return Published != DateTime.MinValue && Published < DateTime.Now ; }
+		}
+
+		/// <summary>
+		/// Gets weather the page is the site startpage.
+		/// </summary>
+		public bool IsStartpage {
+			get { return ParentId == Guid.Empty && Seqno == 1 ; }
 		}
 
 		/// <summary>
@@ -213,6 +219,20 @@ namespace Piranha.Models
 		/// </summary>
 		public static void InvalidateCache() {
 			HttpContext.Current.Cache.Remove(typeof(Sitemap).Name) ;
+		}
+
+		public static void Generate(HttpContext context) {
+			List<Sitemap> site = GetStructure(true).Flatten() ;
+
+			context.Response.ContentType = "text/xml" ;
+			context.Response.Write(
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">") ;
+			foreach (var sm in site) {
+				context.Response.Write(String.Format("<url><loc>@0</loc></url>",
+					sm.Permalink)) ;
+			}
+			context.Response.Write("</urlset>") ;
+			context.Response.End() ;
 		}
 
 		#region Private methods

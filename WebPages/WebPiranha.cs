@@ -9,11 +9,59 @@ using System.Web.Mvc;
 using System.Web.Routing;
 
 using Piranha.Models;
+using Piranha.WebPages.RequestHandlers;
 
 namespace Piranha.WebPages
 {
 	public static class WebPiranha
 	{
+		#region Members
+		/// <summary>
+		/// The different request handlers
+		/// </summary>
+		private static Dictionary<string, RequestHandlerRegistration> Handlers = new Dictionary<string, RequestHandlerRegistration>() ;
+		#endregion
+
+		/// <summary>
+		/// Registers the given 
+		/// </summary>
+		/// <param name="urlprefix">The url prefix</param>
+		/// <param name="id">The handler id</param>
+		/// <param name="handler">The actual handler</param>
+		public static void RegisterHandler(string urlprefix, string id, IRequestHandler handler) {
+			Handlers.Add(id.ToUpper(), new RequestHandlerRegistration() { UrlPrefix = urlprefix, Id = id, Handler = handler }) ;
+		}
+
+		/// <summary>
+		/// Gets the current url prefix used for the given handler id.
+		/// </summary>
+		/// <param name="id">The handler id</param>
+		/// <returns>The url prefix</returns>
+		public static string GetUrlPrefixForHandlerId(string id) {
+			if (Handlers.ContainsKey(id.ToUpper()))
+				return Handlers[id.ToUpper()].UrlPrefix ;
+			return "" ;
+		}
+
+		/// <summary>
+		/// Clears all of the currently registered handlers.
+		/// </summary>
+		public static void ResetHandlers() {
+			Handlers.Clear() ;
+		}
+
+		/// <summary>
+		/// Registers all of the default request handlers.
+		/// </summary>
+		public static void RegisterDefaultHandlers() {
+			RegisterHandler("", "STARTPAGE", new PermalinkHandler()) ;
+			RegisterHandler("home", "PERMALINK", new PermalinkHandler()) ;
+			RegisterHandler("media", "CONTENT", new ContentHandler()) ;
+			RegisterHandler("thumb", "THUMBNAIL", new ThumbnailHandler()) ;
+			RegisterHandler("preview", "PREVIEW", new PreviewHandler()) ;
+			RegisterHandler("upload", "UPLOAD", new UploadHandler()) ;
+		}
+
 		/// <summary>
 		/// Initializes the webb app.
 		/// </summary>
@@ -23,6 +71,9 @@ namespace Piranha.WebPages
 
 			// This will trigger the manager area registration
 			AreaRegistration.RegisterAllAreas() ;
+
+			// Register handlers
+			RegisterDefaultHandlers() ;
 		}
 
 		/// <summary>
@@ -50,81 +101,13 @@ namespace Piranha.WebPages
 			string path = context.Request.Path.Substring(context.Request.ApplicationPath.Length > 1 ? 
 				context.Request.ApplicationPath.Length : 0) ;
 
-			// If this is a call to "hem" then URL rewrite
-			if (path.StartsWith("/hem/")) {
-				Permalink perm = Permalink.GetByName(path.Substring(5)) ;
+			string[] args = path.Split(new char[] {'/'}).Subset(1) ;
 
-				if (perm != null) {
-					if (perm.Type == Permalink.PermalinkType.PAGE) {
-						Page page = Page.GetSingle(perm.ParentId) ;
-
-						if (!String.IsNullOrEmpty(page.Controller)) {
-							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name, false) ;
-						} else {
-							context.RewritePath("~/page/" + perm.Name) ;
-						}
-					} else {
-						context.RewritePath("~/post/" + perm.Name) ;
-					}
-				} else {
-					string str = path.Substring(5).ToLower() ;
-					if (str == "perm") {
-						//
-						// TODO: Generate RSS feed for all posts
-						//
-					}
+			foreach (RequestHandlerRegistration hr in Handlers.Values) {
+				if (hr.UrlPrefix.ToLower() == args[0].ToLower()) {
+					hr.Handler.HandleRequest(context, args.Subset(1)) ;
+					break ;
 				}
-			} else if (path.StartsWith("/media/")) {
-				//
-				// Media content
-				//
-				string[] param = path.Substring(7).Split(new char[] { '/' }) ;
-				Content content = Content.GetSingle(new Guid(param[0])) ;
-
-				if (content != null) {
-					int? width = null ;
-
-					if (param.Length > 1)
-						width = Convert.ToInt32(param[1]) ;
-					content.GetMedia(context, width) ;
-				}
-			} else if (path.StartsWith("/thumb/")) {
-				//
-				// Thumbnail content
-				//
-				string[] param = path.Substring(7).Split(new char[] { '/' }) ;
-				Content content = Content.GetSingle(new Guid(param[0])) ;
-
-				if (content != null) {
-					if (param.Length == 1)
-						content.GetThumbnail(context) ;
-					else content.GetThumbnail(context, Convert.ToInt32(param[1])) ;
-				}
-			} else if (path.StartsWith("/preview/")) {
-				//
-				// Http preview
-				//
-				Page page = Page.GetSingle(new Guid(path.Substring(9))) ;
-				WebThumb.GetThumbnail(context.Response, page.Id, "http://" + context.Request.Url.DnsSafeHost + 
-					VirtualPathUtility.ToAbsolute("~/hem/" + page.Permalink), 300, 225) ;
-			} else if (path.StartsWith("/upload/")) {
-				//
-				// Uploaded content
-				//
-				string [] param = path.Substring(8).Split(new char[] { '/' }) ;
-				Upload upload = Upload.GetSingle(new Guid(param[0])) ;
-
-				if (upload != null)
-					upload.GetFile(context.Response) ;
-			} else if (path == "/") {
-				//
-				// Rewrite to current startpage
-				//
-				Page page = Page.GetStartpage() ;
-
-				if (!String.IsNullOrEmpty(page.Controller))
-					context.RewritePath("~/templates/" + page.Controller, false) ;
-				else context.RewritePath("~/page") ;
 			}
 		}
 
@@ -210,7 +193,6 @@ namespace Piranha.WebPages
 				} catch {}
 			return false ;
 		}
-
 
 		#region Private methods
 		/// <summary>

@@ -21,7 +21,7 @@ namespace Piranha.Web
 		/// <param name="permalink">The permalink</param>
 		/// <returns>An action url</returns>
 		public static string GetPermalink(this UrlHelper helper, string permalink) {
-			return helper.Content("~/hem/" + permalink.ToLower()) ;
+			return helper.Content("~/" + WebPages.WebPiranha.GetUrlPrefixForHandlerId("PERMALINK") + "/" + permalink.ToLower()) ;
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace Piranha.Web
 		/// <param name="id">The page id</param>
 		/// <returns></returns>
 		public static string GetPreviewlink(this UrlHelper helper, Guid id) {
-			return helper.Content("~/preview/" + id.ToString()) ;
+			return helper.Content("~/" + WebPages.WebPiranha.GetUrlPrefixForHandlerId("PREVIEW") + "/" + id.ToString()) ;
 		}
 	}
 }

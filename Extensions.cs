@@ -33,6 +33,26 @@ public static class PiranhaApp
 	}
 
 	/// <summary>
+	/// Gets a subset of the given array as a new array.
+	/// </summary>
+	/// <typeparam name="T">The array type</typeparam>
+	/// <param name="arr">The array</param>
+	/// <param name="startpos">The startpos</param>
+	/// <param name="length">The length</param>
+	/// <returns>The new array</returns>
+	public static T[] Subset<T>(this T[] arr, int startpos = 0, int length = 0) {
+		List<T> tmp = new List<T>() ;
+
+		length = length > 0 ? length : arr.Length - startpos ;
+
+		arr.Each<T>((i, e) => {
+			if (i >= startpos && i < (startpos + length))
+				tmp.Add(e) ;
+		}) ;
+		return tmp.ToArray() ;
+	}
+
+	/// <summary>
 	/// Loops the current enumerable and executes the given action on each of
 	/// the items.
 	/// </summary>

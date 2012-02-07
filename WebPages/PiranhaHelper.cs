@@ -117,7 +117,8 @@ namespace Piranha.WebPages
 			Content cnt = Models.Content.GetSingle(id) ;
 			
 			if (cnt != null)
-				return new HtmlString(Parent.Href("~/media/" + id.ToString() + (size > 0 ? "/" + size.ToString() : ""))) ;
+				return new HtmlString(Parent.Href("~/" + WebPiranha.GetUrlPrefixForHandlerId("CONTENT") +
+					"/" + id.ToString() + (size > 0 ? "/" + size.ToString() : ""))) ;
 			return new HtmlString("") ; // TODO: Maybe a "missing content" url
 		}
 
@@ -141,8 +142,9 @@ namespace Piranha.WebPages
 			Content cnt = Models.Content.GetSingle(id) ;
 			
 			if (cnt != null)
-				return new HtmlString(String.Format("<img src=\"{0}\" alt=\"{1}\" />", Parent.Href("~/thumb/" +
-					id.ToString() + (size > 0 ? "/" + size.ToString() : "")), cnt.AlternateText)) ;
+				return new HtmlString(String.Format("<img src=\"{0}\" alt=\"{1}\" />", Parent.Href("~/" + 
+					WebPiranha.GetUrlPrefixForHandlerId("THUMBNAIL") + "/" + id.ToString() + (size > 0 ? "/" + size.ToString() : "")), 
+					cnt.AlternateText)) ;
 			return new HtmlString("") ; // TODO: Maybe a "missing image" image
 		}
 
@@ -301,8 +303,10 @@ namespace Piranha.WebPages
 						return page.Redirect ;
 					Sitemap sr = Sitemap.GetSingle("permalink_name = @0", page.Redirect) ;
 					return GenerateUrl(sr) ;
-				} 
-				return Parent.Href("~/hem/" + page.Permalink.ToLower()) ;
+				}
+				if (page.IsStartpage)
+					return Parent.Href("~/") ;
+				return Parent.Href("~/" + WebPiranha.GetUrlPrefixForHandlerId("PERMALINK").ToLower() + "/" + page.Permalink.ToLower()) ;
 			}
 			return "" ;
 		}
