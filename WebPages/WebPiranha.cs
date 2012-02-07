@@ -60,6 +60,7 @@ namespace Piranha.WebPages
 			RegisterHandler("thumb", "THUMBNAIL", new ThumbnailHandler()) ;
 			RegisterHandler("preview", "PREVIEW", new PreviewHandler()) ;
 			RegisterHandler("upload", "UPLOAD", new UploadHandler()) ;
+			RegisterHandler("account", "ACCOUNT", new AccountHandler()) ;
 		}
 
 		/// <summary>

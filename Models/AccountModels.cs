@@ -7,7 +7,7 @@ using System.Text;
 namespace Piranha.Models
 {
 	/// <summary>
-	/// Login model passed to the controller during post.
+	/// Login model passed to the account handler.
 	/// </summary>
 	public class LoginModel {
 		#region Properties
@@ -29,19 +29,9 @@ namespace Piranha.Models
 		public bool RememberMe { get ; set ; }
 
 		/// <summary>
-		/// Gets/sets the optional return action.
+		/// Gets/sets the return url.
 		/// </summary>
-		public string ReturnAction { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the optional return controller.
-		/// </summary>
-		public string ReturnController { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the optional return permalink.
-		/// </summary>
-		public string ReturnPermalink { get ; set ; }
+		public string ReturnUrl { get ; set ; }
 		#endregion
 
 		/// <summary>

@@ -68,10 +68,8 @@
     <Compile Include="Areas\Manager\Controllers\PostController.cs" />
     <Compile Include="Areas\Manager\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Manager\Controllers\TemplateController.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\LogoutController.cs" />
+    <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Category.cs" />
-    <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ComplexName.cs" />
     <Compile Include="Models\ArchiveModel.cs" />
     <Compile Include="Models\Attachment.cs" />
@@ -123,6 +121,7 @@
     <Compile Include="WebPages\BasePage.cs" />
     <Compile Include="WebPages\ContentPage.cs" />
     <Compile Include="WebPages\PiranhaFacade.cs" />
+    <Compile Include="WebPages\RequestHandlers\AccountHandler.cs" />
     <Compile Include="WebPages\RequestHandlers\ContentHandler.cs" />
     <Compile Include="WebPages\RequestHandlers\IRequestHandler.cs" />
     <Compile Include="WebPages\RequestHandlers\PermalinkHandler.cs" />

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.IO;
 using System.Text;
 using System.Web;
+using System.Web.Security;
 using System.Web.WebPages;
 
 using Piranha.Models;
@@ -23,12 +24,10 @@ namespace Piranha.WebPages
 		/// </summary>
 		public PiranhaHelper Piranha { get ; private set ; }
 
-		public PiranhaFacade Facade { get ; private set ; }
-
 		/// <summary>
-		/// Gets the current permalink.
+		/// Gets the model facade helper.
 		/// </summary>
-		protected string Permalink { get ; private set ; }
+		public PiranhaFacade Facade { get ; private set ; }
 		#endregion
 
 		/// <summary>
@@ -37,6 +36,26 @@ namespace Piranha.WebPages
 		public BasePage() : base() {
 			Piranha = new PiranhaHelper(this, Html) ;
 			Facade = new PiranhaFacade() ;
+		}
+
+		/// <summary>
+		/// Initializes the web page.
+		/// </summary>
+		protected override void InitializePage() {
+			base.InitializePage() ;
+
+			if (IsPost) {
+				if (Request.Form.AllKeys.Contains("piranha_form_action")) {
+					MethodInfo m = GetType().GetMethod(Request.Form["piranha_form_action"],
+						BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance|BindingFlags.IgnoreCase);
+					if (m != null) {
+						List<object> args = new List<object>() ;
+						foreach (var param in m.GetParameters())
+							args.Add(ModelBinder.BindModel(param.ParameterType)) ;
+						m.Invoke(this, args.ToArray()) ;
+					}
+				}
+			}
 		}
 	}
 }
