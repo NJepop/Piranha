@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.WebPages;
 using System.Web.WebPages.Html;
 
@@ -33,6 +36,40 @@ namespace Piranha.WebPages
 					(size > 0 ? "?s=" + size : "")) ;
 			}
 		}
+
+		/// <summary>
+		/// Culture helper class.
+		/// </summary>
+		public class CultureHelper {
+			/// <summary>
+			/// Gets the name of the current UI culture.
+			/// </summary>
+			/// <returns>The current UI culture</returns>
+			public string CurrentUICulture {
+				get {
+					return CultureInfo.CurrentUICulture.Name ;
+				}
+			}
+
+			/// <summary>
+			/// Gets the default ui culture as specified in the current web.config
+			/// </summary>
+			public string DefaultUICulture {
+				get {
+					GlobalizationSection gs = (GlobalizationSection)WebConfigurationManager.GetSection("system.web/globalization") ;
+					return gs.UICulture ;
+				}
+			}
+
+			/// <summary>
+			/// Gets weather the current ui culture is the default culture.
+			/// </summary>
+			public bool IsDefaultCulture {
+				get {
+					return CurrentUICulture == DefaultUICulture ;
+				}
+			}
+		}
 		#endregion
 
 		#region Members
@@ -42,9 +79,14 @@ namespace Piranha.WebPages
 
 		#region Properties
 		/// <summary>
-		/// Gets the gravatar helper
+		/// Gets the gravatar helper.
 		/// </summary>
 		public GravatarHelper Gravatar { get ; private set ; }
+
+		/// <summary>
+		/// Gets the culture helper.
+		/// </summary>
+		public CultureHelper Culture { get ; private set ; }
 		#endregion
 
 		/// <summary>
@@ -55,6 +97,7 @@ namespace Piranha.WebPages
 			Parent = parent ;
 			Html = html ;
 			Gravatar = new GravatarHelper() ;
+			Culture = new CultureHelper() ;
 		}
 
 		/// <summary>
