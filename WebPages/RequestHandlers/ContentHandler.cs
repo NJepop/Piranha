@@ -18,7 +18,7 @@ namespace Piranha.WebPages.RequestHandlers
 		/// </summary>
 		/// <param name="context">The current context</param>
 		/// <param name="args">Optional url arguments passed to the handler</param>
-		public void HandleRequest(HttpContext context, params string[] args) {
+		public virtual void HandleRequest(HttpContext context, params string[] args) {
 			if (args != null && args.Length > 0) {
 				Content content = Content.GetSingle(new Guid(args[0])) ;
 
