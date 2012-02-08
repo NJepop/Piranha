@@ -724,6 +724,11 @@ $(document).ready(function () {
     // Submit the form
     //
     $(".submit").click(function () {
+        $("#draft").attr("value", "true");
+        $("form").submit();
+    });
+    $(".publish").click(function () {
+        $("#draft").attr("value", "false");
         $("form").submit();
     });
 

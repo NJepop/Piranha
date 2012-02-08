@@ -19,6 +19,16 @@ namespace Piranha.WebPages.RequestHandlers
 		/// <param name="context">The current context</param>
 		/// <param name="args">Optional url arguments passed to the handler</param>
 		public virtual void HandleRequest(HttpContext context, params string[] args) {
+			HandleRequest(context, false, args) ;
+		}
+	
+		/// <summary>
+		/// Handles the current request.
+		/// </summary>
+		/// <param name="context">The current context</param>
+		/// <param name="draft">Weather to view the draft</param>
+		/// <param name="args">Optional url arguments passed to the handler</param>
+		protected virtual void HandleRequest(HttpContext context, bool draft, params string[] args) {
 			if (args != null && args.Length > 0) {
 				Permalink perm = Permalink.GetByName(args[0]) ;
 
@@ -27,12 +37,13 @@ namespace Piranha.WebPages.RequestHandlers
 						Page page = Page.GetSingle(perm.ParentId) ;
 
 						if (!String.IsNullOrEmpty(page.Controller)) {
-							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name, false) ;
+							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name + 
+								(draft ? "?draft=true" : ""), false) ;
 						} else {
-							context.RewritePath("~/page/" + perm.Name) ;
+							context.RewritePath("~/page/" + perm.Name + (draft ? "?draft=true" : "")) ;
 						}
 					} else {
-						context.RewritePath("~/post/" + perm.Name) ;
+						context.RewritePath("~/post/" + perm.Name + (draft ? "?draft=true" : "")) ;
 					}
 				}
 			} else {

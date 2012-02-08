@@ -17,6 +17,8 @@
         <ul>
             <li><a class="save submit"></a>
                 <div class="tooltip"><p>Spara sidan</p></div></li>
+            <li><a class="publish"></a>
+                <div class="tooltip"><p>Publicera sidan</p></div></li>
             <li><a href="@Url.Action("Delete", new { id = Model.Page.Id })" class="delete"></a>
                 <div class="tooltip"><p>Ta bort sidan</p></div></li>
             <li><a href="@Url.Action("Index", "Page")" class="back"></a>
@@ -26,7 +28,7 @@
             <li><a href="" class="info"></a>
                 <div class="tooltip"><p>Visa information & hjälptext</p></div></li>
             @if (!Model.Page.IsNew) {
-            <li><a href="http://@Request.Url.DnsSafeHost@Url.GetPermalink(Model.Page.Permalink).ToLower()" target="preview" class="preview"></a>
+            <li><a href="http://@Request.Url.DnsSafeHost@Url.GetPermalink(Model.Page.Permalink, true).ToLower()" target="preview" class="preview"></a>
                 <div class="tooltip"><p>Förhandsgranska sidan</p><!-- img class="page-preview" src="" alt="Förhandsgranskning" /--></div></li>
             }
         </ul>
@@ -39,6 +41,7 @@
 <div>
     @Html.HiddenFor(m => m.Page.IsNew)
     @Html.HiddenFor(m => m.Page.Id)
+    @Html.HiddenFor(m => m.Page.IsDraft)
     @Html.HiddenFor(m => m.Page.Permalink)
     @Html.HiddenFor(m => m.Page.TemplateId)
     @Html.HiddenFor(m => m.Page.ParentId)
@@ -56,6 +59,7 @@
     @Html.HiddenFor(m => m.Permalink.Name)
     @Html.HiddenFor(m => m.Permalink.Created)
     @Html.HiddenFor(m => m.Permalink.CreatedBy)
+    <input type="hidden" id="draft" name="draft" value="true" />
 </div>
 <div class="grid_9">
     <div class="box expandable">
@@ -161,7 +165,9 @@
             @for (int n = 0; n < Model.Properties.Count; n++) {
                 <li>@Html.LabelFor(m => m.Properties[n], Model.Properties[n].Name)
                     @Html.HiddenFor(m => m.Properties[n].Id)
+                    @Html.HiddenFor(m => m.Properties[n].IsDraft)
                     @Html.HiddenFor(m => m.Properties[n].PageId)
+                    @Html.HiddenFor(m => m.Properties[n].IsPageDraft)
                     @Html.HiddenFor(m => m.Properties[n].Name)
                     @Html.HiddenFor(m => m.Properties[n].Created)
                     @Html.HiddenFor(m => m.Properties[n].CreatedBy)

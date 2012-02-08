@@ -122,7 +122,8 @@ CREATE TABLE permalink (
 CREATE UNIQUE INDEX index_permalink_name ON permalink (permalink_name);
 
 CREATE TABLE page (
-	page_id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	page_id UNIQUEIDENTIFIER NOT NULL,
+	page_draft BIT NOT NULL default(1),
 	page_template_id UNIQUEIDENTIFIER NOT NULL,
 	page_group_id UNIQUEIDENTIFIER NULL,
 	page_parent_id UNIQUEIDENTIFIER NULL,
@@ -139,35 +140,42 @@ CREATE TABLE page (
 	page_published DATETIME NULL,
 	page_created_by UNIQUEIDENTIFIER NOT NULL,
 	page_updated_by UNIQUEIDENTIFIER NOT NULL,
+	PRIMARY KEY (page_id, page_draft),
 	FOREIGN KEY (page_template_id) REFERENCES pagetemplate (pagetemplate_id),
 	FOREIGN KEY (page_created_by) REFERENCES sysuser (sysuser_id),
 	FOREIGN KEY (page_updated_by) REFERENCES sysuser (sysuser_id)
 );
 
 CREATE TABLE region (
-	region_id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	region_id UNIQUEIDENTIFIER NOT NULL,
+	region_draft BIT NOT NULL default(1),
 	region_page_id UNIQUEIDENTIFIER NULL,
+	region_page_draft BIT NOT NULL,
 	region_name NVARCHAR(64) NOT NULL,
 	region_body NTEXT NULL,
 	region_created DATETIME NOT NULL,
 	region_updated DATETIME NOT NULL,
 	region_created_by UNIQUEIDENTIFIER NOT NULL,
 	region_updated_by UNIQUEIDENTIFIER NOT NULL,
-	FOREIGN KEY (region_page_id) REFERENCES page (page_id),
+	PRIMARY KEY (region_id, region_draft),
+	FOREIGN KEY (region_page_id, region_page_draft) REFERENCES page (page_id, page_draft),
 	FOREIGN KEY (region_created_by) REFERENCES sysuser (sysuser_id),
 	FOREIGN KEY (region_updated_by) REFERENCES sysuser (sysuser_id)
 );
 
 CREATE TABLE property (
-	property_id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	property_id UNIQUEIDENTIFIER NOT NULL,
+	property_draft BIT NOT NULL default(1),
 	property_page_id UNIQUEIDENTIFIER NOT NULL,
+	property_page_draft BIT NOT NULL,
 	property_name NVARCHAR(64) NOT NULL,
 	property_value NTEXT NULL,
 	property_created DATETIME NOT NULL,
 	property_updated DATETIME NOT NULL,
 	property_created_by UNIQUEIDENTIFIER NOT NULL,
 	property_updated_by UNIQUEIDENTIFIER NOT NULL,
-	FOREIGN KEY (property_page_id) REFERENCES page (page_id),
+	PRIMARY KEY (property_id, property_draft),
+	FOREIGN KEY (property_page_id, property_page_draft) REFERENCES page (page_id, page_draft),
 	FOREIGN KEY (property_created_by) REFERENCES sysuser (sysuser_id),
 	FOREIGN KEY (property_updated_by) REFERENCES sysuser (sysuser_id)
 );
@@ -341,19 +349,31 @@ VALUES ('5017dbe4-5685-4941-921b-ca922edc7a12', 'Nyhet,Nyheter', 'Nyhetsinlägg.
 	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 
 -- Default page
-INSERT INTO page (page_id, page_template_id, page_seqno, page_title, page_keywords, page_description,
+INSERT INTO page (page_id, page_draft, page_template_id, page_seqno, page_title, page_keywords, page_description,
 	page_created, page_updated, page_published, page_created_by, page_updated_by)
-VALUES ('7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', '906761ea-6c04-4f4b-9365-f2c350ff4372', 1, 'Start', 
+VALUES ('7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', 1, '906761ea-6c04-4f4b-9365-f2c350ff4372', 1, 'Start', 
 	'Piranha, byBrick', 'Välkommen till Piranha', GETDATE(), GETDATE(), GETDATE(),
 	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO page (page_id, page_draft, page_template_id, page_seqno, page_title, page_keywords, page_description,
+	page_created, page_updated, page_published, page_created_by, page_updated_by)
+VALUES ('7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', 0, '906761ea-6c04-4f4b-9365-f2c350ff4372', 1, 'Start', 
+	'Piranha, byBrick', 'Välkommen till Piranha', GETDATE(), GETDATE(), GETDATE(),
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+
 -- Permalink
 INSERT INTO permalink (permalink_id, permalink_parent_id, permalink_type, permalink_name, permalink_created,
 	permalink_updated, permalink_created_by, permalink_updated_by)
 VALUES ('1e64c1d4-e24f-4c7c-8f61-f3a75ad2e2fe', '7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', 'PAGE', 'start',
 	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+
 -- Region
-INSERT INTO region (region_id, region_page_id, region_name, region_body, region_created, region_updated,
-	region_created_by, region_updated_by)
-VALUES ('87ec4dbd-c3ba-4a6b-af49-78421528c363', '7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', 'Innehåll',
+INSERT INTO region (region_id, region_draft, region_page_id, region_page_draft, region_name, region_body, 
+	region_created, region_updated, region_created_by, region_updated_by)
+VALUES ('87ec4dbd-c3ba-4a6b-af49-78421528c363', 1, '7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', 1, 'Innehåll',
+	'<p>Välkommen till Piranha, den enkla och minimala content management lösningen för .NET.</p>', GETDATE(), GETDATE(),
+	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
+INSERT INTO region (region_id, region_draft, region_page_id, region_page_draft, region_name, region_body, 
+	region_created, region_updated, region_created_by, region_updated_by)
+VALUES ('87ec4dbd-c3ba-4a6b-af49-78421528c363', 0, '7849b6d6-dc43-43f6-8b5a-5770ab89fbcf', 0, 'Innehåll',
 	'<p>Välkommen till Piranha, den enkla och minimala content management lösningen för .NET.</p>', GETDATE(), GETDATE(),
 	'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');

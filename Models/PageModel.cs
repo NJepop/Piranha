@@ -164,12 +164,14 @@ namespace Piranha.Models
 
 			// Page regions
 			foreach (string str in pt.PageRegions) {
-				Region pr = Region.GetSingle("region_page_id = @0 AND region_name = @1", Page.Id, str) ;
+				Region pr = Region.GetSingle("region_page_id = @0 AND region_name = @1 AND region_draft = @2", 
+					Page.Id, str, Page.IsDraft) ;
 				((IDictionary<string, object>)Regions).Add(str, pr != null ? pr.Body : new HtmlString("")) ;
 			}
 			// Properties
 			foreach (string str in pt.Properties) {
-				Property pr = Property.GetSingle("property_page_id = @0 AND property_name = @1", Page.Id, str) ;
+				Property pr = Property.GetSingle("property_page_id = @0 AND property_name = @1 AND property_draft = @2", 
+					Page.Id, str, Page.IsDraft) ;
 				((IDictionary<string, object>)Properties).Add(str, pr != null ? pr.Value : "") ;
 			}
 			// Attachments

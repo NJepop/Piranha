@@ -39,7 +39,7 @@ namespace Piranha.Models.Manager.PageModels
 		/// <returns>The model.</returns>
 		public static ListModel Get() {
 			ListModel m = new ListModel() ;
-			m.Pages = Sitemap.GetStructure().Flatten() ;
+			m.Pages = Sitemap.GetStructure(false).Flatten() ;
 
 			return m ;
 		}

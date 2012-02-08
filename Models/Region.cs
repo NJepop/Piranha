@@ -12,7 +12,7 @@ namespace Piranha.Models
 	/// <summary>
 	/// Active record for a page region.
 	/// </summary>
-	[PrimaryKey(Column="region_id")]
+	[PrimaryKey(Column="region_id,region_draft")]
 	public class Region : PiranhaRecord<Region>
 	{
 		#region Fields
@@ -23,10 +23,22 @@ namespace Piranha.Models
 		public override Guid Id { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets weather this is a draft.
+		/// </summary>
+		[Column(Name="region_draft")]
+		public bool IsDraft { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the parent id.
 		/// </summary>
 		[Column(Name="region_page_id")]
 		public Guid PageId { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets weather this is a page draft.
+		/// </summary>
+		[Column(Name="region_page_draft")]
+		public bool IsPageDraft { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the name.
@@ -72,6 +84,16 @@ namespace Piranha.Models
 		/// <returns>The regions</returns>
 		public static List<Region> GetByPageId(Guid id) {
 			return Get("region_page_id = @0", id) ;
+		}
+
+		/// <summary>
+		/// Gets all regions associated with the given page id of the given state.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		/// <param name="draft">Weather this is a draft</param>
+		/// <returns>The regions</returns>
+		public static List<Region> GetByPageId(Guid id, bool draft) {
+			return Get("region_page_id = @0 AND region_draft = @1", id, draft) ;
 		}
 	}
 }

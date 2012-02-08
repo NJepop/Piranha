@@ -17,6 +17,7 @@ namespace Piranha.Models
 	public interface IPage {
 		Guid Id { get ; }
 		Guid GroupId { get ; }
+		bool IsDraft { get ; }
 		string Title { get ; }
 		string NavigationTitle { get ; }
 		string Permalink { get ; }
@@ -32,7 +33,7 @@ namespace Piranha.Models
 	/// <summary>
 	/// Active record for a page.
 	/// </summary>
-	[PrimaryKey(Column="page_id")]
+	[PrimaryKey(Column="page_id,page_draft")]
 	[Join(TableName="pagetemplate", ForeignKey="page_template_id", PrimaryKey="pagetemplate_id")]
 	[Join(TableName="permalink", ForeignKey="page_id", PrimaryKey="permalink_parent_id")]
 	public class Page : PiranhaRecord<Page>, IPage, ICacheRecord<Page>
@@ -43,6 +44,12 @@ namespace Piranha.Models
 		/// </summary>
 		[Column(Name="page_id")]
 		public override Guid Id { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets weather this is a draft.
+		/// </summary>
+		[Column(Name="page_draft")]
+		public bool IsDraft { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the template id.
@@ -243,18 +250,30 @@ namespace Piranha.Models
 		/// <returns>The page</returns>
 		public static Page GetSingle(Guid id) {
 			if (!Cache.ContainsKey(id))
-				Cache[id] = Page.GetSingle((object)id) ;
+				Cache[id] = Page.GetSingle("page_id = @0 AND page_draft = 0", id) ;
 			return Cache[id] ;
+		}
+
+		/// <summary>
+		/// Gets a single page.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		/// <param name="draft">Page status</param>
+		/// <returns>The page</returns>
+		public static Page GetSingle(Guid id, bool draft) {
+			if (!draft)
+				return GetSingle(id) ;
+			return GetSingle("page_id = @0 AND page_draft = @1", id, draft) ;
 		}
 
 		/// <summary>
 		/// Gets the site startpage
 		/// </summary>
-		/// <param name="lm">Optional load model</param>
+		/// <param name="draft">Weather to get the current draft</param>
 		/// <returns>The startpage</returns>
-		public static Page GetStartpage() {
+		public static Page GetStartpage(bool draft = false) {
 			if (!Cache.ContainsKey(Guid.Empty))
-				Cache[Guid.Empty] = Page.GetSingle("page_parent_id IS NULL and page_seqno = 1") ;
+				Cache[Guid.Empty] = Page.GetSingle("page_parent_id IS NULL and page_seqno = 1 AND page_draft = @0", draft) ;
 			return Cache[Guid.Empty] ;
 		}
 
@@ -262,9 +281,10 @@ namespace Piranha.Models
 		/// Gets the page specified by the given permalink.
 		/// </summary>
 		/// <param name="permalink">The permalink</param>
+		/// <param name="draft">Weather to get the current draft</param>
 		/// <returns>The page</returns>
-		public static Page GetByPermalink(string permalink) {
-			return Page.GetSingle("permalink_name = @0", permalink) ;
+		public static Page GetByPermalink(string permalink, bool draft = false) {
+			return Page.GetSingle("permalink_name = @0 AND page_draft = @1", permalink, draft) ;
 		}
 
 		/// <summary>
@@ -283,13 +303,17 @@ namespace Piranha.Models
 			IDbTransaction t = tx != null ? tx : Database.OpenConnection().BeginTransaction() ;
 
 			try {
-				if (IsNew) {
-					MoveSeqno(ParentId, Seqno, true, t) ;
-				} else {
-					Page old = GetSingle(Id) ;
-					if (old.ParentId != ParentId || old.Seqno != Seqno) {
-						MoveSeqno(old.ParentId, old.Seqno + 1, false, t) ;
+				// We only move pages around as drafts. When we publish we
+				// simply change states.
+				if (IsDraft) {
+					if (IsNew) {
 						MoveSeqno(ParentId, Seqno, true, t) ;
+					} else {
+						Page old = GetSingle(Id, true) ;
+						if (old.ParentId != ParentId || old.Seqno != Seqno) {
+							MoveSeqno(old.ParentId, old.Seqno + 1, false, t) ;
+							MoveSeqno(ParentId, Seqno, true, t) ;
+						}
 					}
 				}
 				if (base.Save(t)) {
@@ -360,7 +384,8 @@ namespace Piranha.Models
 				Cache.Remove(Guid.Empty) ;
 
 			// Invalidate public sitemap
-			Sitemap.InvalidateCache() ;
+			if (!record.IsDraft)
+				Sitemap.InvalidateCache() ;
 		}
 	}
 }

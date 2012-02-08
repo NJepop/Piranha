@@ -100,8 +100,10 @@ namespace Piranha.Models.Manager.PageModels
 		/// <returns>The model</returns>
 		public static EditModel GetById(Guid id) {
 			EditModel m = new EditModel() ;
-
-			m.Page = Piranha.Models.Page.GetSingle(id) ;
+			
+			m.Page = Piranha.Models.Page.GetSingle(id, true) ;
+			if (m.Page == null)
+				m.Page = Piranha.Models.Page.GetSingle(id) ;
 
 			if (m.Page != null) {
 				m.GetRelated() ;
@@ -131,15 +133,63 @@ namespace Piranha.Models.Manager.PageModels
 		/// <summary>
 		/// Saves the page and all of it's related regions.
 		/// </summary>
+		/// <param name="publish">Weather the page should be published</param>
 		/// <returns>Weather the operation succeeded</returns>
-		public virtual bool SaveAll() {
+		public virtual bool SaveAll(bool draft = true) {
+			bool unpublished = Page.Get("page_id = @0 AND page_draft = 0", Page.Id).Count == 0 ;
+
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
 				try {
+
+					// Always save as draft
+					Page.IsDraft = true ;
+					PageRegions.ForEach(r => {
+						r.IsDraft = r.IsPageDraft = true ;
+					}) ;
+					Properties.ForEach(p => {
+						p.IsDraft = p.IsPageDraft = true ;
+					}) ;
+					// Set published date if this is the first publish
+					if (unpublished && !draft)
+						Page.Published = DateTime.Now ;
+
 					Page.Save(tx) ;
 					if (Permalink.IsNew)
 						Permalink.Name = Permalink.Generate(!String.IsNullOrEmpty(Page.NavigationTitle) ?
 							Page.NavigationTitle : Page.Title) ;
 					Permalink.Save(tx) ;
+					foreach (Region r in PageRegions)
+						r.Save(tx) ;
+					foreach (Property p in Properties)
+						p.Save(tx) ;
+					tx.Commit() ;
+				} catch { tx.Rollback() ; throw ; }
+			}
+			// Now let's check if the page should be publised.
+			if (!draft)
+				Publish(unpublished) ;
+			return true ;
+		}
+
+		/// <summary>
+		/// Publishes the current page model.
+		/// </summary>
+		public void Publish(bool isnew) {
+			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
+				try {
+					// Update records
+					Page.IsDraft = false ;
+					Page.IsNew = isnew ;
+					PageRegions.ForEach(r => {
+						r.IsDraft = r.IsPageDraft = false ;
+						r.IsNew = isnew ;
+					}) ;
+					Properties.ForEach(p => {
+						p.IsDraft = p.IsPageDraft = false ;
+						p.IsNew = isnew ;
+					}) ;
+
+					Page.Save(tx) ;
 					foreach (Region r in PageRegions)
 						r.Save(tx) ;
 					foreach (Property p in Properties)
@@ -152,7 +202,6 @@ namespace Piranha.Models.Manager.PageModels
 					} catch {}
 				} catch { tx.Rollback() ; throw ; }
 			}
-			return true ;
 		}
 
 		/// <summary>
@@ -165,6 +214,9 @@ namespace Piranha.Models.Manager.PageModels
 					Region.GetByPageId(Page.Id).ForEach((r) => r.Delete(tx)) ;
 					Property.GetByParentId(Page.Id).ForEach((p) => p.Delete(tx)) ;
 					Permalink.Delete(tx) ;
+					Page.Delete(tx) ;
+					// Let's not forget the published version.
+					Page = Models.Page.GetSingle(Page.Id, false) ;
 					Page.Delete(tx) ;
 					tx.Commit() ;
 
@@ -183,7 +235,7 @@ namespace Piranha.Models.Manager.PageModels
 		public virtual void Refresh() {
 			if (Page != null) {
 				if (!Page.IsNew) { // Page.Id != Guid.Empty) {
-					Page = Page.GetSingle(Page.Id) ;
+					Page = Page.GetSingle(Page.Id, Page.IsDraft) ;
 					GetRelated() ;
 				} else {
 					Template = PageTemplate.GetSingle("pagetemplate_id = @0", Page.TemplateId) ;
@@ -207,18 +259,20 @@ namespace Piranha.Models.Manager.PageModels
 			if (Template != null) {
 				// Get page regions
 				foreach (string name in Template.PageRegions) {
-					Region reg = Region.GetSingle("region_name = @0 AND region_page_id = @1", name, Page.Id) ;
+					Region reg = Region.GetSingle("region_name = @0 AND region_page_id = @1 AND region_draft = @2", 
+						name, Page.Id, Page.IsDraft) ;
 					if (reg != null)
 						PageRegions.Add(reg) ;
-					else PageRegions.Add(new Region() { Name = name, PageId = Page.Id }) ;
+					else PageRegions.Add(new Region() { Name = name, PageId = Page.Id, IsDraft = Page.IsDraft, IsPageDraft = Page.IsDraft }) ;
 				} 
 
 				// Get Properties
 				foreach (string name in Template.Properties) {
-					Property prp = Property.GetSingle("property_name = @0 AND property_page_id = @1", name, Page.Id) ;
+					Property prp = Property.GetSingle("property_name = @0 AND property_page_id = @1 AND property_draft = @2", 
+						name, Page.Id, Page.IsDraft) ;
 					if (prp != null)
 						Properties.Add(prp) ;
-					else Properties.Add(new Property() { Name = name, PageId = Page.Id }) ;
+					else Properties.Add(new Property() { Name = name, PageId = Page.Id, IsDraft = Page.IsDraft, IsPageDraft = Page.IsDraft }) ;
 				}
 			} else throw new ArgumentException("Could not find page template for page {" + Page.Id.ToString() + "}") ;
 

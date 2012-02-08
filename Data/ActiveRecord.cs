@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Web;
 
@@ -115,7 +116,7 @@ namespace Piranha.Data
 		#region Members
 		// Reflected information
 		private static string _tablename ;
-		private static string _primarykey ;
+		private static List<string> _primarykey ;
 		private static string _joins ;
 		private static Dictionary<string, PropertyInfo> _columns ;
 		private static Dictionary<string, ColumnAttribute> _attributes ;
@@ -124,7 +125,8 @@ namespace Piranha.Data
 		private static string SqlSelect = "SELECT {3} {0} FROM {1} {2} {4} {5}" ;
 		private static string SqlInsert = "INSERT INTO {0} ({1}) VALUES({2})" ;
 		private static string SqlUpdate = "UPDATE {0} SET {1} WHERE {2}" ;
-		private static string SqlDelete = "DELETE FROM {0} WHERE {1} = @0" ;
+		//private static string SqlDelete = "DELETE FROM {0} WHERE {1} = @0" ;
+		private static string SqlDelete = "DELETE FROM {0} WHERE {1}" ;
 		#endregion
 
 		#region Properties
@@ -151,16 +153,12 @@ namespace Piranha.Data
 		}
 
 		/// <summary>
-		/// Gets the primary key.
+		/// Gets the primary keys.
 		/// </summary>
-		protected static string PrimaryKey { 
+		protected static List<string> PrimaryKeys {
 			get {
-				if (String.IsNullOrEmpty(_primarykey)) {
-					PrimaryKeyAttribute pa = typeof(T).GetCustomAttribute<PrimaryKeyAttribute>(true) ;
-					if (pa != null && !String.IsNullOrEmpty(pa.Column))
-						_primarykey = pa.Column ;
-					else _primarykey = "Id" ;
-				}
+				if (_primarykey == null)
+					InitPrimaryKeys() ;
 				return _primarykey ;
 			}
 		}
@@ -222,8 +220,9 @@ namespace Piranha.Data
 			bool result = false ;
 
 			// Check primary key
-			if (Columns[PrimaryKey].GetValue(this, null) == null)
-				throw new ArgumentException("Property \"" +  Columns[PrimaryKey].Name + "\" is marked as Primary Key and can not contain null") ;
+			foreach (string key in PrimaryKeys)
+				if (Columns[key].GetValue(this, null) == null)
+					throw new ArgumentException("Property \"" +  Columns[key].Name + "\" is marked as Primary Key and can not contain null") ;
 
 			// Execute command
 			using (IDbConnection conn = tx != null ? null : Database.OpenConnection()) {
@@ -251,12 +250,12 @@ namespace Piranha.Data
 		/// <returns>If the operation succeeded</returns>
 		public virtual bool Delete(IDbTransaction tx = null) {
 			if (!IsNew) {
-				object id = Columns[PrimaryKey].GetValue(this, null) ;
+				//object id = Columns[PrimaryKey].GetValue(this, null) ;
 				bool result = false ;
 	
 				// Execute command
 				using (IDbConnection conn = tx != null ? null : Database.OpenConnection()) {
-					using (IDbCommand cmd = CreateDeleteCommand(tx != null ? tx.Connection : conn, id, tx)) {
+					using (IDbCommand cmd = CreateDeleteCommand(tx != null ? tx.Connection : conn, tx)) {
 						result = cmd.ExecuteNonQuery() > 0 ;
 						IsNew = result ;
 					}
@@ -276,7 +275,7 @@ namespace Piranha.Data
 		/// <param name="id">The primary key</param>
 		/// <returns>A single record</returns>
 		public static T GetSingle(object id) {
-			return GetSingle(PrimaryKey + "=@0", id) ;
+			return GetSingle(PrimaryKeys[0] + "=@0", id) ;
 		}
 
 		/// <summary>
@@ -447,6 +446,18 @@ namespace Piranha.Data
 			}
 		}
 
+		/// <summary>
+		/// Initializes the primary keys
+		/// </summary>
+		private static void InitPrimaryKeys() {
+			_primarykey = new List<string>() ;
+
+			PrimaryKeyAttribute pa = typeof(T).GetCustomAttribute<PrimaryKeyAttribute>(true) ;
+			if (pa != null && !String.IsNullOrEmpty(pa.Column))
+				_primarykey.AddRange(pa.Column.Split(new char[] {','})) ;
+			else _primarykey.Add("Id") ;
+		}
+
 		private static string GenerateSelectFields(string fields) {
 			string ret = "" ;
 
@@ -538,8 +549,13 @@ namespace Piranha.Data
 			}
 
 			// Build where clause
-			string where = PrimaryKey + "=@" + args.Count.ToString() ;
-			args.Add(Columns[PrimaryKey].GetValue(this, null)) ;
+			string where = "" ; //PrimaryKey + "=@" + args.Count.ToString() ;
+			foreach (string pk in PrimaryKeys) {
+				where += (where != "" ? " AND " : "") +
+					pk + "=@" + args.Count.ToString() ;
+					args.Add(Columns[pk].GetValue(this, null)) ;
+			}
+			//args.Add(Columns[PrimaryKey].GetValue(this, null)) ;
 
 			// Create command
 			IDbCommand cmd = Database.CreateCommand(conn, String.Format(SqlUpdate, 
@@ -556,10 +572,19 @@ namespace Piranha.Data
 		/// <param name="id">The id of the record to delete</param>
 		/// <param name="tx">Optional transaction to run the insert in</param>
 		/// <returns>The command</returns>
-		private IDbCommand CreateDeleteCommand(IDbConnection conn, object id, IDbTransaction tx = null) {
+		private IDbCommand CreateDeleteCommand(IDbConnection conn, IDbTransaction tx = null) {
+			// Build where clause
+			List<object> args = new List<object>() ;
+			string where = "" ;
+			foreach (string pk in PrimaryKeys) {
+				where += (where != "" ? " AND " : "") +
+					pk + "=@" + args.Count.ToString() ;
+					args.Add(Columns[pk].GetValue(this, null)) ;
+			}
+
 			// Create command
 			IDbCommand cmd = Database.CreateCommand(conn, String.Format(SqlDelete,
-				TableName, PrimaryKey), new object[] { id }) ;
+				TableName, where), args.ToArray()) ;
 			if (tx != null)
 				cmd.Transaction = tx ;
 			return cmd ;

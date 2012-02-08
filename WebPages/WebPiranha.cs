@@ -56,6 +56,7 @@ namespace Piranha.WebPages
 		public static void RegisterDefaultHandlers() {
 			RegisterHandler("", "STARTPAGE", new PermalinkHandler()) ;
 			RegisterHandler("home", "PERMALINK", new PermalinkHandler()) ;
+			RegisterHandler("draft", "DRAFT", new DraftHandler()) ;
 			RegisterHandler("media", "CONTENT", new ContentHandler()) ;
 			RegisterHandler("thumb", "THUMBNAIL", new ThumbnailHandler()) ;
 			RegisterHandler("preview", "PREVIEW", new PreviewHandler()) ;
@@ -99,15 +100,19 @@ namespace Piranha.WebPages
 		/// </summary>
 		/// <param name="context">Http context</param>
 		public static void BeginRequest(HttpContext context) {
-			string path = context.Request.Path.Substring(context.Request.ApplicationPath.Length > 1 ? 
-				context.Request.ApplicationPath.Length : 0) ;
+			if (context.Request.RawUrl == context.Request.ApplicationPath) {
+				context.Response.RedirectPermanent(context.Request.RawUrl + "/") ;
+			} else {
+				string path = context.Request.Path.Substring(context.Request.ApplicationPath.Length > 1 ? 
+					context.Request.ApplicationPath.Length : 0) ;
 
-			string[] args = path.Split(new char[] {'/'}).Subset(1) ;
+				string[] args = path.Split(new char[] {'/'}).Subset(1) ;
 
-			foreach (RequestHandlerRegistration hr in Handlers.Values) {
-				if (hr.UrlPrefix.ToLower() == args[0].ToLower()) {
-					hr.Handler.HandleRequest(context, args.Subset(1)) ;
-					break ;
+				foreach (RequestHandlerRegistration hr in Handlers.Values) {
+					if (hr.UrlPrefix.ToLower() == args[0].ToLower()) {
+						hr.Handler.HandleRequest(context, args.Subset(1)) ;
+						break ;
+					}
 				}
 			}
 		}
@@ -117,13 +122,19 @@ namespace Piranha.WebPages
 		/// </summary>
 		/// <param name="context">The http context</param>
 		public static void HandleCulture(HttpContext context) {
-			if (context.Request.HttpMethod.ToUpper() == "POST") {
-				if (!String.IsNullOrEmpty(context.Request["lang"]))
-					context.Session["lang"] = context.Request["lang"] ;
-			}
-			if (context.Session["lang"] != null)
-				System.Threading.Thread.CurrentThread.CurrentUICulture =
-					new System.Globalization.CultureInfo((string)context.Session["lang"]) ;
+			//
+			// NOTE: This code will fail completely in the manager view as accessing the request 
+			// collection triggers the form data validation.
+			//
+			try {
+				if (context.Request.HttpMethod.ToUpper() == "POST") {
+					if (!String.IsNullOrEmpty(context.Request["lang"]))
+						context.Session["lang"] = context.Request["lang"] ;
+				}
+				if (context.Session != null && context.Session["lang"] != null)
+					System.Threading.Thread.CurrentThread.CurrentUICulture =
+						new System.Globalization.CultureInfo((string)context.Session["lang"]) ;
+			} catch {}
 		}
 
 		/// <summary>

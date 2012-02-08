@@ -11,7 +11,7 @@ namespace Piranha.Models
 	/// <summary>
 	/// Active record for a sitemap.
 	/// </summary>
-	[Table(Name="page"), PrimaryKey(Column="page_id")]
+	[Table(Name="page")]
 	[Join(TableName="pagetemplate", ForeignKey="page_template_id", PrimaryKey="pagetemplate_id")]
 	[Join(TableName="permalink", ForeignKey="page_id", PrimaryKey="permalink_parent_id")]
 	public class Sitemap : PiranhaRecord<Sitemap>
@@ -200,18 +200,25 @@ namespace Piranha.Models
 		/// <param name="published">Weather only published pages should be included.</param>
 		/// <returns>The site structure</returns>
 		public static List<Sitemap> GetStructure(bool published = true) {
-			// Return the cached public sitemap if it exists.
-			if (published && HttpContext.Current.Cache[typeof(Sitemap).Name] != null)
-				return (List<Sitemap>)HttpContext.Current.Cache[typeof(Sitemap).Name] ;
+			if (published) {
+				// Return the cached public sitemap if it exists.
+				if (published && HttpContext.Current.Cache[typeof(Sitemap).Name] != null)
+					return (List<Sitemap>)HttpContext.Current.Cache[typeof(Sitemap).Name] ;
 
-			// Get the sitemap from the database
-			List<Sitemap> pages = Get(new Params() { OrderBy = "page_parent_id, page_seqno" }) ;
-			pages = Sort(pages, Guid.Empty) ;
+				// Get the sitemap from the database
+				List<Sitemap> pages = Get("page_draft = 0", new Params() { OrderBy = "page_parent_id, page_seqno" }) ;
+				pages = Sort(pages, Guid.Empty) ;
 			
-			// If this is the public sitemap, cache it
-			if (published)
-				HttpContext.Current.Cache[typeof(Sitemap).Name] = pages ;
-			return pages ;
+				// If this is the public sitemap, cache it
+				if (published)
+					HttpContext.Current.Cache[typeof(Sitemap).Name] = pages ;
+				return pages ;
+			} else {
+				// Get the sitemap from the database
+				List<Sitemap> pages = Get("page_draft = 1", new Params() { OrderBy = "page_parent_id, page_seqno" }) ;
+				pages = Sort(pages, Guid.Empty) ;			
+				return pages ;
+			}
 		}
 
 		/// <summary>
@@ -219,20 +226,6 @@ namespace Piranha.Models
 		/// </summary>
 		public static void InvalidateCache() {
 			HttpContext.Current.Cache.Remove(typeof(Sitemap).Name) ;
-		}
-
-		public static void Generate(HttpContext context) {
-			List<Sitemap> site = GetStructure(true).Flatten() ;
-
-			context.Response.ContentType = "text/xml" ;
-			context.Response.Write(
-				"<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">") ;
-			foreach (var sm in site) {
-				context.Response.Write(String.Format("<url><loc>@0</loc></url>",
-					sm.Permalink)) ;
-			}
-			context.Response.Write("</urlset>") ;
-			context.Response.End() ;
 		}
 
 		#region Private methods

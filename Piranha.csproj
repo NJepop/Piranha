@@ -123,6 +123,7 @@
     <Compile Include="WebPages\PiranhaFacade.cs" />
     <Compile Include="WebPages\RequestHandlers\AccountHandler.cs" />
     <Compile Include="WebPages\RequestHandlers\ContentHandler.cs" />
+    <Compile Include="WebPages\RequestHandlers\DraftHandler.cs" />
     <Compile Include="WebPages\RequestHandlers\IRequestHandler.cs" />
     <Compile Include="WebPages\RequestHandlers\PermalinkHandler.cs" />
     <Compile Include="WebPages\RequestHandlers\PreviewHandler.cs" />

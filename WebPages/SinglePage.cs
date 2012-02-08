@@ -28,12 +28,22 @@ namespace Piranha.WebPages
 		/// </summary>
 		protected override void InitializePage() {
 			string permalink = UrlData.Count > 0 ? UrlData[UrlData.Count - 1] : "" ;
+			bool   draft = false ;
 			bool   cached = false ;
+
+			// Check if we want to see the draft
+			if (User.HasAccess("ADMIN_PAGE")) {
+				if (!String.IsNullOrEmpty(Request["draft"])) {
+					try {
+						draft = Convert.ToBoolean(Request["draft"]) ;
+					} catch {}
+				}
+			}
 			
 			// Load the current page
 			if (!String.IsNullOrEmpty(permalink))
-				page = Models.Page.GetByPermalink(permalink) ;
-			else page = Models.Page.GetStartpage() ;
+				page = Models.Page.GetByPermalink(permalink, draft) ;
+			else page = Models.Page.GetStartpage(draft) ;
 
 			// Check permissions
 			if (page.GroupId != Guid.Empty) {

@@ -12,7 +12,7 @@ namespace Piranha.Models
 	/// <summary>
 	/// Active record for a page region.
 	/// </summary>
-	[PrimaryKey(Column="property_id")]
+	[PrimaryKey(Column="property_id,property_draft")]
 	public class Property : PiranhaRecord<Property>
 	{
 		#region Fields
@@ -23,10 +23,22 @@ namespace Piranha.Models
 		public override Guid Id { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets weather this is a draft.
+		/// </summary>
+		[Column(Name="property_draft")]
+		public bool IsDraft { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the parent id.
 		/// </summary>
 		[Column(Name="property_page_id")]
 		public Guid PageId { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets weather this is page a draft.
+		/// </summary>
+		[Column(Name="property_page_draft")]
+		public bool IsPageDraft { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the name.
@@ -68,10 +80,20 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets all properties associated with the given parent id.
 		/// </summary>
-		/// <param name="id">The parent id.</param>
+		/// <param name="id">The parent id</param>
 		/// <returns>The properties</returns>
 		public static List<Property> GetByParentId(Guid id) {
 			return Get("property_page_id = @0", id) ;
+		}
+
+		/// <summary>
+		/// Gets all properties associated with the given parent id of the given state.
+		/// </summary>
+		/// <param name="id">The parent id</param>
+		/// <param name="draft">Weather this is a draft</param>
+		/// <returns>The properties</returns>
+		public static List<Property> GetByParentId(Guid id, bool draft) {
+			return Get("property_page_id = @0 AND property_draft = @1", id, draft) ;
 		}
 	}
 }
