@@ -113,6 +113,20 @@ namespace Piranha.WebPages
 		}
 
 		/// <summary>
+		/// Handles current UI culture.
+		/// </summary>
+		/// <param name="context">The http context</param>
+		public static void HandleCulture(HttpContext context) {
+			if (context.Request.HttpMethod.ToUpper() == "POST") {
+				if (!String.IsNullOrEmpty(context.Request["lang"]))
+					context.Session["lang"] = context.Request["lang"] ;
+			}
+			if (context.Session["lang"] != null)
+				System.Threading.Thread.CurrentThread.CurrentUICulture =
+					new System.Globalization.CultureInfo((string)context.Session["lang"]) ;
+		}
+
+		/// <summary>
 		/// Checks request headers against the given etag and last modification data and
 		/// sets the correct response headers. Returns weather the file is client cached 
 		/// or should be loaded/rendered.
