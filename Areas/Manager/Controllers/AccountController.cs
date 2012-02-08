@@ -19,7 +19,12 @@ namespace byBrick.Areas.Manager.Controllers
 		/// </summary>
         public ActionResult Index()
         {
-            return View();
+			// Check for existing installation.
+			try {
+				SysParam p = SysParam.GetByName("SITE_VERSION") ;			
+	            return View() ;
+			} catch {}
+			return RedirectToAction("Index", "Install") ;
         }
 
 		/// <summary>

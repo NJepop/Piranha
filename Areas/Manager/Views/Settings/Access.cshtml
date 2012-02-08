@@ -36,6 +36,7 @@
                             @Html.TextBoxFor(m => m.Access.Function)
                         } else {
                             @Html.TextBoxFor(m => m.Access.Function, new { disabled = "disabled" })
+                            @Html.HiddenFor(m => m.Access.Function)
                         }
                     </div>
                     @Html.ValidationMessageFor(m => m.Access.Function)
@@ -53,6 +54,7 @@
                             @Html.TextAreaFor(m => m.Access.Description, new { @rows = 3, @placeholder = "Ej obligatoriskt" })
                         } else {
                             @Html.TextAreaFor(m => m.Access.Description, new { @rows = 3, @disabled = "disabled", @placeholder = "Ej obligatoriskt" })
+                            @Html.HiddenFor(m => m.Access.Description)
                         }
                     </div>
                 </li>
