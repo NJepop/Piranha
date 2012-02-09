@@ -100,14 +100,12 @@ namespace Piranha.WebPages
 		/// </summary>
 		/// <param name="context">Http context</param>
 		public static void BeginRequest(HttpContext context) {
-			if (context.Request.RawUrl == context.Request.ApplicationPath) {
-				context.Response.RedirectPermanent(context.Request.RawUrl + "/") ;
-			} else {
-				string path = context.Request.Path.Substring(context.Request.ApplicationPath.Length > 1 ? 
-					context.Request.ApplicationPath.Length : 0) ;
+			string path = context.Request.Path.Substring(context.Request.ApplicationPath.Length > 1 ? 
+				context.Request.ApplicationPath.Length : 0) ;
 
-				string[] args = path.Split(new char[] {'/'}).Subset(1) ;
-
+			string[] args = path.Split(new char[] {'/'}).Subset(1) ;
+				
+			if (args.Length > 0) {
 				foreach (RequestHandlerRegistration hr in Handlers.Values) {
 					if (hr.UrlPrefix.ToLower() == args[0].ToLower()) {
 						hr.Handler.HandleRequest(context, args.Subset(1)) ;
