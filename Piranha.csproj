@@ -276,6 +276,9 @@
     <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\jquery-ui-1.8.16.custom.min.js" />
     <EmbeddedResource Include="Areas\Manager\Content\Js\Ext\jquery.equalheights.js" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Scripts\Data.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

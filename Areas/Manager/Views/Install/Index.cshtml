@@ -18,6 +18,10 @@
             if ($("#sysMsg").text() != "") {
                 floatBox.show("boxMessage");
             }
+
+            $("#schema").click(function () {
+                $("#InstallType").attr("value", "SCHEMA");
+            });
         });
     </script>
 </head>
@@ -36,7 +40,12 @@
                         <div class="input"><input name="PasswordConfirm" type="password" /></div></li>
                     <li><label>E-post:</label>
                         <div class="input"><input name="UserEmail" type="text" /></div></li>
-                    <li><button class="btn blue right">Installera webbplatsen</button></li>
+                    <li><input type="hidden" id="InstallType" name="InstallType" value="FULL" />
+                        <hr /></li>
+                    <li>
+                        <button id="schema" class="btn orange right">Bara tabeller</button>
+                        <button id="full" class="btn blue">Installera webbplats</button>
+                    </li>
                 </ul>
                 @{ Html.EndForm() ; }
                 <div class="clear"></div>

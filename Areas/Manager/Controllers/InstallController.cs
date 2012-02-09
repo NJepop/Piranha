@@ -26,6 +26,8 @@ namespace byBrick.Areas.Manager.Controllers
 
 		[Compare("Password", ErrorMessage="Lösenorden matchar inte.")]
 		public string PasswordConfirm { get ; set ; }
+
+		public string InstallType { get ; set ; }
 	}
 
 	/// <summary>
@@ -45,7 +47,7 @@ namespace byBrick.Areas.Manager.Controllers
 				// update page if needed.
 				return RedirectToAction("Index", "Account") ;
 			} catch {}
-            return View();
+            return View("Index");
         }
 
 		/// <summary>
@@ -54,10 +56,15 @@ namespace byBrick.Areas.Manager.Controllers
 		/// <param name="m">The model</param>
 		[HttpPost()]
 		public ActionResult Create(InstallModel m) {
-			if (ModelState.IsValid) {
+			if (m.InstallType == "SCHEMA" || ModelState.IsValid) {
 				// Read embedded create script
 				Stream str = Assembly.GetExecutingAssembly().GetManifestResourceStream("Piranha.Data.Scripts.Create.sql") ;
 				String sql = new StreamReader(str).ReadToEnd() ;
+				str.Close() ;
+
+				// Read embedded data script
+				str = Assembly.GetExecutingAssembly().GetManifestResourceStream("Piranha.Data.Scripts.Data.sql") ;
+				String data = new StreamReader(str).ReadToEnd() ;
 				str.Close() ;
 
 				// Split statements and execute
@@ -68,28 +75,41 @@ namespace byBrick.Areas.Manager.Controllers
 						if (!String.IsNullOrEmpty(stmt.Trim()))
 							SysUser.Execute(stmt, tx) ;
 					}
-
-					// Create user
-					SysUser usr = new SysUser() {
-						Login = m.UserLogin,
-						Email = m.UserEmail,
-						GroupId = new Guid("7c536b66-d292-4369-8f37-948b32229b83"),
-						CreatedBy = new Guid("ca19d4e7-92f0-42f6-926a-68413bbdafbc"),
-						UpdatedBy = new Guid("ca19d4e7-92f0-42f6-926a-68413bbdafbc"),
-						Created = DateTime.Now,
-						Updated = DateTime.Now
-					} ;
-					usr.Save(tx) ;
-
-					// Create user password
-					SysUserPassword pwd = new SysUserPassword() {
-						Id = usr.Id,
-						Password = m.Password,
-						IsNew = false
-					} ;
-					pwd.Save(tx) ;
-
 					tx.Commit() ;
+				}
+
+				if (m.InstallType.ToUpper() == "FULL") {
+					// Split statements and execute
+					stmts = data.Split(new char[] { ';' }) ;
+					using (IDbTransaction tx = Database.OpenTransaction()) {
+						// Create database from script
+						foreach (string stmt in stmts) {
+							if (!String.IsNullOrEmpty(stmt.Trim()))
+								SysUser.Execute(stmt, tx) ;
+						}
+
+						// Create user
+						SysUser usr = new SysUser() {
+							Login = m.UserLogin,
+							Email = m.UserEmail,
+							GroupId = new Guid("7c536b66-d292-4369-8f37-948b32229b83"),
+							CreatedBy = new Guid("ca19d4e7-92f0-42f6-926a-68413bbdafbc"),
+							UpdatedBy = new Guid("ca19d4e7-92f0-42f6-926a-68413bbdafbc"),
+							Created = DateTime.Now,
+							Updated = DateTime.Now
+						} ;
+						usr.Save(tx) ;
+
+						// Create user password
+						SysUserPassword pwd = new SysUserPassword() {
+							Id = usr.Id,
+							Password = m.Password,
+							IsNew = false
+						} ;
+						pwd.Save(tx) ;
+		
+						tx.Commit() ;
+					}	
 				}
 				return RedirectToAction("Index", "Account") ;
 			}
