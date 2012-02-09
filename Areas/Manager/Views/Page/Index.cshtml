@@ -121,7 +121,7 @@
         </thead>
         <tbody>
             @foreach (var page in Model.Pages) {
-            <tr@(!page.IsPublished ? " class=draft" : "")>
+            <tr@(page.Updated > page.LastPublished ? " class=draft" : "")>
                 <td@(page.Level > 1 ? " class=level" + page.Level : "")><a href="@Url.Action("Edit", new { id = page.Id })">@page.Title</a></td>
                 <td>@page.TemplateName.Singular</td>
                 <td class="date">@page.Created.ToString("yyyy-MM-dd")</td>

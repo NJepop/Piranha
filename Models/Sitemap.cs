@@ -128,6 +128,12 @@ namespace Piranha.Models
 		public DateTime Published { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets the last published date.
+		/// </summary>
+		[Column(Name="page_last_published")]
+		public DateTime LastPublished { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the user id that created the record.
 		/// </summary>
 		[Column(Name="page_created_by")]

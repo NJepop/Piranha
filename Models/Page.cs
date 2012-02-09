@@ -36,7 +36,7 @@ namespace Piranha.Models
 	[PrimaryKey(Column="page_id,page_draft")]
 	[Join(TableName="pagetemplate", ForeignKey="page_template_id", PrimaryKey="pagetemplate_id")]
 	[Join(TableName="permalink", ForeignKey="page_id", PrimaryKey="permalink_parent_id")]
-	public class Page : PiranhaRecord<Page>, IPage, ICacheRecord<Page>
+	public class Page : GuidRecord<Page>, IPage, ICacheRecord<Page>
 	{
 		#region Fields
 		/// <summary>
@@ -168,13 +168,13 @@ namespace Piranha.Models
 		/// Gets/sets the created date.
 		/// </summary>
 		[Column(Name="page_created")]
-		public override DateTime Created { get ; set ; }
+		public DateTime Created { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the updated date.
 		/// </summary>
 		[Column(Name="page_updated")]
-		public override DateTime Updated { get ; set ; }
+		public DateTime Updated { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the published date.
@@ -183,16 +183,22 @@ namespace Piranha.Models
 		public DateTime Published { get ; set ; }
 
 		/// <summary>
+		/// Gets/sets the last published date.
+		/// </summary>
+		[Column(Name="page_last_published")]
+		public DateTime LastPublished { get ; set ; }
+
+		/// <summary>
 		/// Gets/sets the user id that created the record.
 		/// </summary>
 		[Column(Name="page_created_by")]
-		public override Guid CreatedBy { get ; set ; }
+		public Guid CreatedBy { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the user id that created the record.
 		/// </summary>
 		[Column(Name="page_updated_by")]
-		public override Guid UpdatedBy { get ; set ; }
+		public Guid UpdatedBy { get ; set ; }
 		#endregion
 
 		#region Properties
@@ -287,48 +293,71 @@ namespace Piranha.Models
 			return Page.GetSingle("permalink_name = @0 AND page_draft = @1", permalink, draft) ;
 		}
 
+		public override bool Save(IDbTransaction tx = null) {
+			return Save(false, tx) ;
+		}
+	
 		/// <summary>
 		/// Saves the current record to the database.
 		/// </summary>
 		/// <param name="tx">Optional transaction</param>
 		/// <returns>Wether the operation was successful</returns>
-		public override bool Save(IDbTransaction tx = null) {
-			// Generate permalink
-			if (IsNew && String.IsNullOrEmpty(Permalink))
-				Permalink = Title.ToLower().Replace(" ", "-").Replace("å", "a").Replace("ä", "a").Replace("ö", "o") ;
-			if (!String.IsNullOrEmpty(PageController))
-				Permalink = PageController.ToLower() ;
+		public bool Save(bool setpublish, IDbTransaction tx = null) {
+			var user = HttpContext.Current.User;
 
-			// Move seqno & save, we need a transaction for this
-			IDbTransaction t = tx != null ? tx : Database.OpenConnection().BeginTransaction() ;
+			if (user.Identity.IsAuthenticated) {
+				// Generate permalink
+				if (IsNew && String.IsNullOrEmpty(Permalink))
+					Permalink = Title.ToLower().Replace(" ", "-").Replace("å", "a").Replace("ä", "a").Replace("ö", "o") ;
+				if (!String.IsNullOrEmpty(PageController))
+					Permalink = PageController.ToLower() ;
 
-			try {
-				// We only move pages around as drafts. When we publish we
-				// simply change states.
-				if (IsDraft) {
-					if (IsNew) {
-						MoveSeqno(ParentId, Seqno, true, t) ;
-					} else {
-						Page old = GetSingle(Id, true) ;
-						if (old.ParentId != ParentId || old.Seqno != Seqno) {
-							MoveSeqno(old.ParentId, old.Seqno + 1, false, t) ;
+				// Move seqno & save, we need a transaction for this
+				IDbTransaction t = tx != null ? tx : Database.OpenConnection().BeginTransaction() ;
+
+				try {
+					// We only move pages around as drafts. When we publish we
+					// simply change states.
+					if (IsDraft) {
+						if (IsNew) {
 							MoveSeqno(ParentId, Seqno, true, t) ;
+						} else {
+							Page old = GetSingle(Id, true) ;
+							if (old.ParentId != ParentId || old.Seqno != Seqno) {
+								MoveSeqno(old.ParentId, old.Seqno + 1, false, t) ;
+								MoveSeqno(ParentId, Seqno, true, t) ;
+							}
 						}
 					}
+
+					// Set dates
+					Updated = DateTime.Now ;
+					UpdatedBy = new Guid(user.Identity.Name) ;
+					if (IsNew) {
+						Created = Updated ;
+						CreatedBy = new Guid(user.Identity.Name) ;
+					}
+					if (setpublish) {
+						LastPublished = Updated ;
+						if (Published == DateTime.MinValue)
+							Published = Updated ;
+					}
+
+					if (base.Save(t)) {
+						if (tx == null)
+							t.Commit() ;
+						return true ;
+					} else {
+						if (tx == null)
+							t.Rollback() ;
+						return false ;
+					}
+				} catch { 
+					if (tx == null) t.Rollback() ; 
+					throw ; 
 				}
-				if (base.Save(t)) {
-					if (tx == null)
-						t.Commit() ;
-					return true ;
-				} else {
-					if (tx == null)
-						t.Rollback() ;
-					return false ;
-				}
-			} catch { 
-				if (tx == null) t.Rollback() ; 
-				throw ; 
 			}
+			throw new AccessViolationException("User must be logged in to save data.") ;
 		}
 
 		/// <summary>

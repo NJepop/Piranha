@@ -338,6 +338,10 @@ table.list th, table.list tfoot td {
 table.list tbody tr:nth-child(2n+1) {
     background: #fff;
     }
+table.list tbody tr.draft {
+    color: #a2a2a2;
+    font-style: italic;
+    }
 table.list .even {
     }
 table.list td {

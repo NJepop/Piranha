@@ -149,11 +149,14 @@ namespace Piranha.Models.Manager.PageModels
 					Properties.ForEach(p => {
 						p.IsDraft = p.IsPageDraft = true ;
 					}) ;
-					// Set published date if this is the first publish
-					if (unpublished && !draft)
-						Page.Published = DateTime.Now ;
+					// Set published dates
+					if (!draft) {
+						//Page.LastPublished = DateTime.Now ;
+						//if (unpublished)
+						//	Page.Published = Page.LastPublished ;
+					}
 
-					Page.Save(tx) ;
+					Page.Save(!draft, tx) ;
 					if (Permalink.IsNew)
 						Permalink.Name = Permalink.Generate(!String.IsNullOrEmpty(Page.NavigationTitle) ?
 							Page.NavigationTitle : Page.Title) ;

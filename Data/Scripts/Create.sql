@@ -147,6 +147,7 @@ CREATE TABLE page (
 	page_created DATETIME NOT NULL,
 	page_updated DATETIME NOT NULL,
 	page_published DATETIME NULL,
+	page_last_published DATETIME NULL,
 	page_created_by UNIQUEIDENTIFIER NOT NULL,
 	page_updated_by UNIQUEIDENTIFIER NOT NULL,
 	CONSTRAINT pk_page_id PRIMARY KEY (page_id, page_draft),
