@@ -7,7 +7,7 @@ using System.Web.Security;
 
 using Piranha.Models;
 
-namespace byBrick.Areas.Manager.Controllers
+namespace Piranha.Areas.Manager.Controllers
 {
 	/// <summary>
 	/// Login controller for the manager interface.

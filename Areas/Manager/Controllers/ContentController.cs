@@ -8,7 +8,7 @@ using System.Web.Mvc;
 using Piranha.Controllers;
 using Piranha.Models.Manager.ContentModels;
 
-namespace byBrick.Areas.Manager.Controllers
+namespace Piranha.Areas.Manager.Controllers
 {
     public class ContentController : ManagerController
     {

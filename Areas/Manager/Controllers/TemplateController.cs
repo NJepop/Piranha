@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using Piranha.Controllers;
 using Piranha.Models.Manager.TemplateModels;
 
-namespace byBrick.Areas.Manager.Controllers
+namespace Piranha.Areas.Manager.Controllers
 {
     public class TemplateController : ManagerController
     {

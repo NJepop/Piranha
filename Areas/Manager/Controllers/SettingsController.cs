@@ -10,7 +10,7 @@ using Piranha.Controllers;
 using Piranha.Models;
 using Piranha.Models.Manager.SettingModels;
 
-namespace byBrick.Areas.Manager.Controllers
+namespace Piranha.Areas.Manager.Controllers
 {
 	/// <summary>
 	/// Settings controller for the manager area.

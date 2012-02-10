@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 using Piranha.Controllers;
 
-namespace byBrick.Areas.Manager.Controllers
+namespace Piranha.Areas.Manager.Controllers
 {
     public class DashboardController : ManagerController
     {

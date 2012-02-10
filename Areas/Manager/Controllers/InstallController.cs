@@ -12,7 +12,7 @@ using System.Web.Security;
 using Piranha.Data;
 using Piranha.Models;
 
-namespace byBrick.Areas.Manager.Controllers
+namespace Piranha.Areas.Manager.Controllers
 {
 	public class InstallModel {
 		[Required(ErrorMessage="Du måste välja ett användarnamn.")]
