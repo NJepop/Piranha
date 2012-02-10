@@ -36,6 +36,7 @@
                             @Html.TextBoxFor(m => m.Param.Name)
                         } else {
                             @Html.TextBoxFor(m => m.Param.Name, new { @disabled = "disabled" })
+                            @Html.HiddenFor(m => m.Param.Name)
                         }
                     </div>
                     @Html.ValidationMessageFor(m => m.Param.Name)
@@ -43,7 +44,13 @@
                 <li>
                     @Html.LabelFor(m => m.Param.Value)
                     <div class="input">
-                        @Html.TextBoxFor(m => m.Param.Value)</div>
+                        @if (Model.Param.Name != "SITE_VERSION") {
+                            @Html.TextBoxFor(m => m.Param.Value)
+                        } else {
+                            @Html.TextBoxFor(m => m.Param.Value, new { @disabled = "disabled" })
+                            @Html.HiddenFor(m => m.Param.Value)
+                        } 
+                    </div>
                 </li>
                 <li>
                     @Html.LabelFor(m => m.Param.Description)
@@ -52,6 +59,7 @@
                             @Html.TextAreaFor(m => m.Param.Description, new { @rows = 3, @placeholder = "Ej obligatoriskt" })
                         } else {
                             @Html.TextAreaFor(m => m.Param.Description, new { @rows = 3, @disabled = "disabled", @placeholder = "Ej obligatoriskt" })
+                            @Html.HiddenFor(m => m.Param.Description)
                         }
                     </div>
                 </li>
