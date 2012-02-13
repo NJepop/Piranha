@@ -97,11 +97,12 @@ namespace Piranha.Models.Manager.PageModels
 		/// Gets the model for the page specified by the given id.
 		/// </summary>
 		/// <param name="id">The page id</param>
+		/// <param name="draft">Weather to get the draft or not.</param>
 		/// <returns>The model</returns>
-		public static EditModel GetById(Guid id) {
+		public static EditModel GetById(Guid id, bool draft = true) {
 			EditModel m = new EditModel() ;
 			
-			m.Page = Piranha.Models.Page.GetSingle(id, true) ;
+			m.Page = Piranha.Models.Page.GetSingle(id, draft) ;
 			if (m.Page == null)
 				m.Page = Piranha.Models.Page.GetSingle(id) ;
 
@@ -131,6 +132,20 @@ namespace Piranha.Models.Manager.PageModels
 		}
 
 		/// <summary>
+		/// Reverts to the latest published version.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		public static void Revert(Guid id) {
+			EditModel m = EditModel.GetById(id, false) ;
+
+			// Saving this baby will overwrite the current draft
+			m.SaveAll() ;
+
+			// Now we just have to "turn back time"
+			Page.Execute("UPDATE page SET page_updated = page_last_published WHERE page_id = @0 AND page_draft = 1", null, id) ;
+		}
+
+		/// <summary>
 		/// Saves the page and all of it's related regions.
 		/// </summary>
 		/// <param name="publish">Weather the page should be published</param>
@@ -149,12 +164,6 @@ namespace Piranha.Models.Manager.PageModels
 					Properties.ForEach(p => {
 						p.IsDraft = p.IsPageDraft = true ;
 					}) ;
-					// Set published dates
-					if (!draft) {
-						//Page.LastPublished = DateTime.Now ;
-						//if (unpublished)
-						//	Page.Published = Page.LastPublished ;
-					}
 
 					Page.Save(!draft, tx) ;
 					if (Permalink.IsNew)
@@ -220,7 +229,8 @@ namespace Piranha.Models.Manager.PageModels
 					Page.Delete(tx) ;
 					// Let's not forget the published version.
 					Page = Models.Page.GetSingle(Page.Id, false) ;
-					Page.Delete(tx) ;
+					if (Page != null)
+						Page.Delete(tx) ;
 					tx.Commit() ;
 
 					try {
@@ -280,7 +290,7 @@ namespace Piranha.Models.Manager.PageModels
 			} else throw new ArgumentException("Could not find page template for page {" + Page.Id.ToString() + "}") ;
 
 			// Get attachments
-			Attachments = Piranha.Models.Content.GetByPageId(Page.Id) ;
+			Attachments = Piranha.Models.Content.GetByParentId(Page.Id, true) ;
 		}
 		#endregion
 	}

@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "Uppdatera";
+    Layout = "" ;
+    
+    var curr = Piranha.Models.SysParam.GetByName("SITE_VERSION") ;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Installera</title>
+	<link rel="shortcut icon" href="@Url.Content("~/Areas/Manager/Content/Img/favicon.ico")">
+    <link rel="apple-touch-icon" href="@Url.Content("~/Areas/Manager/Content/Img/apple-touch-icon.png")"/>
+    <link href="@Url.Content("~/Areas/Manager/Content/Css/Style.ashx")" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".message").click(function () { $(this).fadeOut("medium"); });
+
+            if ($("#sysMsg").text() != "") {
+                floatBox.show("boxMessage");
+            }
+
+            $("#schema").click(function () {
+                $("#InstallType").attr("value", "SCHEMA");
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container_12">
+        <div class="grid_4 box login">
+            <div class="inner">
+                <h2>Uppdatera webbplats</h2>
+                <p>Din databas är av version @Piranha.Data.Database.InstalledVersion och måste uppdateras 
+                till version @Piranha.Data.Database.CurrentVersion. Se till att du har tagit backup på din
+                databas innan du fortsätter med uppdateringen.</p>
+                @{ Html.BeginForm("RunUpdate", "Install") ; }
+                <ul class="form">
+                    <li><hr /></li>
+                    <li>
+                        <button id="full" class="btn blue">Uppdatera webbplatsen</button>
+                    </li>
+                </ul>
+                @{ Html.EndForm() ; }
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

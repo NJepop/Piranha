@@ -29,7 +29,7 @@ namespace Piranha.Models
 	/// <summary>
 	/// Active record for a page.
 	/// </summary>
-	[PrimaryKey(Column="post_id")]
+	[PrimaryKey(Column="post_id,post_draft")]
 	[Join(TableName="posttemplate", ForeignKey="post_template_id", PrimaryKey="posttemplate_id")]
 	[Join(TableName="permalink", ForeignKey="post_id", PrimaryKey="permalink_parent_id")]
 	public class Post : PiranhaRecord<Post>, IPost
@@ -40,6 +40,12 @@ namespace Piranha.Models
 		/// </summary>
 		[Column(Name="post_id")]
 		public override Guid Id { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets weather this is a draft.
+		/// </summary>
+		[Column(Name="post_draft")]
+		public bool IsDraft { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the template id.
@@ -120,6 +126,7 @@ namespace Piranha.Models
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 
+		#region Static accessors
 		/// <summary>
 		/// Gets the post specified by the given permalink.
 		/// </summary>
@@ -128,24 +135,6 @@ namespace Piranha.Models
 		public static Post GetByPermalink(string permalink) {
 			return Post.GetSingle("permalink_name = @0", permalink) ;
 		}
-
-		/// <summary>
-		/// Gets the posts of the given template.
-		/// </summary>
-		/// <param name="templateid">The template id</param>
-		/// <returns>A list of posts</returns>
-		public static List<Post> GetByTemplateId(Guid templateid) {
-			return Post.Get("post_template_id = @0", templateid) ;
-		}
-
-		/// <summary>
-		/// Gets the post of the given template.
-		/// </summary>
-		/// <param name="name">The template name</param>
-		/// <returns>A list of posts</returns>
-		public static List<Post> GetByTemplateName(string name) {
-			return Post.Get("post_template_id = (SELECT posttemplate_id FROM posttemplate WHERE posttemplate_name LIKE @0)",
-				"%" + name) ;
-		}
+		#endregion
 	}
 }

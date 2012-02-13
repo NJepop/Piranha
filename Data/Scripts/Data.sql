@@ -74,7 +74,7 @@ VALUES ('8a4ca0f3-261b-4689-8c1f-98065b65f9ee', '8940b41a-e3a9-44f3-b564-bfd2814
 -- Default params
 INSERT INTO sysparam (sysparam_id, sysparam_name, sysparam_value, sysparam_description, sysparam_locked,
 	sysparam_created, sysparam_updated, sysparam_created_by, sysparam_updated_by)
-VALUES ('9a14664f-806d-4a4f-9a72-e8368fb358d5', 'SITE_VERSION', '0.1', 'Nuvarande version av webbplatsen.', 1,
+VALUES ('9a14664f-806d-4a4f-9a72-e8368fb358d5', 'SITE_VERSION', '1', 'Nuvarande version av webbplatsen.', 1,
 	GETDATE(), GETDATE(), 'ca19d4e7-92f0-42f6-926a-68413bbdafbc', 'ca19d4e7-92f0-42f6-926a-68413bbdafbc');
 INSERT INTO sysparam (sysparam_id, sysparam_name, sysparam_value, sysparam_description, sysparam_locked,
 	sysparam_created, sysparam_updated, sysparam_created_by, sysparam_updated_by)

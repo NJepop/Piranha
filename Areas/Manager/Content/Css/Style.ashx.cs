@@ -30,9 +30,8 @@ namespace Piranha.Areas.Manager.Content.Css
 		/// </summary>
 		public void ProcessRequest(HttpContext context) {
 			DateTime mod = new FileInfo(Assembly.GetExecutingAssembly().Location).LastWriteTime ;
-			string etag = WebPiranha.GenerateETag(resource, mod) ;
 
-			if (!WebPiranha.HandleClientCache(context, etag, mod)) {
+			if (!WebPiranha.HandleClientCache(context, resource, mod)) {
 				StreamReader io = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)) ;
 				context.Response.ContentType = "text/css" ;
 #if DEBUG

@@ -17,6 +17,25 @@ namespace Piranha.Data
 		/// Private static member to cache the current provider factory.
 		/// </summary>
 		private static DbProviderFactory _factory = null ;
+
+		/// <summary>
+		/// Gets the current database version.
+		/// </summary>
+		public static int CurrentVersion = 1 ;
+		#endregion
+
+		#region Properties
+		/// <summary>
+		/// Gets the version of the currently installed database.
+		/// </summary>
+		public static int InstalledVersion {
+			get {
+				Models.SysParam p = Models.SysParam.GetByName("SITE_VERSION") ;
+				int version ;
+				Int32.TryParse(p.Value, out version) ;
+				return version ;
+			}
+		}
 		#endregion
 
 		/// <summary>

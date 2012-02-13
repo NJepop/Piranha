@@ -41,14 +41,53 @@ namespace Piranha.Areas.Manager.Controllers
         public ActionResult Index() {
 			// Check for existing installation.
 			try {
-				SysParam p = SysParam.GetByName("SITE_VERSION") ;
-				
-				// If we got here we have a database. TODO: Check version and go to
-				// update page if needed.
+				if (Data.Database.InstalledVersion < Data.Database.CurrentVersion)
+					return RedirectToAction("Update", "Install") ;
 				return RedirectToAction("Index", "Account") ;
 			} catch {}
-            return View("Index");
+			return View("Index");
         }
+
+		/// <summary>
+		/// Shows the update page.
+		/// </summary>
+		/// <returns></returns>
+		public ActionResult Update() {
+			if (Data.Database.InstalledVersion < Data.Database.CurrentVersion)
+				return View("Update") ;
+			return RedirectToAction("Index", "Account") ;
+		}
+
+		/// <summary>
+		/// Updates the database.
+		/// </summary>
+		[HttpPost()]
+		public ActionResult RunUpdate() {
+			// Execute all incremental updates in a transaction.
+			using (IDbTransaction tx = Database.OpenTransaction()) {
+				for (int n = Data.Database.InstalledVersion + 1; n <= Data.Database.CurrentVersion; n++) {
+					// Read embedded create script
+					Stream str = Assembly.GetExecutingAssembly().GetManifestResourceStream("Piranha.Data.Scripts.Updates." +
+						n.ToString() + ".sql") ;
+					String sql = new StreamReader(str).ReadToEnd() ;
+					str.Close() ;
+
+					// Split statements and execute
+					string[] stmts = sql.Split(new char[] { ';' }) ;
+					foreach (string stmt in stmts) {
+						if (!String.IsNullOrEmpty(stmt.Trim()))
+							SysUser.Execute(stmt, tx) ;
+					}
+				}
+				// Now lets update the database version.
+				SysUser.Execute("UPDATE sysparam SET sysparam_value = @0 WHERE sysparam_name = 'SITE_VERSION'", 
+					null, Data.Database.CurrentVersion) ;
+				SysParam p = SysParam.GetByName("SITE_VERSION") ;
+				p.InvalidateRecord(p) ;
+				tx.Commit() ;
+			}
+			return RedirectToAction("Index", "Account") ;
+		}
 
 		/// <summary>
 		/// Creates a new site installation.

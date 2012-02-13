@@ -175,7 +175,7 @@ namespace Piranha.Models
 				((IDictionary<string, object>)Properties).Add(str, pr != null ? pr.Value : "") ;
 			}
 			// Attachments
-			Attachments = Content.GetByPageId(Page.Id) ;
+			Attachments = Content.GetByParentId(Page.Id) ;
 		}
 	}
 }

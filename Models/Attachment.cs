@@ -7,7 +7,7 @@ using Piranha.Data;
 
 namespace Piranha.Models
 {
-	[PrimaryKey(Column="attachment_id")]
+	[PrimaryKey(Column="attachment_id,attachment_draft")]
 	public class Attachment : PiranhaRecord<Attachment>
 	{
 		#region Fields
@@ -16,6 +16,12 @@ namespace Piranha.Models
 		/// </summary>
 		[Column(Name="attachment_id")]
 		public override Guid Id { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets weather this is a draft or not.
+		/// </summary>
+		[Column(Name="attachment_draft")]
+		public bool IsDraft { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the content id.

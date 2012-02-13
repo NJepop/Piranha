@@ -192,6 +192,7 @@ CREATE TABLE property (
 
 CREATE TABLE post (
 	post_id UNIQUEIDENTIFIER NOT NULL,
+	post_draft BIT NOT NULL default(1),
 	post_template_id UNIQUEIDENTIFIER NOT NULL,
 	post_title NVARCHAR(128) NOT NULL,
 	post_excerpt NVARCHAR(255) NULL,
@@ -201,7 +202,7 @@ CREATE TABLE post (
 	post_published DATETIME NULL,
 	post_created_by UNIQUEIDENTIFIER NOT NULL,
 	post_updated_by UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT pk_post_id PRIMARY KEY (post_id),
+	CONSTRAINT pk_post_id PRIMARY KEY (post_id, post_draft),
 	CONSTRAINT fk_post_template_id FOREIGN KEY (post_template_id) REFERENCES posttemplate (posttemplate_id),
 	CONSTRAINT fk_post_created_by FOREIGN KEY (post_created_by) REFERENCES sysuser (sysuser_id),
 	CONSTRAINT fk_post_updated_by FOREIGN KEY (post_updated_by) REFERENCES sysuser (sysuser_id)
@@ -239,14 +240,15 @@ CREATE TABLE upload (
 
 CREATE TABLE attachment (
 	attachment_id UNIQUEIDENTIFIER NOT NULL,
+	attachment_draft BIT NOT NULL default(1),
 	attachment_content_id UNIQUEIDENTIFIER NOT NULL,
 	attachment_parent_id UNIQUEIDENTIFIER NOT NULL,
-	attachment_primary BIT NOT NULL DEFAULT(0),
+	attachment_primary BIT NOT NULL default(0),
 	attachment_created DATETIME NOT NULL,
 	attachment_updated DATETIME NOT NULL,
 	attachment_created_by UNIQUEIDENTIFIER NOT NULL,
 	attachment_updated_by UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT pk_attachment_id PRIMARY KEY (attachment_id),
+	CONSTRAINT pk_attachment_id PRIMARY KEY (attachment_id, attachment_draft),
 	CONSTRAINT fk_attachment_content_id FOREIGN KEY (attachment_content_id) REFERENCES content (content_id),
 	CONSTRAINT fk_attachment_created_by FOREIGN KEY (attachment_created_by) REFERENCES sysuser (sysuser_id),
 	CONSTRAINT fk_attachment_updated_by FOREIGN KEY (attachment_updated_by) REFERENCES sysuser (sysuser_id)

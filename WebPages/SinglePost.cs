@@ -30,8 +30,7 @@ namespace Piranha.WebPages
 
 			// Cache management
 			DateTime mod = GetLastModified() ;
-			string etag = WebPiranha.GenerateETag(Model.Post.Id.ToString(), mod) ;
-			WebPiranha.HandleClientCache(HttpContext.Current, etag, mod) ;
+			WebPiranha.HandleClientCache(HttpContext.Current, Model.Post.Id.ToString(), mod) ;
 
 			base.InitializePage() ;
 		}

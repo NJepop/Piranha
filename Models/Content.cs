@@ -147,13 +147,15 @@ namespace Piranha.Models
 		}
 
 		/// <summary>
-		/// Gets all content attached to the given page id.
+		/// Gets all content attached to the given parent.
 		/// </summary>
-		/// <param name="id">The page id</param>
+		/// <param name="id">The parent id</param>
+		/// <param name="draft">Weather to get drafts or not</param>
 		/// <returns>A list of content elements</returns>
-		public static List<Content> GetByPageId(Guid id) {
+		public static List<Content> GetByParentId(Guid id, bool draft = false) {
 			return Content.Get("content_id IN " +
-				"(SELECT attachment_content_id FROM attachment WHERE attachment_parent_id = @0)", id) ;
+				"(SELECT attachment_content_id FROM attachment WHERE attachment_parent_id = @0 AND attachment_draft = @1)", 
+				id, draft) ;
 		}
 		#endregion
 
@@ -163,9 +165,7 @@ namespace Piranha.Models
 		/// </summary>
 		/// <param name="response">The http response</param>
 		public void GetMedia(HttpContext context, int? width = null) {
-			string etag = WebPiranha.GenerateETag(Id.ToString(), Updated) ;
-
-			if (!WebPiranha.HandleClientCache(context, etag, Updated)) {
+			if (!WebPiranha.HandleClientCache(context, Id.ToString(), Updated)) {
 				if (IsImage && width != null) {
 					width = width < Width ? width : Width ;
 					int height = Convert.ToInt32(((double)width / Width) * Height) ;
@@ -201,9 +201,7 @@ namespace Piranha.Models
 		/// <param name="response">The http response</param>
 		/// <param name="size">The desired size</param>
 		public void GetThumbnail(HttpContext context, int size = 60) {
-			string etag = WebPiranha.GenerateETag(Id.ToString(), Updated) ;
-
-			if (!WebPiranha.HandleClientCache(context, etag, Updated)) {
+			if (!WebPiranha.HandleClientCache(context, Id.ToString(), Updated)) {
 				if (File.Exists(CachedThumbnailPath(size))) {
 					// Return generated & cached thumbnail
 					WriteFile(context.Response, CachedThumbnailPath(size)) ;
@@ -327,6 +325,9 @@ namespace Piranha.Models
 		}
 	}
 
+	/// <summary>
+	/// Content list extensions.
+	/// </summary>
 	public static class ContentExtensions {
 		/// <summary>
 		/// Gets the number of images in the content list.

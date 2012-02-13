@@ -7,6 +7,7 @@ using System.Text;
 using System.Web;
 
 using Piranha.Data;
+using Piranha.WebPages;
 
 namespace Piranha.Models
 {
@@ -249,6 +250,7 @@ namespace Piranha.Models
 			this.Seqno   = 1;
 		}
 
+		#region Static accessors
 		/// <summary>
 		/// Gets a single page.
 		/// </summary>
@@ -292,6 +294,7 @@ namespace Piranha.Models
 		public static Page GetByPermalink(string permalink, bool draft = false) {
 			return Page.GetSingle("permalink_name = @0 AND page_draft = @1", permalink, draft) ;
 		}
+		#endregion
 
 		public override bool Save(IDbTransaction tx = null) {
 			return Save(false, tx) ;
@@ -393,8 +396,6 @@ namespace Piranha.Models
 		/// <param name="seqno">The seqno</param>
 		/// <param name="inc">Weather to increase or decrease</param>
 		internal static void MoveSeqno(Guid parentid, int seqno, bool inc, IDbTransaction tx = null) {
-			//DataHandler<Page> dh = new DataHandler<Page>() ;
-
 			if (parentid != Guid.Empty)
 				Execute("UPDATE page SET page_seqno = page_seqno " + (inc ? "+ 1" : "- 1") +
 					" WHERE page_parent_id = @0 AND page_seqno >= @1", tx, parentid, seqno) ;

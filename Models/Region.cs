@@ -77,6 +77,7 @@ namespace Piranha.Models
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 
+		#region Static accessors
 		/// <summary>
 		/// Gets all regions associated with the given page id.
 		/// </summary>
@@ -95,5 +96,6 @@ namespace Piranha.Models
 		public static List<Region> GetByPageId(Guid id, bool draft) {
 			return Get("region_page_id = @0 AND region_draft = @1", id, draft) ;
 		}
+		#endregion
 	}
 }

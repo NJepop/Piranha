@@ -34,7 +34,7 @@ namespace Piranha.WebPages.RequestHandlers
 
 				if (perm != null) {
 					if (perm.Type == Permalink.PermalinkType.PAGE) {
-						Page page = Page.GetSingle(perm.ParentId) ;
+						Page page = Page.GetSingle(perm.ParentId, draft) ;
 
 						if (!String.IsNullOrEmpty(page.Controller)) {
 							context.RewritePath("~/templates/" + page.Controller + "/" + perm.Name + 

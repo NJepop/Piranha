@@ -57,8 +57,7 @@ namespace Piranha.WebPages
 			} else {
 				// Only cache public pages
 				DateTime mod = GetLastModified() ;
-				string etag = WebPiranha.GenerateETag(page.Id.ToString(), mod) ;
-				cached = WebPiranha.HandleClientCache(HttpContext.Current, etag, mod) ;
+				cached = WebPiranha.HandleClientCache(HttpContext.Current, page.Id.ToString(), mod) ;
 			}
 			// Load the model if the page wasn't cached
 			if (!cached)

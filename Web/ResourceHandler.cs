@@ -31,9 +31,8 @@ namespace Piranha.Web
 				var file = res.GetFile(context.Request.Path) ;
 
 				DateTime mod = new FileInfo(Assembly.GetExecutingAssembly().Location).LastWriteTime ;
-				string etag = WebPiranha.GenerateETag(file.VirtualPath, mod) ;
 
-				if (!WebPiranha.HandleClientCache(context, etag, mod)) {
+				if (!WebPiranha.HandleClientCache(context, file.VirtualPath, mod)) {
 					if (file.Name.EndsWith(".js")) {
 						context.Response.ContentType = "text/javascript" ;
 					} else if (file.Name.EndsWith(".css")) {

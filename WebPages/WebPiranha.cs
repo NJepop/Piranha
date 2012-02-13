@@ -22,6 +22,25 @@ namespace Piranha.WebPages
 		private static Dictionary<string, RequestHandlerRegistration> Handlers = new Dictionary<string, RequestHandlerRegistration>() ;
 		#endregion
 
+		#region Properties
+		/// <summary>
+		/// Gets/sets the global last modification date.
+		/// </summary>
+		public static DateTime SiteLastModifed {
+			get {
+				if (HttpContext.Current.Cache["SITE_LAST_MODIFIED"] == null)
+					HttpContext.Current.Cache["SITE_LAST_MODIFIED"] =
+						DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
+				return (DateTime)HttpContext.Current.Cache["SITE_LAST_MODIFIED"] ;
+			}
+			set {
+				SysParam.Execute("UPDATE sysparam SET sysparam_value = @0 WHERE sysparam_name = @1", null,
+					value, "SITE_LAST_MODIFIED") ;
+				HttpContext.Current.Cache.Remove("SITE_LAST_MODIFIED") ;
+			}
+		}
+		#endregion
+
 		/// <summary>
 		/// Registers the given 
 		/// </summary>
@@ -141,16 +160,19 @@ namespace Piranha.WebPages
 		/// or should be loaded/rendered.
 		/// </summary>
 		/// <param name="context">The current context</param>
-		/// <param name="etag">The entity tag</param>
+		/// <param name="id">The entity id</param>
 		/// <param name="modified">Last nodification</param>
 		/// <returns>If the file is cached</returns>
-		public static bool HandleClientCache(HttpContext context, string etag, DateTime modified, bool noexpire = false) {
+		public static bool HandleClientCache(HttpContext context, string id, DateTime modified, bool noexpire = false) {
 #if !DEBUG
 			if (!context.Request.IsLocal) {
-				try {
-					DateTime siteDt = DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
-					modified = modified > siteDt ? modified : siteDt ;
-				} catch {}
+				//try {
+				//	DateTime siteDt = DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
+				//	modified = modified > siteDt ? modified : siteDt ;
+				//} catch {}
+				modified = modified > SiteLastModifed ? modified : SiteLastModifed ;
+				string etag = GenerateETag(id, modified) ;
+
 				context.Response.Cache.SetETag(etag) ;
 				context.Response.Cache.SetLastModified(modified <= DateTime.Now ? modified : DateTime.Now) ;	
 				context.Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
@@ -184,11 +206,6 @@ namespace Piranha.WebPages
 		public static string GenerateETag(string name, DateTime modified) {
 			UTF8Encoding encoder = new UTF8Encoding() ;
 			MD5CryptoServiceProvider crypto = new MD5CryptoServiceProvider() ;
-
-			try {
-				DateTime siteDt = DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
-				modified = modified > siteDt ? modified : siteDt ;
-			} catch {}
 
 			string str = name + modified.ToLongTimeString() ;
 			byte[] bts = crypto.ComputeHash(encoder.GetBytes(str)) ;

@@ -40,7 +40,9 @@ namespace Piranha.Areas.Manager.Controllers
 				try {
 					if (pm.SaveAll(draft)) {
 						ModelState.Clear() ;
-						ViewBag.Message = "Din sida har sparats" ;
+						if (!draft)
+							ViewBag.Message ="Din sida har publicerats" ;
+						else ViewBag.Message = "Din sida har sparats" ;
 					} else ViewBag.Message = "Det gick inte att spara sidan" ;
 				} catch (Exception e) {
 					ViewBag.Message = e.ToString() ;
@@ -76,13 +78,25 @@ namespace Piranha.Areas.Manager.Controllers
 		/// </summary>
 		/// <param name="id">The page id</param>
 		public ActionResult Delete(string id) {
-			EditModel pm = EditModel.GetById(new Guid(id)) ;
+			EditModel pm = EditModel.GetById(new Guid(id), true) ;
 
 			if (pm.DeleteAll())
 				ViewBag.Message = "Din sida har raderats." ;
 			else ViewBag.Message = "Ett internt fel har uppstått och sidan kunde inte raderas." ;
 
 			return Index() ;
+		}
+
+		/// <summary>
+		/// Reverts to latest published verison.
+		/// </summary>
+		/// <param name="id">The page id.</param>
+		public ActionResult Revert(string id) {
+			EditModel.Revert(new Guid(id)) ;
+
+			ViewBag.Message = "Den senast publicerade versionen har nu återställts" ;
+
+			return Edit(id) ;
 		}
     }
 }

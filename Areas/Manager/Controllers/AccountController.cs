@@ -21,7 +21,8 @@ namespace Piranha.Areas.Manager.Controllers
         {
 			// Check for existing installation.
 			try {
-				SysParam p = SysParam.GetByName("SITE_VERSION") ;			
+				if (Data.Database.InstalledVersion < Data.Database.CurrentVersion)
+					return RedirectToAction("Update", "Install") ;
 	            return View() ;
 			} catch {}
 			return RedirectToAction("Index", "Install") ;

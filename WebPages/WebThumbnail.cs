@@ -96,9 +96,8 @@ namespace Piranha.WebPages
 			if (HasPagePreview(id)) {
 				FileInfo file = new FileInfo(GetPagePreviewPath(id)) ;
 				DateTime mod = file.LastWriteTime ;
-				string etag = WebPiranha.GenerateETag(id.ToString(), mod) ;
 				
-				if (!WebPiranha.HandleClientCache(HttpContext.Current, etag, mod, true)) {
+				if (!WebPiranha.HandleClientCache(HttpContext.Current, id.ToString(), mod, true)) {
 					bmp = (Bitmap)Bitmap.FromFile(GetPagePreviewPath(id)) ;
 				} else cached = true ;
 			} else {
