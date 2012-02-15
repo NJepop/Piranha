@@ -201,7 +201,7 @@ namespace Piranha.Linq
 			_fields = new List<DBField>() ;
 
 			// Get table name
-			var tbl = typeof(T).GetType().GetCustomAttribute<TableAttribute>(true) ;
+			var tbl = typeof(T).GetCustomAttribute<TableAttribute>(true) ;
 			_table = !String.IsNullOrEmpty(tbl.Name) ? tbl.Name : typeof(T).GetType().Name ;
 
 			// Get primary keys and fields
