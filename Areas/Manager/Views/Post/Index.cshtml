@@ -114,7 +114,7 @@
         </thead>
         <tbody class="list-js">
             @foreach (var post in Model.Posts) {
-            <tr>
+            <tr@(post.Updated > post.LastPublished ? " class=draft" : "")>
                 <td class="title"><a href="@Url.Action("Edit", new { id = post.Id })">@post.Title</a></td>
                 <td class="template">@post.TemplateName.Singular</td>
                 <td class="updated">@post.Updated.ToString("yyyy-MM-dd")</td>
@@ -173,14 +173,17 @@
                 <th class="one"></th>
             </tr>
         </thead>
-        <tbody cöass="list-js">
+        <tbody class="list-js">
             @foreach (var pc in Model.Categories) {
             <tr>
                 <td@(pc.Level > 1 ? " class=level" + pc.Level : "")><a href="@Url.Action("Edit", "Category", new { id = pc.Id})">@pc.Name</a></td>
                 <td>@pc.Updated.ToString("yyyy-MM-dd")</td>
                 <td>@pc.Created.ToString("yyyy-MM-dd")</td>
                 <td class="buttons">
-                    <a class="icon delete" href="@Url.Action("DeleteCategory", new { id = pc.Id })"></a></td>
+                    @if (pc.Categories.Count == 0) {
+                    <a class="icon delete" href="@Url.Action("Delete", "Category", new { id = pc.Id })"></a>
+                    }
+                </td>
             </tr>
             }
         </tbody>

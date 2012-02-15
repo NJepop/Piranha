@@ -44,7 +44,7 @@ namespace Piranha.Models.Manager.PostModels
 		/// <returns>The model.</returns>
 		public static ListModel Get() {
 			ListModel m = new ListModel() ;
-			m.Posts = Post.Get(new Params() { OrderBy = "post_title ASC" }) ;
+			m.Posts = Post.Get("post_draft = 1", new Params() { OrderBy = "post_title ASC" }) ;
 
 			return m ;
 		}

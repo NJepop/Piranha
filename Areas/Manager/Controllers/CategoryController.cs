@@ -49,5 +49,18 @@ namespace Piranha.Areas.Manager.Controllers
 			}
 			return View("Edit", m) ;
 		}
+
+		/// <summary>
+		/// Deletes the category with the given id.
+		/// </summary>
+		/// <param name="id">The category id</param>
+		public ActionResult Delete(string id) {
+			EditModel m = EditModel.GetById(new Guid(id)) ;
+
+			if (m.DeleteAll())
+				ViewBag.Message = "Kategorin har raderats." ;
+			else ViewBag.Message = "Ett internt fel har uppstått och kategorin kunde inte raderas." ;
+			return  RedirectToAction("Index", "Post") ;
+		}
 	}
 }

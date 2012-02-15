@@ -13,6 +13,8 @@
         <ul>
             <li><a class="save submit"></a>
                 <div class="tooltip"><p>Spara artikeln</p></div></li>
+            <li><a class="publish"></a>
+                <div class="tooltip"><p>Publicera artikeln</p></div></li>
             <li><a href="@Url.Action("Delete", new { id = Model.Post.Id })" class="delete"></a>
                 <div class="tooltip"><p>Ta bort artikeln</p></div></li>
             <li><a href="@Url.Action("Index", "Post")" class="back"></a>
@@ -31,11 +33,13 @@
 <div>
     @Html.HiddenFor(m => m.Post.IsNew)
     @Html.HiddenFor(m => m.Post.Id)
+    @Html.HiddenFor(m => m.Post.IsDraft)
     @Html.HiddenFor(m => m.Post.Permalink)
     @Html.HiddenFor(m => m.Post.TemplateId)
     @Html.HiddenFor(m => m.Post.Created)
     @Html.HiddenFor(m => m.Post.Updated)
     @Html.HiddenFor(m => m.Post.Published)
+    @Html.HiddenFor(m => m.Post.LastPublished)
     @Html.HiddenFor(m => m.Post.CreatedBy)
     @Html.HiddenFor(m => m.Post.UpdatedBy)
     @Html.HiddenFor(m => m.Permalink.IsNew)
@@ -45,9 +49,10 @@
     @Html.HiddenFor(m => m.Permalink.Name)
     @Html.HiddenFor(m => m.Permalink.Created)
     @Html.HiddenFor(m => m.Permalink.CreatedBy)
+    <input type="hidden" id="draft" name="draft" value="true" />
 </div>
 <div class="grid_9">
-    <div class="box expandable">
+    <div class="box">
         <div class="inner">
             <h2>Information</h2>
             <ul class="form">

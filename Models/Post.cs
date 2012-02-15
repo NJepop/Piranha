@@ -32,7 +32,7 @@ namespace Piranha.Models
 	[PrimaryKey(Column="post_id,post_draft")]
 	[Join(TableName="posttemplate", ForeignKey="post_template_id", PrimaryKey="posttemplate_id")]
 	[Join(TableName="permalink", ForeignKey="post_id", PrimaryKey="permalink_parent_id")]
-	public class Post : PiranhaRecord<Post>, IPost
+	public class Post : DraftRecord<Post>, IPost
 	{
 		#region Fields
 		/// <summary>
@@ -45,7 +45,7 @@ namespace Piranha.Models
 		/// Gets/sets weather this is a draft.
 		/// </summary>
 		[Column(Name="post_draft")]
-		public bool IsDraft { get ; set ; }
+		public override bool IsDraft { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the template id.
@@ -111,7 +111,13 @@ namespace Piranha.Models
 		/// Gets/sets the published date.
 		/// </summary>
 		[Column(Name="post_published")]
-		public  DateTime Published { get ; set ; }
+		public override DateTime Published { get ; set ; }
+
+		/// <summary>
+		/// Gets/sets the published date.
+		/// </summary>
+		[Column(Name="post_last_published")]
+		public override DateTime LastPublished { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the user id that created the record.
@@ -128,12 +134,24 @@ namespace Piranha.Models
 
 		#region Static accessors
 		/// <summary>
+		/// Gets a single post from the database.
+		/// </summary>
+		/// <param name="id">The post id</param>
+		/// <param name="draft">Weather to get the draft</param>
+		/// <returns>The post</returns>
+		public static Post GetSingle(Guid id, bool draft) {
+			if (!draft)
+				return GetSingle(id) ;
+			return GetSingle("post_id = @0 AND post_draft = @1", id, draft) ;
+		}
+
+		/// <summary>
 		/// Gets the post specified by the given permalink.
 		/// </summary>
 		/// <param name="permalink">The permalink</param>
 		/// <returns>The post</returns>
-		public static Post GetByPermalink(string permalink) {
-			return Post.GetSingle("permalink_name = @0", permalink) ;
+		public static Post GetByPermalink(string permalink, bool draft = false) {
+			return Post.GetSingle("permalink_name = @0 AND post_draft = @1", permalink, draft) ;
 		}
 		#endregion
 	}

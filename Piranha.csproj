@@ -38,6 +38,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -68,6 +69,7 @@
     <Compile Include="Areas\Manager\Controllers\PostController.cs" />
     <Compile Include="Areas\Manager\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Manager\Controllers\TemplateController.cs" />
+    <Compile Include="Linq\ActiveRecord.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\ComplexName.cs" />

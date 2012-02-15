@@ -19,7 +19,7 @@ namespace Piranha.WebPages
 		/// <param name="name">The post type name.</param>
 		/// <returns>A list of posts</returns>
 		public List<Post> GetPostsByType(string name) {
-			return Post.Get("posttemplate_name LIKE @0", "%," + name, new Params() { OrderBy = "post_created DESC" }) ;
+			return Post.Get("post_draft = 0 AND posttemplate_name LIKE @0", "%," + name, new Params() { OrderBy = "post_created DESC" }) ;
 		}
 
 		/// <summary>
@@ -28,7 +28,7 @@ namespace Piranha.WebPages
 		/// <param name="name">The category name</param>
 		/// <returns>A list of posts</returns>
 		public List<Post> GetPostsByCategoryName(string name) {
-			return Post.Get("post_id IN (" +
+			return Post.Get("post_draft = 0 AND post_id IN (" +
 				"SELECT relation_data_id FROM relation WHERE relation_type = @0 AND relation_related_id = (" +
 				"SELECT category_id FROM category WHERE category_name = @1))", Relation.RelationType.POSTCATEGORY, name) ;
 		}
@@ -39,7 +39,7 @@ namespace Piranha.WebPages
 		/// <param name="id">The category id</param>
 		/// <returns>A list of posts</returns>
 		public List<Post> GetPostsByCategoryId(Guid id) {
-			return Post.Get("post_id IN (" +
+			return Post.Get("post_draft = 0 AND post_id IN (" +
 				"SELECT relation_data_id FROM relation WHERE relation_type = @0 AND relation_related_id = @1)",
 				Relation.RelationType.POSTCATEGORY, id) ;
 		}

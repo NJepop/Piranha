@@ -48,11 +48,13 @@ namespace Piranha.Areas.Manager.Controllers
 		/// </summary>
 		/// <param name="m">The model</param>
 		[HttpPost(), ValidateInput(false)]
-		public ActionResult Edit(EditModel m) {
+		public ActionResult Edit(bool draft, EditModel m) {
 			if (ModelState.IsValid) {
-				if (m.SaveAll()) {
+				if (m.SaveAll(draft)) {
 					ModelState.Clear() ;
-					ViewBag.Message = "Din artikel har sparats." ;
+					if (!draft)
+						ViewBag.Message = "Din artikel har publicerats." ;
+					else ViewBag.Message = "Din artikel har sparats." ;
 				} else ViewBag.Message = "Artikeln kunde inte sparas." ;
 			}
 			m.Refresh() ;

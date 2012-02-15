@@ -94,7 +94,7 @@ namespace Piranha.Models.Manager.PostModels
 		/// <returns></returns>
 		public static EditModel GetById(Guid id) {
 			EditModel m = new EditModel() ;
-			m.Post = Piranha.Models.Post.GetSingle(id) ;
+			m.Post = Piranha.Models.Post.GetSingle(id, true) ;
 			m.Template = PostTemplate.GetSingle(m.Post.TemplateId) ;
 			m.Permalink = Permalink.GetSingle("permalink_parent_id = @0", m.Post.Id) ;
 			if (m.Permalink == null)
@@ -109,10 +109,12 @@ namespace Piranha.Models.Manager.PostModels
 		/// Saves the model.
 		/// </summary>
 		/// <returns>Weather the action was successful</returns>
-		public bool SaveAll() {
+		public bool SaveAll(bool draft = true) {
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
 				try {
-					Post.Save(tx) ;
+					if (draft)
+						Post.Save(tx) ;
+					else Post.SaveAndPublish(tx) ;
 					if (Permalink.IsNew)
 						Permalink.Name = Permalink.Generate(Post.Title) ;
 					Permalink.Save(tx) ;

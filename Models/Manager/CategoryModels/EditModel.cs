@@ -94,6 +94,9 @@ namespace Piranha.Models.Manager.CategoryModels
 					List<Relation> pc = Relation.GetByTypeAndRelatedId(Relation.RelationType.POSTCATEGORY, Category.Id) ;
 					pc.ForEach((r) => r.Delete(tx)) ;
 
+					// Delete permalink
+					Permalink.Delete(tx) ;
+
 					// Delete category
 					Category.Delete(tx) ;
 					tx.Commit() ;
