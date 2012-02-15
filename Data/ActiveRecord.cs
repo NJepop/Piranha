@@ -122,11 +122,10 @@ namespace Piranha.Data
 		private static Dictionary<string, ColumnAttribute> _attributes ;
 
 		// SQL statements 
-		private static string SqlSelect = "SELECT {3} {0} FROM {1} {2} {4} {5}" ;
-		private static string SqlInsert = "INSERT INTO {0} ({1}) VALUES({2})" ;
-		private static string SqlUpdate = "UPDATE {0} SET {1} WHERE {2}" ;
-		//private static string SqlDelete = "DELETE FROM {0} WHERE {1} = @0" ;
-		private static string SqlDelete = "DELETE FROM {0} WHERE {1}" ;
+		private const string SqlSelect = "SELECT {3} {0} FROM {1} {2} {4} {5}" ;
+		private const string SqlInsert = "INSERT INTO {0} ({1}) VALUES({2})" ;
+		private const string SqlUpdate = "UPDATE {0} SET {1} WHERE {2}" ;
+		private const string SqlDelete = "DELETE FROM {0} WHERE {1}" ;
 		#endregion
 
 		#region Properties
@@ -207,7 +206,7 @@ namespace Piranha.Data
 		/// <summary>
 		/// Default constructor. Creates a new active record.
 		/// </summary>
-		public ActiveRecord() {
+		protected ActiveRecord() {
 			IsNew = true;
 		}
 

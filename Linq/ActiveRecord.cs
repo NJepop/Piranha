@@ -87,6 +87,7 @@ namespace Piranha.Linq
 		#endregion
 
 		#region Members
+		private const string _self = "SELECT * FROM {0} WHERE {1}" ;
 		private static string _table = null ;
 		private static List<DBField> _keys ;
 		private static List<DBField> _fields ;
@@ -171,6 +172,23 @@ namespace Piranha.Linq
 			}
 		}
 
+		#region Virtual methods
+		/// <summary>
+		/// Method executed just before the record is inserted into the database.
+		/// </summary>
+		protected virtual void OnInsert() {}
+
+		/// <summary>
+		/// Method executed just before the record is updated in the database.
+		/// </summary>
+		protected virtual void OnUpdate() {}
+
+		/// <summary>
+		/// Method executed just before the record is deleted from the database.
+		/// </summary>
+		protected virtual void OnDelete() {}
+		#endregion
+
 		#region Private methods
 		/// <summary>
 		/// Gets the current object from the databas.
@@ -178,7 +196,6 @@ namespace Piranha.Linq
 		/// <param name="ctx">The current datacontext.</param>
 		/// <returns>The current object</returns>
 		private T GetSelf(DataContext ctx) {
-			string select = "SELECT * FROM {0} WHERE {1}" ;
 			List<object> args = new List<object>() ;
 			string where = "" ;
 
@@ -188,7 +205,7 @@ namespace Piranha.Linq
 				args.Add(Keys[n].Property.GetValue(this, null)) ;
 			}
 			// Get record from context
-			return ctx.ExecuteQuery<T>(String.Format(select, _table, where), 
+			return ctx.ExecuteQuery<T>(String.Format(_self, _table, where), 
 				args.ToArray()).Take(1).ElementAtOrDefault(0) ;
 		}
 
@@ -202,7 +219,7 @@ namespace Piranha.Linq
 
 			// Get table name
 			var tbl = typeof(T).GetCustomAttribute<TableAttribute>(true) ;
-			_table = !String.IsNullOrEmpty(tbl.Name) ? tbl.Name : typeof(T).GetType().Name ;
+			_table = !String.IsNullOrEmpty(tbl.Name) ? tbl.Name : typeof(T).Name ;
 
 			// Get primary keys and fields
 			foreach (var prop in typeof(T).GetProperties()) {
