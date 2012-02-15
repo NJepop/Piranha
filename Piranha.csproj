@@ -71,6 +71,7 @@
     <Compile Include="Areas\Manager\Controllers\TemplateController.cs" />
     <Compile Include="Linq\ActiveRecord.cs" />
     <Compile Include="Linq\BaseRecord.cs" />
+    <Compile Include="Linq\IBaseRecord.cs" />
     <Compile Include="Linq\ICacheRecord.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Category.cs" />

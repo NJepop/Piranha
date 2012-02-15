@@ -12,7 +12,7 @@ namespace Piranha.Linq
 	/// Base class for all piranha records.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public abstract class BaseRecord<T> : ActiveRecord<T> where T : class
+	public abstract class BaseRecord<T> : ActiveRecord<T>, IBaseRecord where T : class, IBaseRecord
 	{
 		#region Properties
 		/// <summary>
@@ -40,6 +40,15 @@ namespace Piranha.Linq
 		/// </summary>
 		public abstract Guid UpdatedBy { get ; set ; }
 		#endregion
+
+		/// <summary>
+		/// Gets the record with the given id.
+		/// </summary>
+		/// <param name="id">The id</param>
+		/// <returns>A single record</returns>
+		public static T GetSingle(Guid id) {
+			return Get().FirstOrDefault(o => ((T)o).Id == id) ;
+		}
 
 		/// <summary>
 		/// Executed just before the record is inserted into the database.

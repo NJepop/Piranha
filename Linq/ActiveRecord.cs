@@ -143,14 +143,16 @@ namespace Piranha.Linq
 		/// Saves the current record.
 		/// </summary>
 		/// <param name="ctx">Optional context. If it is provided SubmitChanges will not be called</param>
-		public void Save(DataContext ctx = null) {
+		public virtual void Save(DataContext ctx = null) {
 			DataContext c = ctx != null ? ctx : DB.Context ;
 			T old = GetSelf(c) ;
 
 			if (old != null) {
+				OnUpdate() ;
 				foreach (var field in Fields)
 					field.Property.SetValue(old, field.Property.GetValue(this, null), null) ;
 			} else {
+				OnInsert() ;
 				c.GetTable<T>().InsertOnSubmit((T)(object)this) ;
 			}
 			if (ctx == null)
@@ -161,11 +163,12 @@ namespace Piranha.Linq
 		/// Deletes the current record.
 		/// </summary>
 		/// <param name="ctx">Optional context. If it is provided SubmitChanges will not be called</param>
-		public void Delete(DataContext ctx = null) {
+		public virtual void Delete(DataContext ctx = null) {
 			DataContext c = ctx != null ? ctx : DB.Context ;
 			T old = GetSelf(c) ;
 
 			if (old != null) {
+				OnDelete() ;
 				c.GetTable<T>().DeleteOnSubmit(old) ;
 				if (ctx == null)
 					c.SubmitChanges() ;
