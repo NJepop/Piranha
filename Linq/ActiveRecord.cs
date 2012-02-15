@@ -15,7 +15,7 @@ namespace Piranha.Linq
 	/// <typeparam name="T">The record type</typeparam>
 	public class ActiveRecord<T> where T : class
 	{
-		#region Inner class
+		#region Inner classes
 		/// <summary>
 		/// Database helper.
 		/// </summary>
@@ -32,9 +32,41 @@ namespace Piranha.Linq
 				get { 
 					// Create the context
 					if (_context == null)
-						_context = new DataContext(ConfigurationManager.ConnectionStrings["piranha"].ConnectionString) ;
+						_context = new DBContext(ConfigurationManager.ConnectionStrings["piranha"].ConnectionString) ;
 					return _context ;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Extension of the standard LINQ data context.
+		/// </summary>
+		public class DBContext : DataContext {
+			/// <summary>
+			/// Default constructor. Creates a new context.
+			/// </summary>
+			/// <param name="fileOrServerConnection">file or server connection string</param>
+			public DBContext(string fileOrServerConnection) : base(fileOrServerConnection) {}
+
+			/// <summary>
+			/// Submits all changes made.
+			/// </summary>
+			/// <param name="failureMode">The failure mode</param>
+			public override void SubmitChanges(ConflictMode failureMode) {
+				ChangeSet changes = GetChangeSet() ;
+
+				// Call invalidate record for all ICacheRecord
+				foreach (var del in changes.Deletes)
+					if (del is ICacheRecord)
+						((ICacheRecord)del).InvalidateRecord() ;
+				foreach (var upt in changes.Updates)
+					if (upt is ICacheRecord)
+						((ICacheRecord)upt).InvalidateRecord() ;
+				foreach (var ins in changes.Inserts)
+					if (ins is ICacheRecord)
+						((ICacheRecord)ins).InvalidateRecord() ;
+
+				base.SubmitChanges(failureMode) ;
 			}
 		}
 
