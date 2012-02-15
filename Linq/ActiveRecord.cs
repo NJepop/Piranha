@@ -9,16 +9,6 @@ using System.Text;
 
 namespace Piranha.Linq
 {
-	[Table(Name="sysparam")]
-	public class LinqParam : ActiveRecord<LinqParam> 
-	{
-		[Column(Name="sysparam_id", IsPrimaryKey=true)]
-		public Guid Id { get ; set ; }
-
-		[Column(Name="sysparam_name")]
-		public string Name { get ; set ; }
-	}
-
 	/// <summary>
 	/// Active record implementation based on linq to sql.
 	/// </summary>
