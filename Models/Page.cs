@@ -225,7 +225,8 @@ namespace Piranha.Models
 		/// Default constructor.
 		/// </summary>
 		public Page() : base() {
-			this.Seqno   = 1;
+			IsDraft = true ;
+			Seqno   = 1 ;
 		}
 
 		#region Static accessors
@@ -237,9 +238,11 @@ namespace Piranha.Models
 		public static Page GetSingle(Guid id) {
 			if (!Cache.ContainsKey(id)) {
 				Page p = Page.GetSingle("page_id = @0 AND page_draft = 0", id) ;
-
-				Cache[p.Id] = p ;
-				PermalinkCache[p.Permalink] = p ;
+				
+				if (p != null) {
+					Cache[p.Id] = p ;
+					PermalinkCache[p.Permalink] = p ;
+				} else return null ;
 			}
 			return Cache[id] ;
 		}
@@ -365,7 +368,8 @@ namespace Piranha.Models
 		public void InvalidateRecord(Page record) {
 			if (Cache.ContainsKey(record.Id))
 				Cache.Remove(record.Id) ;
-			if (PermalinkCache.ContainsKey(record.Permalink))
+			// If we click save & publish right away the permalink is not created yet.
+			if (record.Permalink != null && PermalinkCache.ContainsKey(record.Permalink))
 				PermalinkCache.Remove(record.Permalink) ;
 			if (record.IsStartpage && Cache.ContainsKey(Guid.Empty))
 				Cache.Remove(Guid.Empty) ;

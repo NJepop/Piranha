@@ -151,10 +151,10 @@ namespace Piranha.Models.Manager.PageModels
 		/// <param name="publish">Weather the page should be published</param>
 		/// <returns>Weather the operation succeeded</returns>
 		public virtual bool SaveAll(bool draft = true) {
-			bool unpublished = Page.Get("page_id = @0 AND page_draft = 0", Page.Id).Count == 0 ;
-
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
 				try {
+					bool firstpublish = Page.IsNew || Page.Published == DateTime.MinValue ;
+
 					// Save page
 					if (draft)
 						Page.Save(tx) ;
@@ -165,6 +165,8 @@ namespace Piranha.Models.Manager.PageModels
 						r.IsDraft = r.IsPageDraft = true ; 
 						r.Save(tx) ;
 						if (!draft) {
+							if (firstpublish)
+								r.IsNew = true ;
 							r.IsDraft = r.IsPageDraft = false ; 
 							r.Save(tx) ;
 						}
@@ -173,6 +175,8 @@ namespace Piranha.Models.Manager.PageModels
 						p.IsDraft = p.IsPageDraft = true ; 
 						p.Save(tx) ;
 						if (!draft) {
+							if (firstpublish)
+								p.IsNew = true ;
 							p.IsDraft = p.IsPageDraft = false ; 
 							p.Save(tx) ;
 						}
@@ -197,8 +201,8 @@ namespace Piranha.Models.Manager.PageModels
 		public virtual bool DeleteAll() {
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
 				try {
-					Region.GetByPageId(Page.Id).ForEach((r) => r.Delete(tx)) ;
-					Property.GetByParentId(Page.Id).ForEach((p) => p.Delete(tx)) ;
+					Region.GetAllByPageId(Page.Id).ForEach((r) => r.Delete(tx)) ;
+					Property.GetAllByParentId(Page.Id).ForEach((p) => p.Delete(tx)) ;
 					Permalink.Delete(tx) ;
 					Page.Delete(tx) ;
 					// Let's not forget the published version.
@@ -222,7 +226,7 @@ namespace Piranha.Models.Manager.PageModels
 		public virtual void Refresh() {
 			if (Page != null) {
 				if (!Page.IsNew) { // Page.Id != Guid.Empty) {
-					Page = Page.GetSingle(Page.Id, Page.IsDraft) ;
+					Page = Page.GetSingle(Page.Id, true) ;
 					GetRelated() ;
 				} else {
 					Template = PageTemplate.GetSingle("pagetemplate_id = @0", Page.TemplateId) ;

@@ -208,7 +208,7 @@ namespace Piranha.WebPages
 		/// <param name="StopLevel">The stop level of the menu</param>
 		/// <returns>A html string</returns>
 		public IHtmlString Menu(int StartLevel = 1, int StopLevel = Int32.MaxValue, 
-			string RootNode = "") 
+			string RootNode = "", string CssClass = "menu") 
 		{
 			StringBuilder str = new StringBuilder() ;
 			List<Sitemap> sm = null ;
@@ -230,7 +230,7 @@ namespace Piranha.WebPages
 						CurrentPage.Id, StartLevel) ;
 				}
 				if (sm != null) {
-					RenderUL(CurrentPage, sm, str, StopLevel) ;
+					RenderUL(CurrentPage, sm, str, StopLevel, CssClass) ;
 				}
 			}
 			return new HtmlString(str.ToString()) ;
@@ -289,9 +289,9 @@ namespace Piranha.WebPages
 		/// <param name="sm">The sitemap elements</param>
 		/// <param name="str">The string builder</param>
 		/// <param name="stoplevel">The desired stop level</param>
-		private void RenderUL(Page curr, List<Sitemap> sm, StringBuilder str, int stoplevel) {
+		private void RenderUL(Page curr, List<Sitemap> sm, StringBuilder str, int stoplevel, string cssclass = "") {
 			if (sm != null && sm.CountVisible() > 0 && sm[0].Level <= stoplevel) {
-				str.AppendLine("<ul class=\"menu\">") ;
+				str.AppendLine("<ul class=\"" + cssclass + "\">") ;
 				foreach (Sitemap page in sm)
 					if (!page.IsHidden) RenderLI(curr, page, str, stoplevel) ;
 				str.AppendLine("</ul>") ;

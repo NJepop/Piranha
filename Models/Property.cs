@@ -88,6 +88,15 @@ namespace Piranha.Models
 		}
 
 		/// <summary>
+		/// Gets all properties associated with the given parent id regardless of state.
+		/// </summary>
+		/// <param name="id">The parent id</param>
+		/// <returns>The properties</returns>
+		internal static List<Property> GetAllByParentId(Guid id) {
+			return Get("property_page_id = @0", id) ;
+		}
+
+		/// <summary>
 		/// Gets the name & value for all properties associated with the given parent 
 		/// id of the given state.
 		/// </summary>

@@ -115,6 +115,13 @@ namespace Piranha.Models
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 
+		/// <summary>
+		/// Default constructor. Creates a new post.
+		/// </summary>
+		public Post() {
+			IsDraft = true ;
+		}
+
 		#region Static accessors
 		/// <summary>
 		/// Gets a single post from the database.

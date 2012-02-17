@@ -98,6 +98,15 @@ namespace Piranha.Models
 		public static List<Region> GetContentByPageId(Guid id, bool draft = false) {
 			return GetFields("region_name, region_body", "region_page_id = @0 AND region_draft = @1", id, draft) ;
 		}
+
+		/// <summary>
+		/// Gets all regions associated with the given page regardless of state.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		/// <returns>The regions</returns>
+		internal static List<Region> GetAllByPageId(Guid id, bool draft = false) {
+			return Get("region_page_id = @0", id, draft) ;
+		}
 		#endregion
 	}
 }
