@@ -6,7 +6,6 @@ using System.Web.Mvc;
 
 using Piranha;
 using Piranha.Data;
-using Piranha.Controllers;
 using Piranha.Models;
 using Piranha.Models.Manager.SettingModels;
 

@@ -155,65 +155,39 @@ namespace Piranha.Models.Manager.PageModels
 
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
 				try {
+					// Save page
+					if (draft)
+						Page.Save(tx) ;
+					else Page.SaveAndPublish(tx) ;
 
-					// Always save as draft
-					Page.IsDraft = true ;
-					PageRegions.ForEach(r => {
-						r.IsDraft = r.IsPageDraft = true ;
+					// Save regions & properties
+					PageRegions.ForEach(r => { 
+						r.IsDraft = r.IsPageDraft = true ; 
+						r.Save(tx) ;
+						if (!draft) {
+							r.IsDraft = r.IsPageDraft = false ; 
+							r.Save(tx) ;
+						}
 					}) ;
-					Properties.ForEach(p => {
-						p.IsDraft = p.IsPageDraft = true ;
+					Properties.ForEach(p => { 
+						p.IsDraft = p.IsPageDraft = true ; 
+						p.Save(tx) ;
+						if (!draft) {
+							p.IsDraft = p.IsPageDraft = false ; 
+							p.Save(tx) ;
+						}
 					}) ;
 
-					Page.Save(!draft, tx) ;
+					// Save permalink
 					if (Permalink.IsNew)
 						Permalink.Name = Permalink.Generate(!String.IsNullOrEmpty(Page.NavigationTitle) ?
 							Page.NavigationTitle : Page.Title) ;
 					Permalink.Save(tx) ;
-					foreach (Region r in PageRegions)
-						r.Save(tx) ;
-					foreach (Property p in Properties)
-						p.Save(tx) ;
+
 					tx.Commit() ;
 				} catch { tx.Rollback() ; throw ; }
 			}
-			// Now let's check if the page should be publised.
-			if (!draft)
-				Publish(unpublished) ;
 			return true ;
-		}
-
-		/// <summary>
-		/// Publishes the current page model.
-		/// </summary>
-		public void Publish(bool isnew) {
-			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
-				try {
-					// Update records
-					Page.IsDraft = false ;
-					Page.IsNew = isnew ;
-					PageRegions.ForEach(r => {
-						r.IsDraft = r.IsPageDraft = false ;
-						r.IsNew = isnew ;
-					}) ;
-					Properties.ForEach(p => {
-						p.IsDraft = p.IsPageDraft = false ;
-						p.IsNew = isnew ;
-					}) ;
-
-					Page.Save(tx) ;
-					foreach (Region r in PageRegions)
-						r.Save(tx) ;
-					foreach (Property p in Properties)
-						p.Save(tx) ;
-					tx.Commit() ;
-
-					try {
-						// Delete page preview
-						// WebPages.WebThumb.RemovePagePreview(Page.Id) ;
-					} catch {}
-				} catch { tx.Rollback() ; throw ; }
-			}
 		}
 
 		/// <summary>

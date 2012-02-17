@@ -339,12 +339,12 @@ namespace Piranha.WebPages
 		/// <param name="helper">The url helper</param>
 		/// <param name="page">The sitemap</param>
 		/// <returns>An action url</returns>
-		private string GenerateUrl(Sitemap page) {
+		private string GenerateUrl(ISitemap page) {
 			if (page != null) {
 				if (!String.IsNullOrEmpty(page.Redirect)) {
 					if (page.Redirect.Contains("://"))
 						return page.Redirect ;
-					Sitemap sr = Sitemap.GetSingle("permalink_name = @0", page.Redirect) ;
+					Page sr = Page.GetByPermalink(page.Redirect) ;
 					return GenerateUrl(sr) ;
 				}
 				if (page.IsStartpage)

@@ -118,6 +118,7 @@ namespace Piranha.Data
 		private static string _tablename ;
 		private static List<string> _primarykey ;
 		private static string _joins ;
+		private static string _fields ;
 		private static Dictionary<string, PropertyInfo> _columns ;
 		private static Dictionary<string, ColumnAttribute> _attributes ;
 
@@ -145,9 +146,20 @@ namespace Piranha.Data
 					TableAttribute ar = typeof(T).GetCustomAttribute<TableAttribute>(true) ;
 					if (ar != null && !String.IsNullOrEmpty(ar.Name))
 						_tablename = ar.Name ;
-					else _tablename = typeof(T).Name ;
+					else _tablename = typeof(T).Name.ToLower() ;
 				}
 				return _tablename ;
+			}
+		}
+
+		/// <summary>
+		/// Gets all of the fields to select.
+		/// </summary>
+		protected static string AllFields {
+			get {
+				if (String.IsNullOrEmpty(_fields))
+					_fields = GenerateSelectFields() ;
+				return _fields ;
 			}
 		}
 
@@ -284,7 +296,7 @@ namespace Piranha.Data
 		/// <param name="args">Optional where parameters</param>
 		/// <returns>A matching record.</returns>
 		public static T GetSingle(string where, params object[] args) {	
-			List<T> result = GetFields("*", where, args) ;
+			List<T> result = GetFields(AllFields, where, args) ;
 			if (result.Count > 0)
 				return result[0] ;
 			return default(T) ;
@@ -296,7 +308,7 @@ namespace Piranha.Data
 		/// <param name="param">The query params</param>
 		/// <returns>A list of records</returns>
 		public static List<T> Get(Params param) {
-			return GetFields("*", "", param) ;
+			return GetFields(AllFields, "", param) ;
 		}
 
 		/// <summary>
@@ -306,7 +318,7 @@ namespace Piranha.Data
 		/// <param name="args">Optional where parameters</param>
 		/// <returns>A list of records</returns>
 		public static List<T> Get(string where = "", params object[] args) {
-			return GetFields("*", where, args) ;
+			return GetFields(AllFields, where, args) ;
 		}
 
 		/// <summary>
@@ -457,19 +469,21 @@ namespace Piranha.Data
 			else _primarykey.Add("Id") ;
 		}
 
-		private static string GenerateSelectFields(string fields) {
+		/// <summary>
+		/// Generates the fields string.
+		/// </summary>
+		/// <returns>The database fields</returns>
+		private static string GenerateSelectFields() {
 			string ret = "" ;
 
-			if (fields.Trim() == "*") {
-				foreach (string key in Columns.Keys) {
-					ColumnAttribute col = Attributes[key] ;
+			foreach (string key in Columns.Keys) {
+				ColumnAttribute col = Attributes[key] ;
 
+				if (!key.StartsWith("(")) {
 					if (!String.IsNullOrEmpty(col.Table))
 						ret += (ret != "" ? "," : "") + col.Table + "." + key ;
 					else ret += (ret != "" ? "," : "") + TableName + "." + key ;
-				}
-			} else {
-				ret = fields ;
+				} else ret += (ret != "" ? "," : "") + key ;
 			}
 			return ret ;
 		}

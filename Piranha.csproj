@@ -79,6 +79,11 @@
     <Compile Include="Models\ArchiveModel.cs" />
     <Compile Include="Models\Attachment.cs" />
     <Compile Include="Models\Content.cs" />
+    <Compile Include="Models\DraftRecord.cs" />
+    <Compile Include="Models\GuidRecord.cs" />
+    <Compile Include="Models\IPage.cs" />
+    <Compile Include="Models\IPost.cs" />
+    <Compile Include="Models\ISitemap.cs" />
     <Compile Include="Models\Manager\CategoryModels\EditModel.cs" />
     <Compile Include="Models\Manager\ContentModels\EditModel.cs" />
     <Compile Include="Models\Manager\ContentModels\ListModel.cs" />
@@ -108,7 +113,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="Controllers\ManagerController.cs" />
+    <Compile Include="Areas\Manager\Controllers\ManagerController.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\PostModel.cs" />
     <Compile Include="Models\PostTemplate.cs" />
@@ -288,6 +293,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Data\Scripts\Updates\1.sql" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

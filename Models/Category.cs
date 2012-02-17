@@ -36,10 +36,10 @@ namespace Piranha.Models
 		public string Name { get ; set ; }
 
 		/// <summary>
-		/// Gets/sets the permalink.
+		/// Gets the permalink.
 		/// </summary>
-		[Column(Name="permalink_name", ReadOnly=true), Display(Name="Permalänk")]
-		public string Permalink { get ; set ; }
+		[Column(Name="permalink_name", ReadOnly=true, Table="permalink"), Display(Name="Permalänk")]
+		public string Permalink { get ; private set ; }
 
 		/// <summary>
 		/// Gets/sets the description.

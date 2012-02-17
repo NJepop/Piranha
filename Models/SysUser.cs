@@ -19,7 +19,6 @@ namespace Piranha.Models
 		/// Gets/sets the id.
 		/// </summary>
 		[Column(Name="sysuser_id")]
-		[Required()]
 		public override Guid Id { get ; set ; }
 
 		/// <summary>
@@ -68,7 +67,7 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the users group name.
 		/// </summary>
-		[Column(Name="sysgroup_name", ReadOnly=true, Table="Group")]
+		[Column(Name="sysgroup_name", ReadOnly=true, Table="sysgroup")]
 		public string GroupName { get ; set ; }
 
 		/// <summary>

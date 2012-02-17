@@ -10,22 +10,6 @@ using Piranha.Data;
 
 namespace Piranha.Models
 {
-	#region Client API
-	/// <summary>
-	/// This is the interface through which the post is accessed from the client API.
-	/// </summary>
-	public interface IPost {
-		Guid Id { get ; }
-		string Title { get ; }
-		string Permalink { get ; }
-		string Excerpt { get ; }
-		HtmlString Body { get ; }
-		DateTime Created { get ; }
-		DateTime Updated { get ; }
-		DateTime Published { get ; }
-	}
-	#endregion
-
 	/// <summary>
 	/// Active record for a page.
 	/// </summary>
@@ -64,8 +48,7 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the permalink.
 		/// </summary>
-		//[Column(Name="post_permalink")]
-		[Column(Name="permalink_name", ReadOnly=true)]
+		[Column(Name="permalink_name", ReadOnly=true, Table="permalink")]
 		[Display(Name="Permalänk")]
 		public string Permalink { get ; set ; }
 
@@ -86,14 +69,14 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the custom view
 		/// </summary>
-		[Column(Name="posttemplate_view", ReadOnly=true)]
-		public string View { get ; set ; }
+		[Column(Name="posttemplate_view", ReadOnly=true, Table="posttemplate")]
+		public string View { get ; private set ; }
 
 		/// <summary>
 		/// Gets/sets the template name.
 		/// </summary>
-		[Column(Name="posttemplate_name", ReadOnly=true, OnLoad="OnNameLoad", OnSave="OnNameSave")]
-		public ComplexName TemplateName { get ; set ; }
+		[Column(Name="posttemplate_name", ReadOnly=true, Table="posttemplate", OnLoad="OnNameLoad", OnSave="OnNameSave")]
+		public ComplexName TemplateName { get ; private set ; }
 
 		/// <summary>
 		/// Gets/sets the created date.

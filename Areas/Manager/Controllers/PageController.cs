@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-using Piranha.Controllers;
 using Piranha.Models.Manager.PageModels;
 
 namespace Piranha.Areas.Manager.Controllers

@@ -17,40 +17,69 @@ namespace Piranha.Models
 	public class SysAccess : PiranhaRecord<SysAccess>, ICacheRecord<SysAccess>
 	{
 		#region Fields
+		/// <summary>
+		/// Gets/sets the id.
+		/// </summary>
 		[Column(Name="sysaccess_id")]
-		[Required()]
 		public override Guid Id { get ; set ; }
 
+		/// <summary>
+		/// Gets/sets the group id.
+		/// </summary>
 		[Column(Name="sysaccess_group_id")]
 		[Required(ErrorMessage="Du måste välja en grupp.")]
 		[Display(Name="Grupp")]
 		public Guid GroupId { get ; set ; }
 
-		[Column(Name="sysgroup_name", ReadOnly=true)]
-		public string GroupName { get ; set ; }
+		/// <summary>
+		/// Gets the group name.
+		/// </summary>
+		[Column(Name="sysgroup_name", ReadOnly=true, Table="sysgroup")]
+		public string GroupName { get ; private set ; }
 
+		/// <summary>
+		/// Gets/sets the function name.
+		/// </summary>
 		[Column(Name="sysaccess_function")]
 		[Required(ErrorMessage="Du måste namnge en funktion.")]
 		[StringLength(64, ErrorMessage="Funktionsnamnet får max innehåll 64 tecken.")]
 		[Display(Name="Funktion")]
 		public string Function { get ; set ; }
 
+		/// <summary>
+		/// Gets/sets the description.
+		/// </summary>
 		[Column(Name="sysaccess_description")]
 		[StringLength(255), Display(Name="Beskrivning")]
 		public string Description { get ; set ; }
 
+		/// <summary>
+		/// Gets/sets weather the access rule is locked.
+		/// </summary>
 		[Column(Name="sysaccess_locked")]
 		public bool IsLocked { get ; set ; }
 
+		/// <summary>
+		/// Gets/sets the created date.
+		/// </summary>
 		[Column(Name="sysaccess_created")]
 		public override DateTime Created { get ; set ; }
 
+		/// <summary>
+		/// Gets/sets the updated date.
+		/// </summary>
 		[Column(Name="sysaccess_updated")]
 		public override DateTime Updated { get ; set ; }
 
+		/// <summary>
+		/// Gets/sets the created by id.
+		/// </summary>
 		[Column(Name="sysaccess_created_by")]
 		public override Guid CreatedBy { get ; set ; }
 
+		/// <summary>
+		/// Gets/sets the updated by id.
+		/// </summary>
 		[Column(Name="sysaccess_updated_by")]
 		public override Guid UpdatedBy { get ; set ; }
 		#endregion
