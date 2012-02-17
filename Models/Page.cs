@@ -11,33 +11,13 @@ using Piranha.WebPages;
 
 namespace Piranha.Models
 {
-	#region Client API
-	/// <summary>
-	/// This is the interface through which the page is accessed from the client API.
-	/// </summary>
-	public interface IPage {
-		Guid Id { get ; }
-		Guid GroupId { get ; }
-		bool IsDraft { get ; }
-		string Title { get ; }
-		string NavigationTitle { get ; }
-		string Permalink { get ; }
-		string Keywords { get ; }
-		string Description { get ; }
-		ComplexName TemplateName { get ; }
-		DateTime Created { get ; }
-		DateTime Updated { get ; }
-		DateTime Published { get ; }
-	}
-	#endregion
-
 	/// <summary>
 	/// Active record for a page.
 	/// </summary>
 	[PrimaryKey(Column="page_id,page_draft")]
 	[Join(TableName="pagetemplate", ForeignKey="page_template_id", PrimaryKey="pagetemplate_id")]
 	[Join(TableName="permalink", ForeignKey="page_id", PrimaryKey="permalink_parent_id")]
-	public class Page : GuidRecord<Page>, IPage, ICacheRecord<Page>
+	public class Page : DraftRecord<Page>, IPage, ISitemap, ICacheRecord<Page>
 	{
 		#region Fields
 		/// <summary>
@@ -50,7 +30,7 @@ namespace Piranha.Models
 		/// Gets/sets weather this is a draft.
 		/// </summary>
 		[Column(Name="page_draft")]
-		public bool IsDraft { get ; set ; }
+		public override bool IsDraft { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the template id.
@@ -95,7 +75,6 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the permalink.
 		/// </summary>
-		//[Column(Name="page_permalink")]
 		[Column(Name="permalink_name", ReadOnly=true, Table="permalink")]
 		[Display(Name="Permalänk")]
 		public string Permalink { get ; set ; }
@@ -139,67 +118,55 @@ namespace Piranha.Models
 		/// Gets/sets the custom controller.
 		/// </summary>
 		[Column(Name="pagetemplate_controller", ReadOnly=true, Table="pagetemplate")]
-		public string TemplateController { get ; set ; }
+		public string TemplateController { get ; private set ; }
 
 		/// <summary>
 		/// Gets/sets the custom controller.
 		/// </summary>
 		[Column(Name="pagetemplate_redirect", ReadOnly=true, Table="pagetemplate")]
-		public string TemplateRedirect { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the custom manager view.
-		/// </summary>
-		[Column(Name="pagetemplate_manager_view", ReadOnly=true, Table="pagetemplate")]
-		public string ManagerView { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the custom manager controller.
-		/// </summary>
-		[Column(Name="pagetemplate_manager_controller", ReadOnly=true, Table="pagetemplate")]
-		public string ManagerController { get ; set ; }
+		public string TemplateRedirect { get ; private set ; }
 
 		/// <summary>
 		/// Gets/sets the template name.
 		/// </summary>
 		[Column(Name="pagetemplate_name", ReadOnly=true, Table="pagetemplate", OnLoad="OnNameLoad", OnSave="OnNameSave")]
-		public ComplexName TemplateName { get ; set ; }
+		public ComplexName TemplateName { get ; private set ; }
 
 		/// <summary>
 		/// Gets/sets the created date.
 		/// </summary>
 		[Column(Name="page_created")]
-		public DateTime Created { get ; set ; }
+		public override DateTime Created { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the updated date.
 		/// </summary>
 		[Column(Name="page_updated")]
-		public DateTime Updated { get ; set ; }
+		public override DateTime Updated { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the published date.
 		/// </summary>
 		[Column(Name="page_published")]
-		public DateTime Published { get ; set ; }
+		public override DateTime Published { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the last published date.
 		/// </summary>
 		[Column(Name="page_last_published")]
-		public DateTime LastPublished { get ; set ; }
+		public override DateTime LastPublished { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the user id that created the record.
 		/// </summary>
 		[Column(Name="page_created_by")]
-		public Guid CreatedBy { get ; set ; }
+		public override Guid CreatedBy { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the user id that created the record.
 		/// </summary>
 		[Column(Name="page_updated_by")]
-		public Guid UpdatedBy { get ; set ; }
+		public override Guid UpdatedBy { get ; set ; }
 		#endregion
 
 		#region Properties
@@ -241,6 +208,17 @@ namespace Piranha.Models
 				return (Dictionary<Guid, Page>)HttpContext.Current.Cache[typeof(Page).Name] ;
 			}
 		}
+
+		/// <summary>
+		/// Gets the page cache object by permalink.
+		/// </summary>
+		private static Dictionary<string, Page> PermalinkCache {
+			get {
+				if (HttpContext.Current.Cache[typeof(Page).Name + "_Permalink"] == null)
+					HttpContext.Current.Cache[typeof(Page).Name + "_Permalink"] = new Dictionary<string, Page>() ;
+				return (Dictionary<string, Page>)HttpContext.Current.Cache[typeof(Page).Name + "_Permalink"] ;
+			}
+		}
 		#endregion
 
 		/// <summary>
@@ -257,8 +235,12 @@ namespace Piranha.Models
 		/// <param name="id">The page id</param>
 		/// <returns>The page</returns>
 		public static Page GetSingle(Guid id) {
-			if (!Cache.ContainsKey(id))
-				Cache[id] = Page.GetSingle("page_id = @0 AND page_draft = 0", id) ;
+			if (!Cache.ContainsKey(id)) {
+				Page p = Page.GetSingle("page_id = @0 AND page_draft = 0", id) ;
+
+				Cache[p.Id] = p ;
+				PermalinkCache[p.Permalink] = p ;
+			}
 			return Cache[id] ;
 		}
 
@@ -292,75 +274,48 @@ namespace Piranha.Models
 		/// <param name="draft">Weather to get the current draft</param>
 		/// <returns>The page</returns>
 		public static Page GetByPermalink(string permalink, bool draft = false) {
+			if (!draft) {
+				if (!PermalinkCache.ContainsKey(permalink.ToLower())) {
+					Page p = Page.GetSingle("permalink_name = @0 AND page_draft = @1", permalink, draft) ;
+
+					Cache[p.Id] = p ;
+					PermalinkCache[p.Permalink] = p ;
+				}
+				return PermalinkCache[permalink.ToLower()] ;
+			}
 			return Page.GetSingle("permalink_name = @0 AND page_draft = @1", permalink, draft) ;
 		}
 		#endregion
 
-		public override bool Save(IDbTransaction tx = null) {
-			return Save(false, tx) ;
-		}
-	
 		/// <summary>
 		/// Saves the current record to the database.
 		/// </summary>
 		/// <param name="tx">Optional transaction</param>
 		/// <returns>Wether the operation was successful</returns>
-		public bool Save(bool setpublish, IDbTransaction tx = null) {
-			var user = HttpContext.Current.User;
+		public override bool Save(IDbTransaction tx = null) {
+			// Move seqno & save, we need a transaction for this
+			IDbTransaction t = tx != null ? tx : Database.OpenConnection().BeginTransaction() ;
 
-			if (user.Identity.IsAuthenticated) {
-				// Generate permalink
-				if (IsNew && String.IsNullOrEmpty(Permalink))
-					Permalink = Title.ToLower().Replace(" ", "-").Replace("å", "a").Replace("ä", "a").Replace("ö", "o") ;
-				if (!String.IsNullOrEmpty(PageController))
-					Permalink = PageController.ToLower() ;
+			// Generate permalink
+			if (IsNew && String.IsNullOrEmpty(Permalink))
+				Permalink = Title.ToLower().Replace(" ", "-").Replace("å", "a").Replace("ä", "a").Replace("ö", "o") ;
+			if (!String.IsNullOrEmpty(PageController))
+				Permalink = PageController.ToLower() ;
 
-				// Move seqno & save, we need a transaction for this
-				IDbTransaction t = tx != null ? tx : Database.OpenConnection().BeginTransaction() ;
-
-				try {
-					// We only move pages around as drafts. When we publish we
-					// simply change states.
-					if (IsDraft) {
-						if (IsNew) {
-							MoveSeqno(ParentId, Seqno, true, t) ;
-						} else {
-							Page old = GetSingle(Id, true) ;
-							if (old.ParentId != ParentId || old.Seqno != Seqno) {
-								MoveSeqno(old.ParentId, old.Seqno + 1, false, t) ;
-								MoveSeqno(ParentId, Seqno, true, t) ;
-							}
-						}
+			// We only move pages around as drafts. When we publish we
+			// simply change states.
+			if (IsDraft) {
+				if (IsNew) {
+					MoveSeqno(ParentId, Seqno, true, t) ;
+				} else {
+					Page old = GetSingle(Id, true) ;
+					if (old.ParentId != ParentId || old.Seqno != Seqno) {
+						MoveSeqno(old.ParentId, old.Seqno + 1, false, t) ;
+						MoveSeqno(ParentId, Seqno, true, t) ;
 					}
-
-					// Set dates
-					Updated = DateTime.Now ;
-					UpdatedBy = new Guid(user.Identity.Name) ;
-					if (IsNew) {
-						Created = Updated ;
-						CreatedBy = new Guid(user.Identity.Name) ;
-					}
-					if (setpublish) {
-						LastPublished = Updated ;
-						if (Published == DateTime.MinValue)
-							Published = Updated ;
-					}
-
-					if (base.Save(t)) {
-						if (tx == null)
-							t.Commit() ;
-						return true ;
-					} else {
-						if (tx == null)
-							t.Rollback() ;
-						return false ;
-					}
-				} catch { 
-					if (tx == null) t.Rollback() ; 
-					throw ; 
 				}
 			}
-			throw new AccessViolationException("User must be logged in to save data.") ;
+			return base.Save(tx) ;
 		}
 
 		/// <summary>
@@ -410,6 +365,8 @@ namespace Piranha.Models
 		public void InvalidateRecord(Page record) {
 			if (Cache.ContainsKey(record.Id))
 				Cache.Remove(record.Id) ;
+			if (PermalinkCache.ContainsKey(record.Permalink))
+				PermalinkCache.Remove(record.Permalink) ;
 			if (record.IsStartpage && Cache.ContainsKey(Guid.Empty))
 				Cache.Remove(Guid.Empty) ;
 

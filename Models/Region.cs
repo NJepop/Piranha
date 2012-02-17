@@ -79,22 +79,24 @@ namespace Piranha.Models
 
 		#region Static accessors
 		/// <summary>
-		/// Gets all regions associated with the given page id.
-		/// </summary>
-		/// <param name="id">The page id</param>
-		/// <returns>The regions</returns>
-		public static List<Region> GetByPageId(Guid id) {
-			return Get("region_page_id = @0", id) ;
-		}
-
-		/// <summary>
 		/// Gets all regions associated with the given page id of the given state.
 		/// </summary>
 		/// <param name="id">The page id</param>
 		/// <param name="draft">Weather this is a draft</param>
 		/// <returns>The regions</returns>
-		public static List<Region> GetByPageId(Guid id, bool draft) {
+		public static List<Region> GetByPageId(Guid id, bool draft = false) {
 			return Get("region_page_id = @0 AND region_draft = @1", id, draft) ;
+		}
+
+		/// <summary>
+		/// Gets the name & body for all regions associated with the given page 
+		/// id of the given state.
+		/// </summary>
+		/// <param name="id">The page id</param>
+		/// <param name="draft">Weather this is a draft</param>
+		/// <returns>The regions</returns>
+		public static List<Region> GetContentByPageId(Guid id, bool draft = false) {
+			return GetFields("region_name, region_body", "region_page_id = @0 AND region_draft = @1", id, draft) ;
 		}
 		#endregion
 	}

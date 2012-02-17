@@ -78,22 +78,24 @@ namespace Piranha.Models
 		#endregion
 
 		/// <summary>
-		/// Gets all properties associated with the given parent id.
-		/// </summary>
-		/// <param name="id">The parent id</param>
-		/// <returns>The properties</returns>
-		public static List<Property> GetByParentId(Guid id) {
-			return Get("property_page_id = @0", id) ;
-		}
-
-		/// <summary>
 		/// Gets all properties associated with the given parent id of the given state.
 		/// </summary>
 		/// <param name="id">The parent id</param>
-		/// <param name="draft">Weather this is a draft</param>
+		/// <param name="draft">Weather to get the draft version.</param>
 		/// <returns>The properties</returns>
-		public static List<Property> GetByParentId(Guid id, bool draft) {
+		public static List<Property> GetByParentId(Guid id, bool draft = false) {
 			return Get("property_page_id = @0 AND property_draft = @1", id, draft) ;
+		}
+
+		/// <summary>
+		/// Gets the name & value for all properties associated with the given parent 
+		/// id of the given state.
+		/// </summary>
+		/// <param name="id">The parent id</param>
+		/// <param name="draft">Weather to get the draft version.</param>
+		/// <returns>The properties</returns>
+		public static List<Property> GetContentByParentId(Guid id, bool draft = false) {
+			return GetFields("property_name, property_value", "property_page_id = @0 AND property_draft = @1", id, draft) ;
 		}
 	}
 }

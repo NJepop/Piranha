@@ -14,7 +14,7 @@ namespace Piranha.Models
 	[Table(Name="page")]
 	[Join(TableName="pagetemplate", ForeignKey="page_template_id", PrimaryKey="pagetemplate_id")]
 	[Join(TableName="permalink", ForeignKey="page_id", PrimaryKey="permalink_parent_id")]
-	public class Sitemap : PiranhaRecord<Sitemap>
+	public class Sitemap : PiranhaRecord<Sitemap>, ISitemap
 	{
 		#region Fields
 		/// <summary>
@@ -53,7 +53,6 @@ namespace Piranha.Models
 		[Column(Name="page_navigation_title")]
 		public string NavigationTitle { get ; set ; }
 
-
 		/// <summary>
 		/// Gets/sets weather the page should be visible in menus or not.
 		/// </summary>
@@ -64,14 +63,14 @@ namespace Piranha.Models
 		/// Gets/sets the permalink.
 		/// </summary>
 		//[Column(Name="page_permalink")]
-		[Column(Name="permalink_name", ReadOnly=true)]
-		public string Permalink { get ; set ; }
+		[Column(Name="permalink_name", ReadOnly=true, Table="permalink")]
+		public string Permalink { get ; private set ; }
 
 		/// <summary>
 		/// Gets/sets the template name.
 		/// </summary>
-		[Column(Name="pagetemplate_name", ReadOnly=true, OnLoad="OnNameLoad", OnSave="OnNameSave")]
-		public ComplexName TemplateName { get ; set ; }
+		[Column(Name="pagetemplate_name", ReadOnly=true, Table="pagetemplate", OnLoad="OnNameLoad", OnSave="OnNameSave")]
+		public ComplexName TemplateName { get ; private set ; }
 
 		/// <summary>
 		/// Gets/sets the page controller.
@@ -82,20 +81,8 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the template controller.
 		/// </summary>
-		[Column(Name="pagetemplate_controller", ReadOnly=true)]
+		[Column(Name="pagetemplate_controller", ReadOnly=true, Table="pagetemplate")]
 		private string TemplateController { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the custom view.
-		/// </summary>
-		[Column(Name="page_view")]
-		public string PageView { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the custom view.
-		/// </summary>
-		[Column(Name="pagetemplate_view", ReadOnly=true)]
-		private string TemplateView { get ; set ; }
 
 		/// <summary>
 		/// Gets/sets the custom redirect.
@@ -106,7 +93,7 @@ namespace Piranha.Models
 		/// <summary>
 		/// Gets/sets the custom controller.
 		/// </summary>
-		[Column(Name="pagetemplate_redirect", ReadOnly=true)]
+		[Column(Name="pagetemplate_redirect", ReadOnly=true, Table="pagetemplate")]
 		private string TemplateRedirect { get ; set ; }
 
 		/// <summary>
@@ -152,13 +139,6 @@ namespace Piranha.Models
 		/// </summary>
 		public string Controller { 
 			get { return !String.IsNullOrEmpty(PageController) ? PageController : TemplateController ; }
-		}
-
-		/// <summary>
-		/// Gets the view for the page.
-		/// </summary>
-		public string View { 
-			get { return !String.IsNullOrEmpty(PageView) ? PageView : TemplateView ; }
 		}
 
 		/// <summary>
