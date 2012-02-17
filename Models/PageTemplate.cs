@@ -103,12 +103,6 @@ namespace Piranha.Models
 		/// </summary>
 		[Column(Name="pagetemplate_updated_by")]
 		public override Guid UpdatedBy { get ; set ; }
-
-		/// <summary>
-		/// Gets/sets the number of pages of the current template type.
-		/// </summary>
-		[Column(Name="(SELECT COUNT(*) FROM page WHERE page.page_template_id = pagetemplate_id)", ReadOnly=true)]
-		public int Count { get ; set ; }
 		#endregion
 
 		#region Properties

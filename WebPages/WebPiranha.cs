@@ -166,19 +166,22 @@ namespace Piranha.WebPages
 		public static bool HandleClientCache(HttpContext context, string id, DateTime modified, bool noexpire = false) {
 #if !DEBUG
 			if (!context.Request.IsLocal) {
-				//try {
-				//	DateTime siteDt = DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
-				//	modified = modified > siteDt ? modified : siteDt ;
-				//} catch {}
-				modified = modified > SiteLastModifed ? modified : SiteLastModifed ;
+				try {
+					modified = modified > SiteLastModifed ? modified : SiteLastModifed ;
+				} catch {}
 				string etag = GenerateETag(id, modified) ;
 
 				context.Response.Cache.SetETag(etag) ;
 				context.Response.Cache.SetLastModified(modified <= DateTime.Now ? modified : DateTime.Now) ;	
 				context.Response.Cache.SetCacheability(System.Web.HttpCacheability.ServerAndPrivate) ;
 				if (!noexpire) {
-					context.Response.Cache.SetExpires(DateTime.Now.AddMinutes(Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_EXPIRES").Value))) ;
-					context.Response.Cache.SetMaxAge(new TimeSpan(0, Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_MAXAGE").Value), 0)) ;
+					int expires = 30, maxage = 30 ;
+					try {
+						expires = Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_EXPIRES").Value) ;
+						maxage = Convert.ToInt32(SysParam.GetByName("CACHE_PUBLIC_MAXAGE").Value) ;
+					} catch {}
+					context.Response.Cache.SetExpires(DateTime.Now.AddMinutes(expires)) ;
+					context.Response.Cache.SetMaxAge(new TimeSpan(0, maxage, 0)) ;
 				} else {
 					context.Response.Cache.SetExpires(DateTime.Now) ;
 				}
