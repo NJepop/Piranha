@@ -50,8 +50,8 @@ namespace Piranha.WebPages
 				if (!User.IsMember(page.GroupId)) {
 					SysParam param = SysParam.GetByName("LOGIN_PAGE") ;
 					if (param != null)
-						Server.TransferRequest(param.Value) ;
-					else Server.TransferRequest("~/") ;
+						Response.Redirect(param.Value) ;
+					else Response.Redirect("~/") ;
 				}
 				Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache) ;
 			} else {

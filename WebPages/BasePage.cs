@@ -49,6 +49,17 @@ namespace Piranha.WebPages
 					MethodInfo m = GetType().GetMethod(Request.Form["piranha_form_action"],
 						BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance|BindingFlags.IgnoreCase);
 					if (m != null) {
+						// Check for access rules
+						var access = m.GetCustomAttribute<AccessAttribute>(true) ;
+						if (access != null) {
+							if (!User.HasAccess(access.Function)) {
+								SysParam param = SysParam.GetByName("LOGIN_PAGE") ;
+								if (param != null)
+									Response.Redirect(param.Value) ;
+								else Response.Redirect("~/") ;
+							}
+						}
+						// Bind model
 						List<object> args = new List<object>() ;
 						foreach (var param in m.GetParameters())
 							args.Add(ModelBinder.BindModel(param.ParameterType)) ;

@@ -200,6 +200,7 @@ CREATE TABLE post (
 	post_created DATETIME NOT NULL,
 	post_updated DATETIME NOT NULL,
 	post_published DATETIME NULL,
+	post_last_published DATETIME NULL,
 	post_created_by UNIQUEIDENTIFIER NOT NULL,
 	post_updated_by UNIQUEIDENTIFIER NOT NULL,
 	CONSTRAINT pk_post_id PRIMARY KEY (post_id, post_draft),

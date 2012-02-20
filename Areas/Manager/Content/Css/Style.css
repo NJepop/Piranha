@@ -481,6 +481,7 @@ table.template {
 table.template td {
     background: #ccc;
     border: solid 4px #fff;
+    cursor: pointer;
     }
 .edit table.template td.active {
     background: #f68030;

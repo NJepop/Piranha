@@ -30,6 +30,10 @@ namespace Piranha.Areas.Manager.Content.Css
 		/// </summary>
 		public void ProcessRequest(HttpContext context) {
 			DateTime mod = new FileInfo(Assembly.GetExecutingAssembly().Location).LastWriteTime ;
+			if (File.Exists(context.Server.MapPath("~/Areas/Manager/Content/Css/Style.css"))) {
+				FileInfo file = new FileInfo(context.Server.MapPath("~/Areas/Manager/Content/Css/Style.css")) ;
+				mod = file.LastWriteTime > mod ? file.LastWriteTime : mod ;
+			}
 
 			if (!WebPiranha.HandleClientCache(context, resource, mod)) {
 				StreamReader io = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)) ;

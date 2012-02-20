@@ -786,6 +786,13 @@ $(document).ready(function () {
     $("input[type=file]").change(function () {
         $("#" + $(this).attr("data-id")).val($(this).val());
     });
+
+    //
+    // Floatbox close button
+    //
+    $(".floatbox .box .title").click(function () {
+        floatBox.close($(this).parent().parent().attr("id"));
+    });
 });
 
 /**
@@ -865,6 +872,18 @@ $(document).ready(function () {
         $(".edit #" + id).addClass("active");
 
         return false;
+    });
+
+    $(".edit td").click(function () {
+        if (!$(this).hasClass("locked")) {
+            var id = $(this).attr("id");
+
+            hideEditors();
+            $("#pageregions #" + id).show();
+            $(".edit td").removeClass("active");
+            $(this).addClass("active");
+            $("#btn_" + id).addClass("active");
+        }
     });
 
     //
