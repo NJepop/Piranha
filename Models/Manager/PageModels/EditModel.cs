@@ -200,22 +200,22 @@ namespace Piranha.Models.Manager.PageModels
 		/// <returns></returns>
 		public virtual bool DeleteAll() {
 			using (IDbTransaction tx = Database.OpenConnection().BeginTransaction()) {
-				try {
-					Region.GetAllByPageId(Page.Id).ForEach((r) => r.Delete(tx)) ;
-					Property.GetAllByParentId(Page.Id).ForEach((p) => p.Delete(tx)) ;
-					Permalink.Delete(tx) ;
-					Page.Delete(tx) ;
-					// Let's not forget the published version.
-					Page = Models.Page.GetSingle(Page.Id, false) ;
-					if (Page != null)
-						Page.Delete(tx) ;
-					tx.Commit() ;
+				// Since we can have multiple rows for all id's, get everything.
+				List<Region> regions = Region.GetAllByPageId(Page.Id) ;
+				List<Property> properties = Property.GetAllByParentId(Page.Id) ;
+				List<Page> pages = Page.Get("page_id=@0", Page.Id) ;
 
-					try {
-						// Delete page preview
-						// WebPages.WebThumb.RemovePagePreview(Page.Id) ;
-					} catch {}
-				} catch { tx.Rollback() ; return false ; }
+				regions.ForEach(r => r.Delete(tx)) ;
+				properties.ForEach(p => p.Delete(tx)) ;
+				Permalink.Delete(tx) ;
+				pages.ForEach(p => p.Delete(tx)) ;
+
+				tx.Commit() ;
+
+				try {
+					// Delete page preview
+					// WebPages.WebThumb.RemovePagePreview(Page.Id) ;
+				} catch {}
 			}
 			return true ;
 		}

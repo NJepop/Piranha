@@ -15,6 +15,11 @@ namespace Piranha.Models
 		Guid Id { get ; }
 
 		/// <summary>
+		/// Gets weather this is a draft.
+		/// </summary>
+		bool IsDraft { get ; }
+
+		/// <summary>
 		/// Gets/sets the group needed to view the page.
 		/// </summary>
 		Guid GroupId { get ; }

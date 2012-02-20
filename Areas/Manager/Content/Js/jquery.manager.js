@@ -740,10 +740,10 @@ $(document).ready(function () {
     //
     // Toggle optional content
     //
-    $(".expandable h2").click(function () {
-        var h2 = $(this);
-        h2.siblings(".optional").slideToggle("fast", function () {
-            h2.toggleClass("expanded");
+    $(".expandable .title").click(function () {
+        var title = $(this);
+        title.siblings(".inner").find(".optional").slideToggle("fast", function () {
+            title.toggleClass("expanded");
         });
     });
 
@@ -860,7 +860,7 @@ $(document).ready(function () {
 
         hideEditors();
         $("#pageregions #" + id).show();
-        $(this).removeClass("blue").addClass("orange");
+        $(this).addClass("active");
         $(".edit td").removeClass("active");
         $(".edit #" + id).addClass("active");
 
@@ -871,7 +871,8 @@ $(document).ready(function () {
     // Event hander for attachments.
     $("#btn_attachments").click(function () {
         hideEditors();
-        $(this).removeClass("blue").addClass("orange");
+        $(this).addClass("active");
+        $("#attachments").show();
         return false;
     });
 
@@ -879,7 +880,8 @@ $(document).ready(function () {
     // Hides all editors on the page.
     function hideEditors() {
         $("#pageregions .input, #globalregions .input").hide();
-        $("#regionbuttons button").removeClass("orange").addClass("blue");
+        $("#regionbuttons button").removeClass("active");
+        $("#attachments").hide();
     }
 });
 

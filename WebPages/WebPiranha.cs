@@ -28,15 +28,17 @@ namespace Piranha.WebPages
 		/// </summary>
 		public static DateTime SiteLastModifed {
 			get {
-				if (HttpContext.Current.Cache["SITE_LAST_MODIFIED"] == null)
-					HttpContext.Current.Cache["SITE_LAST_MODIFIED"] =
-						DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
-				return (DateTime)HttpContext.Current.Cache["SITE_LAST_MODIFIED"] ;
+				try {
+					return DateTime.Parse(SysParam.GetByName("SITE_LAST_MODIFIED").Value) ;
+				} catch {}
+				return DateTime.MinValue ;
 			}
 			set {
 				SysParam.Execute("UPDATE sysparam SET sysparam_value = @0 WHERE sysparam_name = @1", null,
 					value, "SITE_LAST_MODIFIED") ;
-				HttpContext.Current.Cache.Remove("SITE_LAST_MODIFIED") ;
+				SysParam p = SysParam.GetByName("SITE_LAST_MODIFIED") ;
+				if (p != null)
+					p.InvalidateRecord(p) ;
 			}
 		}
 		#endregion

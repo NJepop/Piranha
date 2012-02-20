@@ -35,8 +35,8 @@
 @Html.HiddenFor(m => m.Content.Type)
 <div class="grid_9">
     <div class="box">
+        <div class="title"><h2>Information</h2></div>
         <div class="inner">
-            <h2>Information</h2>
             <ul class="form">
                 <li>
                     <label>Ladda upp</label>
@@ -65,8 +65,8 @@
     </div>
     @if (!Model.Content.IsNew) {    
     <div class="box">
+        <div class="title"><h2>Filinformation</h2></div>
         <div class="inner">
-            <h2>Filinformation</h2>
             <ul class="form">
                 <li>@Html.LabelFor(m => m.Content.Filename)
                     <p>@Model.Content.Filename</p>
@@ -89,8 +89,8 @@
 </div>
 <div class="grid_3">
     <div class="box">
+        <div class="title"><h2>Tumnagel</h2></div>
         <div class="inner">
-            <h2>Tumnagel</h2>
             @if (!Model.Content.IsNew) {
                 <img style="max-width:190px" alt="@Model.Content.AlternateText" src="@Url.Content("~/thumb/" + Model.Content.Id + "/190")" />
             } else {

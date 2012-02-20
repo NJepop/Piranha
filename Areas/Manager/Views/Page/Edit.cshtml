@@ -64,8 +64,8 @@
 </div>
 <div class="grid_9">
     <div class="box expandable">
+        <div class="title"><h2>Information</h2></div>
         <div class="inner">
-            <h2>Information</h2>
             <ul class="form">
                 <li>@Html.LabelFor(m => m.Page.Title)
                     <div class="input">
@@ -93,11 +93,6 @@
                     @Html.ValidationMessageFor(m => m.Page.PageRedirect)
                 </li>
                 }
-                <li>@Html.LabelFor(m => m.Page.Keywords)
-                    <div class="input"> 
-                        @Html.TextBoxFor(m => m.Page.Keywords, new { @placeholder = "Ej obligatorisk" })</div>
-                    @Html.ValidationMessageFor(m => m.Page.Keywords)
-                </li>
             </ul>
             <ul class="form optional">
                 <li>@Html.LabelFor(m => m.Page.NavigationTitle)
@@ -114,6 +109,11 @@
                     @Html.LabelFor(m => m.Page.IsHidden)
                     <p>@Html.CheckBoxFor(m => m.Page.IsHidden) (Sidan kommer fortfarande vara åtkomlig med inte synas i menyn)</p>
                 </li>
+                <li>@Html.LabelFor(m => m.Page.Keywords)
+                    <div class="input"> 
+                        @Html.TextBoxFor(m => m.Page.Keywords, new { @placeholder = "Ej obligatorisk" })</div>
+                    @Html.ValidationMessageFor(m => m.Page.Keywords)
+                </li>
                 <li>@Html.LabelFor(m => m.Page.Description)
                     <div class="input">
                         @Html.TextAreaFor(m => m.Page.Description, new { @rows = 3, @placeholder = "Ej obligatorisk" })</div>
@@ -125,23 +125,24 @@
 
     @if (Model.PageRegions.Count > 0) {
     <div class="box">
-        <div class="inner">
+        <div class="title">
             <h2>Innehåll</h2>
-            <div id="regionbuttons" class="section">
-                <div class="left">
-                    @for (int n = 0; n < Model.PageRegions.Count; n++) {
-                    <button id="@Html.Raw("btn_" + Model.PageRegions[n].Name)" class="btn @(n > 0 ? "blue" : "orange") pageregion">@Model.PageRegions[n].Name</button>
-                    }
-                </div>
-                <div class="right">
-                    <button id="btn_attachments" class="btn blue hidden">Bifogade filer</button>
-                </div>
+            <div id="regionbuttons" class="buttons">
+                @for (int n = 0; n < Model.PageRegions.Count; n++) {
+                <button id="@Html.Raw("btn_" + Model.PageRegions[n].Name)" class="btn@(n > 0 ? "" : " active") pageregion">@Model.PageRegions[n].Name</button>
+                }
+                <button id="btn_attachments" class="btn hidden">Bifogade filer</button>
             </div>
+        </div>
+        <div class="inner">
             <div id="pageregions">
                 @Html.EditorFor(m => m.PageRegions)
             </div>
             <div id="attachments" style="display:none">
+                @if (false) {
+                <!-- This is currently under development -->
                 @Html.Partial("Partial/PageAttachments")
+                }
             </div>
         </div>
     </div>
@@ -150,8 +151,8 @@
 </div>
 <div class="grid_3">
     <div class="box pagetemplate">
+        <div class="title"><h2>@Model.Template.Name.Singular</h2></div>
         <div class="inner">
-            <h2>@Model.Template.Name.Singular</h2>
             <div class="edit" style="width:120px;height:120px;margin:0 auto 10px">
                 @Model.Template.Preview
             </div>
@@ -160,8 +161,8 @@
     </div>
     @if (Model.Properties.Count > 0) {
     <div class="box">
+        <div class="title"><h2>Egenskaper</h2></div>
         <div class="inner">
-            <h2>Egenskaper</h2>
             <ul class="form">
             @for (int n = 0; n < Model.Properties.Count; n++) {
                 <li>@Html.LabelFor(m => m.Properties[n], Model.Properties[n].Name)

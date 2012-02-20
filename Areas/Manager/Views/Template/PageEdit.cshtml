@@ -37,8 +37,8 @@
 </div>
 <div class="grid_9">
     <div class="box expandable">
+        <div class="title"><h2>Information</h2></div>
         <div class="inner">
-            <h2>Information</h2>
             <ul class="form">
                 <li>@Html.LabelFor(m => m.Template.Name.Singular)
                     <div class="input">
@@ -64,8 +64,8 @@
         </div>
     </div>
     <div class="box">
+        <div class="title"><h2>Avancerat</h2></div>
         <div class="inner">
-            <h2>Avancerat</h2>
             <ul class="form">
                 <li>@Html.LabelFor(m => m.Template.Controller)
                     <div class="right">
@@ -85,9 +85,9 @@
 </div>
 <div class="grid_3">
     <div class="box">
+        <div class="title"><h2>Regioner</h2></div>
         <div class="inner">
             <div id="region_data"></div>
-            <h2>Regioner</h2>
             <ul id="pageregions" class="list buttons">
                 @foreach (var region in Model.Template.PageRegions) {
                 <li><span>@region</span><button class="btn delete right remove-region"></button></li>
@@ -100,8 +100,8 @@
         </div>
     </div>
     <div class="box">
+        <div class="title"><h2>Egenskaper</h2></div>
         <div class="inner">
-            <h2>Egenskaper</h2>
             <ul id="properties" class="list buttons">
                 @foreach (var property in Model.Template.Properties) {
                 <li><span>@property</span><button class="btn delete right remove-region"></button></li>

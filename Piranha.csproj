@@ -293,7 +293,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Data\Scripts\Updates\1.sql" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -166,7 +166,7 @@ namespace Piranha.Models
 			if (pt.PageRegions.Count > 0) {
 				foreach (string str in pt.PageRegions)
 					((IDictionary<string, object>)Regions).Add(str, new HtmlString("")) ;
-				Region.GetContentByPageId(Page.Id).ForEach(pr => {
+				Region.GetContentByPageId(Page.Id, Page.IsDraft).ForEach(pr => {
 					if (((IDictionary<string, object>)Regions).ContainsKey(pr.Name))
 						((IDictionary<string, object>)Regions)[pr.Name] = pr.Body ;
 				});
@@ -175,7 +175,7 @@ namespace Piranha.Models
 			if (pt.Properties.Count > 0) {
 				foreach (string str in pt.Properties)
 					((IDictionary<string, object>)Properties).Add(str, "") ;
-				Property.GetContentByParentId(Page.Id).ForEach(pr => {
+				Property.GetContentByParentId(Page.Id, Page.IsDraft).ForEach(pr => {
 					if (((IDictionary<string, object>)Properties).ContainsKey(pr.Name))
 						((IDictionary<string, object>)Properties)[pr.Name] = pr.Value ;
 				});
