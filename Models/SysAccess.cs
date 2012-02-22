@@ -43,7 +43,7 @@ namespace Piranha.Models
 		[Column(Name="sysaccess_function")]
 		[Required(ErrorMessage="Du måste namnge en funktion.")]
 		[StringLength(64, ErrorMessage="Funktionsnamnet får max innehåll 64 tecken.")]
-		[Display(Name="Funktion")]
+		[Display(Name="Namn")]
 		public string Function { get ; set ; }
 
 		/// <summary>
