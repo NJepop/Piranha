@@ -793,6 +793,30 @@ $(document).ready(function () {
     $(".floatbox .box .title").click(function () {
         floatBox.close($(this).parent().parent().attr("id"));
     });
+
+    //
+    // Locked form fields
+    //
+    $(".protected .locked").click(function () {
+        var p = $(this).siblings("p");
+        var i = $(this).siblings(".input");
+
+        if ($(this).hasClass("unlocked")) {
+            // Copy new permalink
+            $(p).html(p.html().substring(0, p.html().lastIndexOf("/")) + "/" + $(i).find("input").val());
+
+            // Hide/show controls
+            $(i).hide();
+            $(p).show();
+            $(this).removeClass("unlocked");
+        } else {
+            // Hide/show controls
+            $(p).hide();
+            $(i).show();
+            $(this).addClass("unlocked");
+        }
+        return false;
+    });
 });
 
 /**

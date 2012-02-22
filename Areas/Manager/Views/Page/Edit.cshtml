@@ -57,7 +57,6 @@
     @Html.HiddenFor(m => m.Permalink.Id)
     @Html.HiddenFor(m => m.Permalink.ParentId)
     @Html.HiddenFor(m => m.Permalink.Type)
-    @Html.HiddenFor(m => m.Permalink.Name)
     @Html.HiddenFor(m => m.Permalink.Created)
     @Html.HiddenFor(m => m.Permalink.CreatedBy)
     <input type="hidden" id="draft" name="draft" value="true" />
@@ -72,12 +71,15 @@
                         @Html.TextBoxFor(m => m.Page.Title)</div>
                     @Html.ValidationMessageFor(m => m.Page.Title)
                 </li>
-                <li>@Html.LabelFor(m => m.Page.Permalink)
+                <li class="protected">@Html.LabelFor(m => m.Page.Permalink)
                 	@if (!Model.Page.IsNew) {
                     <p>http://@Request.Url.DnsSafeHost@Url.GetPermalink(Model.Page.Permalink).ToLower()</p>
                     } else {
                     <p><i>Din permalänk skapas automatiskt när du sparar sidan första gången</i></p>
                     }
+                    <div class="input">
+                        @Html.TextBoxFor(m => m.Permalink.Name)</div>
+                    <a class="locked"></a>
                 </li>
                 @if (Model.Template.ShowController) {
                 <li>@Html.LabelFor(m => m.Page.PageController)
@@ -131,7 +133,7 @@
                 @for (int n = 0; n < Model.PageRegions.Count; n++) {
                 <button id="@Html.Raw("btn_" + Model.PageRegions[n].Name)" class="btn@(n > 0 ? "" : " active") pageregion">@Model.PageRegions[n].Name</button>
                 }
-                <button id="btn_attachments" class="btn hidden">Bifogade filer</button>
+                <button id="btn_attachments" class="btn">Bifogade filer</button>
             </div>
         </div>
         <div class="inner">
@@ -139,10 +141,7 @@
                 @Html.EditorFor(m => m.PageRegions)
             </div>
             <div id="attachments" style="display:none">
-                @if (false) {
-                <!-- This is currently under development -->
                 @Html.Partial("Partial/PageAttachments")
-                }
             </div>
         </div>
     </div>
